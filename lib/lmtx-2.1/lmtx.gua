@@ -1,0 +1,611 @@
+#!/usr/local/bin/guash
+#
+# lmtx.gua
+#
+#     This script implements the learning matrix artificial neural network
+#     train algorithm.
+#
+# Copyright (C) 2017 Roberto Luiz Souza Monteiro,
+#                    Hernane Borges de Barros Pereira.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: lmtx.gua,v 2.0 2017/01/10 13:08:00 monteiro Exp $
+#
+
+$LMTX_VERSION = "2.0"
+
+$LMTX_LINEAR_ACTIVATION_FUNCTION   = 0
+$LMTX_LOGISTIC_ACTIVATION_FUNCTION = 1
+$LMTX_TANH_ACTIVATION_FUNCTION     = 2
+
+$LMTX_NO_OUTPUT_FUNCTION           = 0
+$LMTX_LINEAR_OUTPUT_FUNCTION       = 1
+$LMTX_STEP_OUTPUT_FUNCTION         = 2
+
+function lmtxLoadFile(file_name) {
+    fp = fopen(file_name, "r")
+
+    file_section = "none"
+
+    while (!feof(fp)) {
+        if((line = fgets(fp)) == NULL) { 
+            break
+        }
+        
+        record = split(trim(line, " \t\r\n"))
+        
+        if ((tolower(record[0]) == "*vertices") || (tolower(record[0]) == "*edges") || (tolower(record[0]) == "*arcs") || (tolower(record[0]) == "*matrix")) {
+            file_section = tolower(record[0])
+            if (file_section == "*vertices") {
+                n = eval(record[1]) + 1
+                adj = matrix(0.0, n + 1, n + 1)
+            }
+            i = 0
+            continue
+        }
+
+        if (file_section == "*vertices") {
+            adj[0, i + 1] = eval(record[1])
+            adj[i + 1, 0] = eval(record[1])
+            i = i + 1
+        } elseif (file_section == "*edges") {
+            i = eval(record[0])
+            j = eval(record[1])
+            if (length(record) == 2) {
+                adj[i, j] = 1
+                adj[j, i] = 1
+            } else {
+                adj[i, j] = eval(record[2])
+                adj[j, i] = eval(record[2])
+            }
+        } elseif (file_section == "*arcs") {
+            i = eval(record[0])
+            j = eval(record[1])
+            if (length(record) == 2) {
+                adj[i, j] = 1
+            } else {
+                adj[i, j] = eval(record[2])
+            }
+        } elseif (file_section == "*matrix") {
+            foreach(record; j; v) {
+                adj[i + 1, j + 1] = eval(v)
+                if (i == n) {
+                    break
+                }
+            }
+            i = i + 1
+        }
+    }
+
+    fp = fclose(fp)
+
+    return(adj)
+}
+
+function lmtxSaveFile(filename, adj, type = "edges") {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    # Each line in a Pajek files must terminate with CR+LF.
+    # Windows will automaticly converts "\n" to "\r\n", but
+    # Linux will not.
+    if ($SYS_HOST == "linux") {
+        new_line = "\r\n"
+    } else {
+        new_line = "\n"
+    }
+
+    fp = fopen(filename, "w")
+
+    # Save vertices...
+    fputs("*Vertices " + (dim_i - 2) + new_line, fp)
+    for (i = 1; i < (dim_i - 1); i = i + 1) {
+        fputs(i + " \"" + adj[i, 0] + "\"" + new_line, fp)
+    }
+
+    # Save edges...
+    if (type == "edges") {
+        fputs("*Edges" + new_line, fp)
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            for (j = 1; j < (dim_j - 1); j = j + 1) {
+                if (adj[i, j] != 0) {
+                    fputs(i + " " + j + " " + adj[i, j] + new_line, fp)
+                }
+            }
+        }
+    # Save arcs...
+    } elseif (type == "arcs") {
+        fputs("*Arcs" + new_line, fp)
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            for (j = 1; j < (dim_j - 1); j = j + 1) {
+                if (adj[i, j] != 0) {
+                    fputs(i + " " + j + " " + adj[i, j] + new_line, fp)
+                }
+            }
+        }
+    # Save matrix...
+    } elseif (type == "matrix") {
+        fputs("*Matrix" + new_line, fp)
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            for (j = 1; j < (dim_j - 1); j = j + 1) {
+                fputs(" " + adj[i, j], fp)
+            }
+            fputs(new_line, fp)
+        }
+    }
+
+    fp = fclose(fp)
+}
+
+function lmtxGetLabels(adj) {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+
+    for (i = 1; i < dim_i; i = i + 1) {
+        labels[i] = adj[i, 0]
+    }
+
+    return(labels)
+}
+
+function lmtxSetLabels(adj, labels) {
+    n = length(labels)
+    
+    for (i = 1; i < n; i = i + 1) {
+        adj[i, 0] = labels[i]
+        adj[0, i] = labels[i]
+    }
+
+    return(adj)
+}
+
+function lmtxPrepare(nn, randomize = FALSE, allow_loops = FALSE, negative_weights = FALSE) {
+    dim_nn = dim(nn)
+    dim_i = dim_nn[0]
+    dim_j = dim_nn[1]
+    
+    # Clear inputs and outputs.
+    for (i = 0; i < dim_i; i = i + 1) {
+        nn[0, i] = 0.0
+        nn[i, 0] = 0.0
+        if (!allow_loops) {
+            nn[i, i] = 0.0
+        }
+        nn[i, dim_j - 1] = 0.0
+        nn[dim_i - 1, i] = 0.0
+    }
+    
+    # Clear the lower triangular matrix.
+    for (i = 1; i < dim_i; i = i + 1) {
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (i > j) {
+                nn[i, j] = 0.0
+            }
+        }
+    }
+    
+    # Set random weights.
+    if (randomize) {
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            for (j = 1; j < (dim_j - 1); j = j + 1) {
+                if (nn[i, j] == 1) {
+                    if (negative_weights) {
+                        nn[i, j] = 2.0 * random() - 1.0
+                    } else {
+                        nn[i, j] = random()
+                    }
+                }
+            }
+        }
+    }
+    
+    return(nn)
+}
+
+function lmtxLearn(nn, in, out, ni, no, lrate, af, oaf) {
+    dim_nn = dim(nn)
+    dim_i = dim_nn[0]
+    dim_j = dim_nn[1]
+    
+    first_out = dim_j - 1 - no
+    
+    # Clear inputs and outputs.
+    for (i = 0; i < dim_i - 1; i = i + 1) {
+        nn[0, i] = 0.0
+        nn[i, 0] = 0.0
+        nn[i, dim_j - 1] = 0.0
+        nn[dim_i - 1, i] = 0.0
+    }
+    
+    # Assign inputs.
+    for (j = 0; j < ni; j = j + 1) {
+        nn[j + 1, 0] = in[j]
+    }
+    
+    # Calculate the neurons output.
+    for (j = ni + 1; j < (dim_j - 1); j = j + 1) {
+        nn[0, j] = 0.0
+        
+        # Weighted sums.
+        # x = x1 * w1 + x2 * w2 + ...
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            if (i < j) {
+                if (nn[i, j] != 0) {
+                    nn[0, j] = nn[0, j] + nn[i, j] * (nn[i, 0] * 1.0)
+                }
+            } elseif (i == j) {
+                if (nn[i, j] != 0) {
+                    nn[0, j] = nn[0, j] + nn[i, j] * 1.0
+                }
+            } else {
+                break
+            }
+        }
+        
+        # Activation function.
+        if (j < first_out) {
+            # Linear: f(x) = x
+            #         df(x)/dx = 1
+            if (af == LMTX_LINEAR_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = nn[0, j]
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = 1.0
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            #          df(x)/dx = f(x) * (1 - f(x))
+            } elseif (af == LMTX_LOGISTIC_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = nn[j, 0] * (1.0 - nn[j, 0])
+            # Hyperbolic tangent: f(x) = 2 / (1 + e^(-2x)) - 1
+            #                     df(x)/dx = 1 - f(x)^2
+            } elseif (af == LMTX_TANH_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 2.0 / (1.0 + exp(-2.0 * nn[0, j])) - 1.0
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = 1.0 - nn[j, 0] * nn[j, 0]
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            #          df(x)/dx = f(x) * (1 - f(x))
+            } else {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = nn[j, 0] * (1.0 - nn[j, 0])
+            }
+        } else {
+            # Linear: f(x) = x
+            #         df(x)/dx = 1
+            if (oaf == LMTX_LINEAR_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = nn[0, j]
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = 1.0
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            #          df(x)/dx = f(x) * (1 - f(x))
+            } elseif (oaf == LMTX_LOGISTIC_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = nn[j, 0] * (1.0 - nn[j, 0])
+            # Hyperbolic tangent: f(x) = 2 / (1 + e^(-2x)) - 1
+            #                     df(x)/dx = 1 - f(x)^2
+            } elseif (oaf == LMTX_TANH_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 2.0 / (1.0 + exp(-2.0 * nn[0, j])) - 1.0
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = 1.0 - nn[j, 0] * nn[j, 0]
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            #          df(x)/dx = f(x) * (1 - f(x))
+            } else {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+                # Calculate df(x)/dx for backpropagation.
+                nn[j, dim_j - 1] = nn[j, 0] * (1.0 - nn[j, 0])
+            }
+        }
+    }
+    
+    # Calculate delta for the output neurons.
+    # d = z - y
+    for (i = 0; i < no; i = i + 1) {
+        nn[dim_i - 1, first_out + i] = out[i] - nn[first_out + i, 0]
+    }
+    
+    # Calculate delta for hidden neurons.
+    # d1 = w1 * d2 + w2 * d2 + ...
+    for (j = dim_j - 2; j > ni; j = j - 1) {
+        for (i = ni + 1; i < (dim_i - 1 - no); i = i + 1) {
+            if (i == j) {
+                break
+            }
+            
+            if (nn[i, j] != 0) {
+                nn[dim_i - 1, i] = nn[dim_i - 1, i] + nn[i, j] * nn[dim_i - 1, j]
+            }
+        }
+    }
+            
+    # Adjust weights.
+    # x = x1 * w1 + x2 * w2 + ...
+    # w1 = w1 + n * d * df(x)/dx * x1
+    # w2 = w2 + n * d * df(x)/dx * x2
+    for (j = no + 1; j < (dim_j - 1); j = j + 1) {
+        for (i = 1; i < (dim_i - 1 - no); i = i + 1) {
+            if (i < j) {
+                if (nn[i, j] != 0) {
+                    nn[i, j] = nn[i, j] + lrate * nn[dim_i - 1, j] * nn[j, dim_j - 1] * nn[i, 0]
+                }
+            } elseif (i == j) {
+                if (nn[i, j] != 0) {
+                    nn[i, j] = nn[i, j] + lrate * nn[dim_i - 1, j] * nn[j, dim_j - 1] * 1.0
+                }
+            } else {
+                break
+            }
+        }
+    }
+    
+    return(nn)
+}
+
+function lmtxProcess(nn, in, ni, no, af, oaf, of, ofc) {
+    out = matrix(0.0, 1, no)
+    
+    dim_nn = dim(nn)
+    dim_i = dim_nn[0]
+    dim_j = dim_nn[1]
+    
+    first_out = dim_j - 1 - no
+    
+    # Clear inputs and outputs.
+    for (i = 0; i < dim_i - 1; i = i + 1) {
+        nn[0, i] = 0.0
+        nn[i, 0] = 0.0
+        nn[i, dim_j - 1] = 0.0
+        nn[dim_i - 1, i] = 0.0
+    }
+    
+    # Assign inputs.
+    for (j = 0; j < ni; j = j + 1) {
+        nn[j + 1, 0] = in[j]
+    }
+    
+    # Calculate the neurons output.
+    for (j = ni + 1; j < (dim_j - 1); j = j + 1) {
+        nn[0, j] = 0.0
+        
+        # Weighted sums.
+        # x = x1 * w1 + x2 * w2 + ...
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            if (i < j) {
+                if (nn[i, j] != 0) {
+                    nn[0, j] = nn[0, j] + nn[i, j] * (nn[i, 0] * 1.0)
+                }
+            } elseif (i == j) {
+                if (nn[i, j] != 0) {
+                    nn[0, j] = nn[0, j] + nn[i, j] * 1.0
+                }
+            } else {
+                break
+            }
+        }
+        
+        # Activation function.
+        if (j < first_out) {
+            # Linear: f(x) = x
+            if (af == LMTX_LINEAR_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = nn[0, j]
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            } elseif (af == LMTX_LOGISTIC_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+            # Hyperbolic tangent: f(x) = 2 / (1 + e^(-2x)) - 1
+            } elseif (af == LMTX_TANH_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 2.0 / (1.0 + exp(-2.0 * nn[0, j])) - 1.0
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            } else {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+            }
+        } else {
+            # Linear: f(x) = x
+            if (oaf == LMTX_LINEAR_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = nn[0, j]
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            } elseif (oaf == LMTX_LOGISTIC_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+            # Hyperbolic tangent: f(x) = 2 / (1 + e^(-2x)) - 1
+            } elseif (oaf == LMTX_TANH_ACTIVATION_FUNCTION) {
+                # Calculate y = f(x).
+                nn[j, 0] = 2.0 / (1.0 + exp(-2.0 * nn[0, j])) - 1.0
+            # Logistic: f(x) = 1.0 / (1.0 + e^(-x))
+            } else {
+                # Calculate y = f(x).
+                nn[j, 0] = 1.0 / (1.0 + exp(-1.0 * nn[0, j]))
+            }
+        }
+    }
+    
+    # Set the output matrix.
+    for (i = 0; i < no; i = i + 1) {
+        if (of == LMTX_LINEAR_OUTPUT_FUNCTION) {
+            out[i] = ofc[0] * nn[first_out + i, 0] + ofc[1]
+        } elseif (of == LMTX_STEP_OUTPUT_FUNCTION) {
+            if (oaf == LMTX_LINEAR_ACTIVATION_FUNCTION) {
+                if (nn[first_out + i, 0] >= 0.0) {
+                    out[i] = 1
+                } else {
+                    out[i] = 0
+                }
+            } elseif (oaf == LMTX_LOGISTIC_ACTIVATION_FUNCTION) {
+                if (nn[first_out + i, 0] >= 0.5) {
+                    out[i] = 1
+                } else {
+                    out[i] = 0
+                }
+            } elseif (oaf == LMTX_TANH_ACTIVATION_FUNCTION) {
+                if (nn[first_out + i, 0] >= 0.0) {
+                    out[i] = 1
+                } else {
+                    out[i] = 0
+                }
+            } else {
+                if (nn[first_out + i, 0] >= 0.0) {
+                    out[i] = 1
+                } else {
+                    out[i] = 0
+                }
+            }
+        } elseif (of == LMTX_NO_OUTPUT_FUNCTION) {
+            out[i] = nn[first_out + i, 0]
+        } else {
+            out[i] = nn[first_out + i, 0]
+        }
+    }
+    
+    return(out)
+}
+
+function lmtxTrain(ann_matrix, in, out, lrate, af, oaf, of, ofc, max_epochs, minimum_correctness, correctness_matrix, callback = "", interval = 0) {
+    ann = @ann_matrix
+    
+    dim_nn = dim(ann)
+    dim_nn_i = dim_nn[0]
+    dim_nn_j = dim_nn[1]
+    
+    dim_in = dim(in)
+    dim_in_i = dim_in[0]
+    dim_in_j = dim_in[1]
+    
+    dim_out = dim(out)
+    dim_out_i = dim_out[0]
+    dim_out_j = dim_out[1]
+    
+    input = matrix(0.0, 1, dim_in_j)
+    output = matrix(0.0, 1, dim_out_j)
+    
+    nnout = matrix(0.0, 1, dim_out_j)
+    
+    squared_error = matrix(0.0, dim_in_i)
+    
+    epochs = 0;
+    
+    epochs_counter = 0
+    
+    etl_t1 = time()
+    
+    while (epochs < max_epochs) {
+        epochs = epochs + 1
+        
+        hits = 0
+        
+        # Verify learning.
+        for (i = 0; i < dim_in_i; i = i + 1) {
+            # Assign inputs and outputs.
+            for (j = 0; j < dim_in_j; j = j + 1) {
+                input[j] = in[i, j]
+            }
+            for (j = 0; j < dim_out_j; j = j + 1) {
+                output[j] = out[i, j]
+            }
+            
+            # Verify learning.
+            if (ofc != "") {
+                nnout = lmtxProcess(ann, input, dim_in_j, dim_out_j, af, oaf, of, ofc)
+            } else {
+                nnout = lmtxProcess(ann, input, dim_in_j, dim_out_j, af, oaf, of)
+            }
+            
+            if (output == nnout) {
+                hits = hits + 1
+            }
+            
+            e = output - nnout
+            
+            se = sum2(e) / 2.0
+            
+            squared_error[i] = se
+            
+            rss = sum(squared_error)
+            
+            correctness = hits * 1.0 / dim_in_i
+            
+            @correctness_matrix[epochs, 0] = rss
+            @correctness_matrix[epochs, 1] = correctness
+            
+            if (hits == dim_in_i) {
+                @ann_matrix = ann
+                
+                result = array(epochs, rss, correctness)
+                
+                return(result)
+            }
+            
+            if (correctness >= minimum_correctness) {
+                @ann_matrix = ann
+                
+                result = array(epochs, rss, correctness)
+                
+                return(result)
+            }
+        }
+        
+        # Learn this set.
+        for (i = 0; i < dim_in_i; i = i + 1) {
+            # Assign inputs and outputs.
+            for (j = 0; j < dim_in_j; j = j + 1) {
+                input[j] = in[i, j]
+            }
+            for (j = 0; j < dim_out_j; j = j + 1) {
+                output[j] = out[i, j]
+            }
+            
+            # Learn this set.
+            ann = lmtxLearn(ann, input, output, dim_in_j, dim_out_j, lrate, af, oaf)
+        }
+        
+        epochs_counter = epochs_counter + 1
+        
+        if (interval != 0) {
+            if (callback != "") {
+                if (epochs_counter >= interval) {
+                    etl_t2 = time()
+                    
+                    etl = etl_t2 - etl_t1
+                    
+                    @callback(epochs, rss, correctness, etl)
+                    
+                    epochs_counter = 0
+                    
+                    etl_t1 = time()
+                }
+            }
+        }
+    }
+    
+    @ann_matrix = ann
+    
+    result = array(epochs, rss, correctness)
+    
+    return(result)
+}
+

@@ -1,0 +1,74 @@
+#!/usr/local/bin/guash
+
+# Match:
+println("Match:")
+
+if (regexp("foo*.*", "fo foo fooo foobar fobar foxx")) {
+    println("String \" foo*.* \" matches pattern \" fo foo fooo foobar fobar foxx \".")
+} else {
+    println("String \" foo*.* \" does not matches pattern \" fo foo fooo foobar fobar foxx \".")
+}
+
+if (regexp("fo[ob]a[rz]", "fobar fooar fobaz fooaz")) {
+    println("String \"fo[ob]a[rz]\" matches pattern \" fobar fooar fobaz fooaz \".")
+} else {
+    println("String \"fo[ob]a[rz]\" does not matches pattern \" fobar fooar fobaz fooaz \".")
+}
+
+if (regexp("foo\\\\+", "foo\\\ foo\\\\ foo\\\\\\ ")) {
+    println("String \" foo\\\\+ \" matches pattern \" foo\\\ foo\\\\ foo\\\\\\ \".")
+} else {
+    println("String \" foo\\\\+ \" does not matches pattern \" foo\\\ foo\\\\ foo\\\\\\ \".")
+}
+
+if (regexp("\\(foo\\)[1-3]\\1", "foo1foo foo2foo foo3foo")) {
+    println("String \" \\(foo\\)[1-3]\\1 \" matches pattern \" foo1foo foo2foo foo3foo \".")
+} else {
+    println("String \" \\(foo\\)[1-3]\\1 \" does not matches pattern \" foo1foo foo2foo foo3foo \".")
+}
+
+if (regexp("\\(fo.*\\)-\\1", "foo-foo fo-fo fob-fob foobar-foobar")) {
+    println("String \" \\(fo.*\\)-\\1 \" matches pattern \" foo-foo fo-fo fob-fob foobar-foobar \".")
+} else {
+    println("String \" \\(fo.*\\)-\\1 \" does not matches pattern \" foo-foo fo-fo fob-fob foobar-foobar \".")
+}
+
+# Does not Match:
+println("Does not match:")
+
+if (regexp(" foo*.* ", "abc def ghi")) {
+    println("String \" foo*.* \" matches pattern \" abc def ghi \".")
+} else {
+    println("String \" foo*.* \" does not matches pattern \" abc def ghi \".")
+}
+
+if (regexp("fo[ob]a[rz]", "abc def ghi")) {
+    println("String \"fo[ob]a[rz]\" matches pattern \" abc def ghi \".")
+} else {
+    println("String \"fo[ob]a[rz]\" does not matches pattern \" abc def ghi \".")
+}
+
+if (regexp("foo\\\\+", "abc def ghi")) {
+    println("String \" foo\\\\+ \" matches pattern \" abc def ghi \".")
+} else {
+    println("String \" foo\\\\+ \" does not matches pattern \" abc def ghi \".")
+}
+
+if (regexp("\\(foo\\)[1-3]\\1", "abc def ghi")) {
+    println("String \" \\(foo\\)[1-3]\\1 \" matches pattern \" abc def ghi \".")
+} else {
+    println("String \" \\(foo\\)[1-3]\\1 \" does not matches pattern \" abc def ghi \".")
+}
+
+if (regexp("\\(fo.*\\)-\\1", "abc def ghi")) {
+    println("String \" \\(fo.*\\)-\\1 \" matches pattern \" abc def ghi \".")
+} else {
+    println("String \" \\(fo.*\\)-\\1 \" does not matches pattern \" abc def ghi \".")
+}
+
+reg_sub = regsub("foo*.*", "fo foo fooo foobar fobar foxx", "\\0 \\1")
+println("regsub(\"foo*.*\", \"fo foo fooo foobar fobar foxx\", \"\\0 \\1\") = " + reg_sub)
+
+reg_sub = regsub("\\(foo\\)[1-3]\\1", "foo1foo foo2foo foo3foo", "\\0 \\1")
+println("regsub(\"\\(foo\\)[1-3]\\1\", \"foo1foo foo2foo foo3foo\", \"\\0 \\1\") = " + reg_sub)
+

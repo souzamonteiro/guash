@@ -1,0 +1,709 @@
+%!PS-Adobe-2.0 EPSF-2.0
+%%Title: /home/roberto/guash-1.1.4/doc/engineering/flowcharts_pt_BR/lexer/processa_aspas.dia
+%%Creator: Dia v0.97.1
+%%CreationDate: Thu Nov  4 15:23:37 2010
+%%For: roberto
+%%Orientation: Portrait
+%%Magnification: 1.0000
+%%BoundingBox: 0 0 288 307
+%%BeginSetup
+%%EndSetup
+%%EndComments
+%%BeginProlog
+[ /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright
+/parenleft /parenright /asterisk /plus /comma /hyphen /period /slash /zero /one
+/two /three /four /five /six /seven /eight /nine /colon /semicolon
+/less /equal /greater /question /at /A /B /C /D /E
+/F /G /H /I /J /K /L /M /N /O
+/P /Q /R /S /T /U /V /W /X /Y
+/Z /bracketleft /backslash /bracketright /asciicircum /underscore /quoteleft /a /b /c
+/d /e /f /g /h /i /j /k /l /m
+/n /o /p /q /r /s /t /u /v /w
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section /dieresis /copyright
+/ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron /degree /plusminus /twosuperior /threesuperior
+/acute /mu /paragraph /periodcentered /cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf
+/threequarters /questiondown /Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis /Eth /Ntilde
+/Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply /Oslash /Ugrave /Uacute /Ucircumflex
+/Udieresis /Yacute /Thorn /germandbls /agrave /aacute /acircumflex /atilde /adieresis /aring
+/ae /ccedilla /egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide /oslash /ugrave
+/uacute /ucircumflex /udieresis /yacute /thorn /ydieresis] /isolatin1encoding exch def
+/cp {closepath} bind def
+/c {curveto} bind def
+/f {fill} bind def
+/a {arc} bind def
+/ef {eofill} bind def
+/ex {exch} bind def
+/gr {grestore} bind def
+/gs {gsave} bind def
+/sa {save} bind def
+/rs {restore} bind def
+/l {lineto} bind def
+/m {moveto} bind def
+/rm {rmoveto} bind def
+/n {newpath} bind def
+/s {stroke} bind def
+/sh {show} bind def
+/slc {setlinecap} bind def
+/slj {setlinejoin} bind def
+/slw {setlinewidth} bind def
+/srgb {setrgbcolor} bind def
+/rot {rotate} bind def
+/sc {scale} bind def
+/sd {setdash} bind def
+/ff {findfont} bind def
+/sf {setfont} bind def
+/scf {scalefont} bind def
+/sw {stringwidth pop} bind def
+/tr {translate} bind def
+
+/ellipsedict 8 dict def
+ellipsedict /mtrx matrix put
+/ellipse
+{ ellipsedict begin
+   /endangle exch def
+   /startangle exch def
+   /yrad exch def
+   /xrad exch def
+   /y exch def
+   /x exch def   /savematrix mtrx currentmatrix def
+   x y tr xrad yrad sc
+   0 0 1 startangle endangle arc
+   savematrix setmatrix
+   end
+} def
+
+/mergeprocs {
+dup length
+3 -1 roll
+dup
+length
+dup
+5 1 roll
+3 -1 roll
+add
+array cvx
+dup
+3 -1 roll
+0 exch
+putinterval
+dup
+4 2 roll
+putinterval
+} bind def
+/Times-Roman-latin1
+    /Times-Roman findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Times-Italic-latin1
+    /Times-Italic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Times-Bold-latin1
+    /Times-Bold findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Times-BoldItalic-latin1
+    /Times-BoldItalic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/AvantGarde-Gothic-latin1
+    /AvantGarde-Gothic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/AvantGarde-BookOblique-latin1
+    /AvantGarde-BookOblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/AvantGarde-Demi-latin1
+    /AvantGarde-Demi findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/AvantGarde-DemiOblique-latin1
+    /AvantGarde-DemiOblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Bookman-Light-latin1
+    /Bookman-Light findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Bookman-LightItalic-latin1
+    /Bookman-LightItalic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Bookman-Demi-latin1
+    /Bookman-Demi findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Bookman-DemiItalic-latin1
+    /Bookman-DemiItalic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Courier-latin1
+    /Courier findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Courier-Oblique-latin1
+    /Courier-Oblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Courier-Bold-latin1
+    /Courier-Bold findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Courier-BoldOblique-latin1
+    /Courier-BoldOblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-latin1
+    /Helvetica findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-Oblique-latin1
+    /Helvetica-Oblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-Bold-latin1
+    /Helvetica-Bold findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-BoldOblique-latin1
+    /Helvetica-BoldOblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-Narrow-latin1
+    /Helvetica-Narrow findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-Narrow-Oblique-latin1
+    /Helvetica-Narrow-Oblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-Narrow-Bold-latin1
+    /Helvetica-Narrow-Bold findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Helvetica-Narrow-BoldOblique-latin1
+    /Helvetica-Narrow-BoldOblique findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/NewCenturySchlbk-Roman-latin1
+    /NewCenturySchlbk-Roman findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/NewCenturySchlbk-Italic-latin1
+    /NewCenturySchlbk-Italic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/NewCenturySchlbk-Bold-latin1
+    /NewCenturySchlbk-Bold findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/NewCenturySchlbk-BoldItalic-latin1
+    /NewCenturySchlbk-BoldItalic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Palatino-Roman-latin1
+    /Palatino-Roman findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Palatino-Italic-latin1
+    /Palatino-Italic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Palatino-Bold-latin1
+    /Palatino-Bold findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Palatino-BoldItalic-latin1
+    /Palatino-BoldItalic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/Symbol-latin1
+    /Symbol findfont
+definefont pop
+/ZapfChancery-MediumItalic-latin1
+    /ZapfChancery-MediumItalic findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+/ZapfDingbats-latin1
+    /ZapfDingbats findfont
+    dup length dict begin
+	{1 index /FID ne {def} {pop pop} ifelse} forall
+	/Encoding isolatin1encoding def
+    currentdict end
+definefont pop
+7.086500 -7.086500 scale
+-12.824900 -52.568607 translate
+%%EndProlog
+
+
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+0 slj
+0.100000 slw
+0 slc
+0 slj
+[] 0 sd
+1.000000 1.000000 1.000000 srgb
+n 14.906977 9.350500 m 20.594083 9.350500 l 21.379309 9.350500 22.015860 9.710263 22.015860 10.154053 c 22.015860 10.597844 21.379309 10.957607 20.594083 10.957607 c 14.906977 10.957607 l 14.121751 10.957607 13.485200 10.597844 13.485200 10.154053 c 13.485200 9.710263 14.121751 9.350500 14.906977 9.350500 c ef
+0.000000 0.000000 0.000000 srgb
+n 14.906977 9.350500 m 20.594083 9.350500 l 21.379309 9.350500 22.015860 9.710263 22.015860 10.154053 c 22.015860 10.597844 21.379309 10.957607 20.594083 10.957607 c 14.906977 10.957607 l 14.121751 10.957607 13.485200 10.597844 13.485200 10.154053 c 13.485200 9.710263 14.121751 9.350500 14.906977 9.350500 c s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Processa aspas) dup sw 2 div 17.750530 ex sub 10.194053 m
+ gs 1 -1 sc sh gr
+1.000000 1.000000 1.000000 srgb
+n 17.750560 19.449200 m 21.163720 21.155780 l 17.750560 22.862360 l 14.337400 21.155780 l ef
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 17.750560 19.449200 m 21.163720 21.155780 l 17.750560 22.862360 l 14.337400 21.155780 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(É aspas?) dup sw 2 div 17.750560 ex sub 21.190780 m
+ gs 1 -1 sc sh gr
+1.000000 1.000000 1.000000 srgb
+n 13.445500 14.250500 m 13.445500 16.950500 l 22.055500 16.950500 l 22.055500 14.250500 l f
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 13.445500 14.250500 m 13.445500 16.950500 l 22.055500 16.950500 l 22.055500 14.250500 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Obtém próximo) dup sw 2 div 17.750500 ex sub 15.235500 m
+ gs 1 -1 sc sh gr
+(caractere da expressão) dup sw 2 div 17.750500 ex sub 16.035500 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 16.950500 m 17.750500 18.938000 l s
+0 slj
+n 17.500500 18.938000 m 17.750500 19.438000 l 18.000500 18.938000 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 18.938000 m 17.750500 19.438000 l 18.000500 18.938000 l cp s
+1.000000 1.000000 1.000000 srgb
+n 17.750560 36.585500 m 22.626220 39.023330 l 17.750560 41.461160 l 12.874900 39.023330 l ef
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 17.750560 36.585500 m 22.626220 39.023330 l 17.750560 41.461160 l 12.874900 39.023330 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(É aspas ou) dup sw 2 div 17.750560 ex sub 38.658330 m
+ gs 1 -1 sc sh gr
+(fim de linha?) dup sw 2 div 17.750560 ex sub 39.458330 m
+ gs 1 -1 sc sh gr
+1.000000 1.000000 1.000000 srgb
+n 17.750560 44.499200 m 21.163720 46.205780 l 17.750560 47.912360 l 14.337400 46.205780 l ef
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 17.750560 44.499200 m 21.163720 46.205780 l 17.750560 47.912360 l 14.337400 46.205780 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(É aspas?) dup sw 2 div 17.750560 ex sub 46.240780 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 47.873700 m 17.750500 50.361500 l s
+0 slj
+n 17.500500 50.361500 m 17.750500 50.861500 l 18.000500 50.361500 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 50.361500 m 17.750500 50.861500 l 18.000500 50.361500 l cp s
+1.000000 1.000000 1.000000 srgb
+n 13.530500 25.650500 m 13.530500 27.550500 l 21.970500 27.550500 l 21.970500 25.650500 l f
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 13.530500 25.650500 m 13.530500 27.550500 l 21.970500 27.550500 l 21.970500 25.650500 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(TIPO_TOKEN = STRING) dup sw 2 div 17.750500 ex sub 26.635500 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 10.957600 m 17.750500 13.700500 l s
+0 slj
+n 17.500500 13.700500 m 17.750500 14.200500 l 18.000500 13.700500 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 13.700500 m 17.750500 14.200500 l 18.000500 13.700500 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+0 slj
+0.100000 slw
+0 slc
+0 slj
+[] 0 sd
+1.000000 1.000000 1.000000 srgb
+n 28.443777 19.952300 m 37.030883 19.952300 l 38.216516 19.952300 39.177660 20.491149 39.177660 21.155853 c 39.177660 21.820558 38.216516 22.359407 37.030883 22.359407 c 28.443777 22.359407 l 27.258144 22.359407 26.297000 21.820558 26.297000 21.155853 c 26.297000 20.491149 27.258144 19.952300 28.443777 19.952300 c ef
+0.000000 0.000000 0.000000 srgb
+n 28.443777 19.952300 m 37.030883 19.952300 l 38.216516 19.952300 39.177660 20.491149 39.177660 21.155853 c 39.177660 21.820558 38.216516 22.359407 37.030883 22.359407 c 28.443777 22.359407 l 27.258144 22.359407 26.297000 21.820558 26.297000 21.155853 c 26.297000 20.491149 27.258144 19.952300 28.443777 19.952300 c s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Retorna) dup sw 2 div 32.737330 ex sub 20.795853 m
+ gs 1 -1 sc sh gr
+(TOKEN_DESCONHECIDO) dup sw 2 div 32.737330 ex sub 21.595853 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 21.086200 21.155800 m 25.747000 21.155889 l s
+0 slj
+n 25.746995 21.405889 m 26.247000 21.155899 l 25.747005 20.905889 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 25.746995 21.405889 m 26.247000 21.155899 l 25.747005 20.905889 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 22.823700 m 17.750500 25.100500 l s
+0 slj
+n 17.500500 25.100500 m 17.750500 25.600500 l 18.000500 25.100500 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 25.100500 m 17.750500 25.600500 l 18.000500 25.100500 l cp s
+1.000000 1.000000 1.000000 srgb
+n 13.445500 30.641500 m 13.445500 33.341500 l 22.055500 33.341500 l 22.055500 30.641500 l f
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 13.445500 30.641500 m 13.445500 33.341500 l 22.055500 33.341500 l 22.055500 30.641500 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Obtém próximo) dup sw 2 div 17.750500 ex sub 31.626500 m
+ gs 1 -1 sc sh gr
+(caractere da expressão) dup sw 2 div 17.750500 ex sub 32.426500 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 27.550500 m 17.750500 30.091500 l s
+0 slj
+n 17.500500 30.091500 m 17.750500 30.591500 l 18.000500 30.091500 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 30.091500 m 17.750500 30.591500 l 18.000500 30.091500 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 33.341500 m 17.750500 36.130500 l s
+0 slj
+n 17.500500 36.130500 m 17.750500 36.630500 l 18.000500 36.130500 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 36.130500 m 17.750500 36.630500 l 18.000500 36.130500 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 17.750500 41.366200 m 17.750500 43.988000 l s
+0 slj
+n 17.500500 43.988000 m 17.750500 44.488000 l 18.000500 43.988000 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 17.500500 43.988000 m 17.750500 44.488000 l 18.000500 43.988000 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+0 slj
+0.100000 slw
+0 slc
+0 slj
+[] 0 sd
+1.000000 1.000000 1.000000 srgb
+n 14.789427 50.911500 m 20.711533 50.911500 l 21.529206 50.911500 22.192060 51.271263 22.192060 51.715053 c 22.192060 52.158844 21.529206 52.518607 20.711533 52.518607 c 14.789427 52.518607 l 13.971754 52.518607 13.308900 52.158844 13.308900 51.715053 c 13.308900 51.271263 13.971754 50.911500 14.789427 50.911500 c ef
+0.000000 0.000000 0.000000 srgb
+n 14.789427 50.911500 m 20.711533 50.911500 l 21.529206 50.911500 22.192060 51.271263 22.192060 51.715053 c 22.192060 52.158844 21.529206 52.518607 20.711533 52.518607 c 14.789427 52.518607 l 13.971754 52.518607 13.308900 52.158844 13.308900 51.715053 c 13.308900 51.271263 13.971754 50.911500 14.789427 50.911500 c s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Retorna STRING) dup sw 2 div 17.750480 ex sub 51.755053 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+0 slj
+0.100000 slw
+0 slc
+0 slj
+[] 0 sd
+1.000000 1.000000 1.000000 srgb
+n 27.133777 45.002300 m 38.340883 45.002300 l 39.888263 45.002300 41.142660 45.541149 41.142660 46.205853 c 41.142660 46.870558 39.888263 47.409407 38.340883 47.409407 c 27.133777 47.409407 l 25.586397 47.409407 24.332000 46.870558 24.332000 46.205853 c 24.332000 45.541149 25.586397 45.002300 27.133777 45.002300 c ef
+0.000000 0.000000 0.000000 srgb
+n 27.133777 45.002300 m 38.340883 45.002300 l 39.888263 45.002300 41.142660 45.541149 41.142660 46.205853 c 41.142660 46.870558 39.888263 47.409407 38.340883 47.409407 c 27.133777 47.409407 l 25.586397 47.409407 24.332000 46.870558 24.332000 46.205853 c 24.332000 45.541149 25.586397 45.002300 27.133777 45.002300 c s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Retorna) dup sw 2 div 32.737330 ex sub 45.845853 m
+ gs 1 -1 sc sh gr
+(ERRO_STRING_NÃO_TERMINADA) dup sw 2 div 32.737330 ex sub 46.645853 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 21.086200 46.205800 m 23.782000 46.205883 l s
+0 slj
+n 23.781992 46.455883 m 24.282000 46.205898 l 23.782008 45.955883 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 23.781992 46.455883 m 24.282000 46.205898 l 23.782008 45.955883 l cp s
+1.000000 1.000000 1.000000 srgb
+n 28.565610 37.586100 m 31.440020 39.023305 l 28.565610 40.460510 l 25.691200 39.023305 l ef
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 28.565610 37.586100 m 31.440020 39.023305 l 28.565610 40.460510 l 25.691200 39.023305 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(É '\\\\'?) dup sw 2 div 28.565610 ex sub 39.058305 m
+ gs 1 -1 sc sh gr
+1.000000 1.000000 1.000000 srgb
+n 38.015560 37.316700 m 41.428720 39.023280 l 38.015560 40.729860 l 34.602400 39.023280 l ef
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 38.015560 37.316700 m 41.428720 39.023280 l 38.015560 40.729860 l 34.602400 39.023280 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(É aspas?) dup sw 2 div 38.015560 ex sub 39.058280 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 22.436200 39.023300 m 25.229900 39.023300 l s
+0 slj
+n 25.229900 39.273300 m 25.729900 39.023300 l 25.229900 38.773300 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 25.229900 39.273300 m 25.729900 39.023300 l 25.229900 38.773300 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 31.351200 39.023300 m 34.129900 39.023300 l s
+0 slj
+n 34.129900 39.273300 m 34.629900 39.023300 l 34.129900 38.773300 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 34.129900 39.273300 m 34.629900 39.023300 l 34.129900 38.773300 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0 slc
+n 22.500500 31.991500 m 28.601300 31.991500 l 28.601300 37.630500 l 28.565500 37.630500 l s
+0 slj
+n 22.500500 31.741500 m 22.000500 31.991500 l 22.500500 32.241500 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 22.500500 31.741500 m 22.000500 31.991500 l 22.500500 32.241500 l cp s
+1.000000 1.000000 1.000000 srgb
+n 44.706300 37.673300 m 44.706300 40.373300 l 53.316300 40.373300 l 53.316300 37.673300 l f
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0.000000 0.000000 0.000000 srgb
+n 44.706300 37.673300 m 44.706300 40.373300 l 53.316300 40.373300 l 53.316300 37.673300 l cp s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Obtém próximo) dup sw 2 div 49.011300 ex sub 38.658300 m
+ gs 1 -1 sc sh gr
+(caractere da expressão) dup sw 2 div 49.011300 ex sub 39.458300 m
+ gs 1 -1 sc sh gr
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slc
+n 41.351200 39.023300 m 44.261300 39.023300 l s
+0 slj
+n 44.261300 39.273300 m 44.761300 39.023300 l 44.261300 38.773300 l ef
+0.100000 slw
+[] 0 sd
+0 slj
+n 44.261300 39.273300 m 44.761300 39.023300 l 44.261300 38.773300 l cp s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0 slc
+n 21.950500 31.991500 m 49.011300 31.991500 l 49.011300 37.673300 l s
+0.100000 slw
+[] 0 sd
+[] 0 sd
+0 slj
+0 slc
+n 38.015500 37.355500 m 38.015500 32.011500 l 21.950500 32.011500 l 21.950500 31.991500 l s
+/Helvetica-latin1 ff 0.560000 scf sf
+(Não) 22.064900 20.453000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Sim) 18.244900 24.103000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Sim) 18.244900 42.983000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Sim) 18.244900 49.120500 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Não) 23.474900 38.308000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Não) 29.174900 35.118600 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Não) 38.624900 35.108000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Sim) 32.324900 38.308000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Sim) 42.224900 38.308000 m
+ gs 1 -1 sc sh gr
+/Helvetica-latin1 ff 0.560000 scf sf
+(Não) 21.574900 45.520500 m
+ gs 1 -1 sc sh gr
+showpage

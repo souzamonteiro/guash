@@ -1,0 +1,150 @@
+#!/usr/local/bin/guash
+#
+# log2pbm.gua
+#
+#     This file converts a Turing machine tape log to a bitmap(PBM).
+#
+# Copyright (C) 2009 Roberto Luiz Souza Monteiro
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: log2pbm.gua,v 1.0 2009/10/31 22:25:00 monteiro Exp $
+#
+
+#
+# Save a pixmap to a given file using the Netpbm formats.
+#
+function Pixmap_Save(filename, pixmap, format = "PBM") {
+    dim_pixmap = dim(pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    fd = fopen(filename, "w")
+
+    # Type P1 is a bitmap file(PBM).
+    if (format == "PBM") {
+        if (length(dim_pixmap) != 2) {
+            fclose(fd)
+
+            return(FALSE)
+        }
+
+        # Save the Netpbm format type and the image size...
+        fputs("P1\n" , fd)
+        fputs("" + dim_j + " " + dim_i + "\n" , fd)
+
+        for (i = 0; i < dim_i; i = i + 1) {
+            for (j = 0; j < dim_j; j = j + 1) {
+                fputs("" + pixmap[i, j], fd)
+                if (j < (dim_j - 1)) {
+                    fputs(" ", fd)
+                } else {
+                    fputs("\n", fd)
+                }
+            }
+        }
+    }
+
+    fclose(fd)
+
+    return(TRUE)
+}
+
+#
+# Configuration variables.
+#
+input_file = "noname"
+output_file = "tape.pbm"
+
+#
+# The main program.
+#
+if (argc < 3) {
+    println("Usage: log2pbm option1 value1 [option1 value1]")
+    exit
+}
+
+i = 2
+
+while (i < argc) {
+    if ((argv[i] == "-h") || (argv[i] == "--help")) {
+        println("Usage: log2pbm option1 value1 [option1 value1]")
+        println("-h    --help    show the options sumary")
+        println("-i              input file")
+        println("-o              output file")
+        exit(0)
+    } elseif (argv[i] == "-i") {
+        i = i + 1
+        input_file = argv[i]
+    } elseif (argv[i] == "-o") {
+        i = i + 1
+        output_file = argv[i]
+    }
+    i = i + 1
+} 
+
+# Check if the input file name was suplied.
+if (input_file == "noname") {
+    println("Error: input file name is mandatory.")
+    exit(1)
+}
+
+# Load the tape log...
+fd = fopen(input_file, "r")
+
+i = 0
+
+dim_j = 0
+
+while (!feof(fd)) {
+    if ((line = fgets(fd)) == NULL) { 
+        break
+    }
+
+    if (length(trim(line, " \t\r\n")) > 0) {
+        tape_log[i] = trim(line, " \t\r\n")
+        # Calculate the pixmap width...
+        if (length(eval(tape_log[i])) > dim_j) {
+            dim_j = length(eval(tape_log[i]))
+        }
+        i = i + 1
+    }
+}
+
+fclose(fd)
+
+# Calculate the pixmap height...
+dim_i = length(tape_log)
+
+# Create a blank pixmap...
+pixmap = matrix(0, dim_i, dim_j)
+
+# Converts the tape log to a pixmap...
+i = 0
+foreach (tape_log; line_number; line) {
+    record = eval(line)
+    foreach (record; col_number; column) {
+        if ((column == 0) || (column == 1)) {
+            pixmap[i, col_number] = column
+        } else {
+            pixmap[i, col_number] = 0
+        }
+    }
+    i = i + 1
+}
+
+# Save the log image...
+Pixmap_Save(output_file, pixmap)
+

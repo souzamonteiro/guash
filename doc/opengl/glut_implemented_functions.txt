@@ -1,0 +1,113 @@
+glutAddMenuEntry (x)
+glutAddSubMenu (x)
+glutAttachMenu (x)
+glutBitmapCharacter (x)
+glutBitmapLength
+glutBitmapWidth (x)
+glutButtonBoxFunc (x)
+glutChangeToMenuEntry (x)
+glutChangeToSubMenu (x)
+glutCopyColormap (x)
+glutCreateMenu (x)
+glutCreateSubWindow (x)
+glutCreateWindow (x)
+glutDestroyMenu (x)
+glutDestroyWindow (x)
+glutDetachMenu (x)
+glutDeviceGet (x)
+glutDialsFunc (x)
+glutDisplayFunc (x)
+glutEnterGameMode
+glutEntryFunc (x)
+glutEstablishOverlay (x)
+glutExtensionSupported (x)
+glutForceJoystickFunc
+glutFullScreen (x)
+glutGameModeGet
+glutGameModeString
+glutGet (x)
+glutGetColor (x)
+glutGetMenu (x)
+glutGetModifiers (x)
+glutGetWindow (x)
+glutHideOverlay (x)
+glutHideWindow (x)
+glutIconifyWindow (x)
+glutIdleFunc (x)
+glutIgnoreKeyRepeat
+glutInitDisplayMode (x)
+glutInitDisplayString
+glutInitWindowPosition (x)
+glutInitWindowSize (x)
+glutJoystickFunc
+glutKeyboardFunc (x)
+glutKeyboardUpFunc
+glutLayerGet (x)
+glutLeaveGameMode
+glutMainLoop (x)
+glutMenuStateFunc (x)
+glutMenuStatusFunc (x)
+glutMotionFunc (x)
+glutMouseFunc (x)
+glutOverlayDisplayFunc (x)
+glutPassiveMotionFunc (x)
+glutPopWindow (x)
+glutPositionWindow (x)
+glutPostOverlayRedisplay (x)
+glutPostRedisplay (x)
+glutPostWindowOverlayRedisplay
+glutPostWindowRedisplay
+glutPushWindow (x)
+glutRemoveMenuItem (x)
+glutRemoveOverlay (x)
+glutReportErrors
+glutReshapeFunc (x)
+glutReshapeWindow (x)
+glutSetColor (x)
+glutSetCursor (x)
+glutSetIconTitle (x)
+glutSetKeyRepeat
+glutSetMenu (x)
+glutSetupVideoResizing
+glutSetWindow (x)
+glutSetWindowTitle (x)
+glutShowOverlay (x)
+glutShowWindow (x)
+glutSolidCone (x)
+glutSolidCube (x)
+glutSolidDodecahedron (x)
+glutSolidIcosahedron (x)
+glutSolidOctahedron (x)
+glutSolidSphere (x)
+glutSolidTeapot (x)
+glutSolidTetrahedron (x)
+glutSolidTorus (x)
+glutSpaceballButtonFunc (x)
+glutSpaceballMotionFunc (x)
+glutSpaceballRotateFunc (x)
+glutSpecialFunc (x)
+glutSpecialUpFunc
+glutStopVideoResizing
+glutStrokeCharacter (x)
+glutStrokeLength
+glutStrokeWidth (x)
+glutSwapBuffers (x)
+glutTabletButtonFunc (x)
+glutTabletMotionFunc (x)
+glutTimerFunc (x)
+glutUseLayer (x)
+glutVideoPan
+glutVideoResize
+glutVideoResizeGet
+glutVisibilityFunc (x)
+glutWarpPointer
+glutWindowStatusFunc
+glutWireCone (x)
+glutWireCube (x)
+glutWireDodecahedron (x)
+glutWireIcosahedron (x)
+glutWireOctahedron (x)
+glutWireSphere (x)
+glutWireTeapot (x)
+glutWireTetrahedron (x)
+glutWireTorus (x)

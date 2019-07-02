@@ -1,0 +1,80 @@
+#!/usr/local/bin/glutguash
+
+delta_x = 0.0;
+delta_y = 0.0;
+mouse_x = 0;
+mouse_y = 0;
+
+function display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glRotate($delta_x, 1.0, 0.0, 0.0);
+	glRotate($delta_y, 0.0, 1.0, 0.0);
+	
+    glColor(0.5, 0.5, 0.0, 1.0);
+    glutWireTeapot(0.5);
+    
+    glColor(1.0, 0.0, 0.0, 1.0);
+    glfDrawText(0.0, 0.8, $script_path + "/fonts/6x13.bdf", utf8dec("A maçã está uma delícia!"));
+    glColor(0.0, 1.0, 0.0, 1.0);
+    glfDrawText(0.0, 0.7, $script_path + "/fonts/6x13.bdf", "Hello World!");
+    glColor(0.0, 0.0, 1.0, 1.0);
+    glfDrawText(0.0, 0.6, $script_path + "/fonts/6x13.bdf", "Hello World!");
+        
+    glFlush();
+}
+
+#
+# Keyboard callback.
+#
+function keyboard(key, x, y){
+    if (sprintf("%c", key) == "q") {
+        glutDestroyWindow($win);
+        exit(0);
+    }
+    
+    glutPostRedisplay();
+}
+
+#
+# Mouse callback.
+#
+function mouse(button, state, x, y) {
+    glutPostRedisplay();
+}
+
+#
+# Mouse motion callback.
+#
+function motion(x, y) {
+    $delta_x = ($mouse_x - x) * 1.0;
+    $delta_y = ($mouse_y - y) * 1.0;
+    
+    $mouse_x = x;
+    $mouse_y = y;
+
+    glutPostRedisplay();
+}
+
+function init() {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+}
+
+# Get the app path...
+script_file = fsFullPath($argv[1])
+script_path = fsPath(script_file)
+
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowSize(500, 500);
+glutInitWindowPosition(100, 100);
+win = glutCreateWindow("GLUTIL Font Render");
+
+init();
+
+glutDisplayFunc("display");
+glutKeyboardFunc("keyboard");
+glutMouseFunc("mouse");
+glutMotionFunc("motion");
+
+glutMainLoop();
+

@@ -1,0 +1,14 @@
+2015-10-24 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+What: Review documentation for guadoc.
+Priority: 0
+
+What: Add arrays of arrays support at interp.c file.
+Priority: 1
+
+What: Implement OpenGL widgets using GLWM.
+Priority: 2
+
+What: Implement object orientation on interp.c file.
+Priority: 3
+

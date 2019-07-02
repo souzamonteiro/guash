@@ -1,0 +1,7 @@
+THRD_ERROR; thrd_error
+THRD_SUCCESS; thrd_success
+THRD_BUSY; thrd_busy
+THRD_NOMEM; thrd_nomem
+MTX_PLAIN; mtx_plain
+MTX_TRY; mtx_try
+MTX_RECURSIVE; mtx_recursive

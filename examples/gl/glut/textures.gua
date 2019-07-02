@@ -1,0 +1,126 @@
+#!/usr/local/bin/glutguash
+
+texture1 = ""
+texture_width = 64
+texture_height = 64
+texture_names = ""
+
+function create_texture_images() {
+    l = texture_width * texture_height * 4;
+    
+    texture = string(l, 255);
+    
+    i = 0
+    j = 0
+    
+    for (k = 0; k < l; k = k + 4) {
+        if ((i >= 0) && (i <= 32)) {
+            if ((j >= 0) && (j <= 32)) {
+                r = 255;
+                g = 0;
+                b = 0;
+                a = 255;
+            } elseif ((j >= 33) && (j <= 63)) {
+                r = 0;
+                g = 255;
+                b = 0;
+                a = 255;
+            }
+        } elseif ((i >= 32) && (i <= 63)) {
+            if ((j >= 0) && (j <= 32)) {
+                r = 0;
+                g = 0;
+                b = 255;
+                a = 255;
+            } elseif ((j >= 33) && (j <= 63)) {
+                r = 0;
+                g = 255;
+                b = 255;
+                a = 255;
+            }
+        }
+        
+        texture[k + 0] = r;
+        texture[k + 1] = g;
+        texture[k + 2] = b;
+        texture[k + 3] = a;
+        
+        j = j + 1
+        
+        if (j == 64) {
+            i = i + 1
+            j = 0
+        }
+    }
+    
+    $texture1 = glArrayOfByte(texture);
+}
+
+function display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glBindTexture(GL_TEXTURE_2D, $texture_names[0]);
+    
+    glBegin(GL_QUADS);
+        glTexCoord(0.0, 0.0);
+        glVertex(-0.5, 0.5, 0.0);
+        glTexCoord(0.0, 1.0);
+        glVertex(0.5, 0.5, 0.0);
+        glTexCoord(1.0, 1.0);
+        glVertex(0.5, -0.5, 0.0);
+        glTexCoord(1.0, 0.0);
+        glVertex(-0.5, -0.5, 0.0);
+    glEnd();
+    
+    glFlush();
+}
+
+function keyboard(key, x, y){
+    if (sprintf("%c", key) == "q") {
+        glutDestroyWindow($win);
+        exit(0);
+    }
+}
+
+function init() {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    
+    glShadeModel(GL_FLAT);
+    glEnable(GL_DEPTH_TEST);
+    
+    create_texture_images();
+    
+    glPixelStore(GL_UNPACK_ALIGNMENT, 1);
+    
+    $texture_names = glGenTextures(1);
+    
+    glBindTexture(GL_TEXTURE_2D, $texture_names[0]);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, $texture1);
+    
+    glEnable(GL_TEXTURE_2D);
+}
+
+function finish() {
+    $texture1 = glFree($texture1);
+}
+
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowSize(500, 500);
+glutInitWindowPosition(100, 100);
+win = glutCreateWindow("OpenGL Textures");
+
+init();
+
+glutDisplayFunc("display");
+glutKeyboardFunc("keyboard");
+
+glutMainLoop();
+
+finish();
+

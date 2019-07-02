@@ -1,0 +1,459 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the math functions...")
+
+println("sin...")
+test (tries; 0.479426; 0.000001) { 
+    sin(0.5)
+} catch {
+    println("TEST: Fail in expression \"sin(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("cos...")
+test (tries; 0.877583; 0.000001) { 
+    cos(0.5)
+} catch {
+    println("TEST: Fail in expression \"cos(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("tan...")
+test (tries; 0.546302; 0.000001) { 
+    tan(0.5)
+} catch {
+    println("TEST: Fail in expression \"tan(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("asin...")
+test (tries; 0.5; 0.000001) { 
+    asin(0.479426)
+} catch {
+    println("TEST: Fail in expression \"asin(0.479426)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("acos...")
+test (tries; 0.5; 0.000001) { 
+    acos(0.877583)
+} catch {
+    println("TEST: Fail in expression \"acos(0.877583)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("atan...")
+test (tries; 0.5; 0.000001) { 
+    atan(0.546302)
+} catch {
+    println("TEST: Fail in expression \"atan(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("atan2...")
+test (tries; 0.785398; 0.000001) { 
+    atan2(0.5, 0.5)
+} catch {
+    println("TEST: Fail in expression \"atan2(0.5, 0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sinh...")
+test (tries; 0.521095; 0.000001) { 
+    sinh(0.5)
+} catch {
+    println("TEST: Fail in expression \"sinh(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("cosh...")
+test (tries; 1.12763; 0.00001) { 
+    cosh(0.5)
+} catch {
+    println("TEST: Fail in expression \"cosh(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("tanh...")
+test (tries; 0.462117; 0.000001) { 
+    tanh(0.5)
+} catch {
+    println("TEST: Fail in expression \"tanh(0.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("exp...")
+test (tries; 2.71828; 0.00001) { 
+    exp(1)
+} catch {
+    println("TEST: Fail in expression \"exp(1)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("log...")
+test (tries; 1; 0.00001) { 
+    log(E)
+} catch {
+    println("TEST: Fail in expression \"log(E)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("log10...")
+test (tries; 1) { 
+    log10(10)
+} catch {
+    println("TEST: Fail in expression \"log10(10)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("pow...")
+test (tries; 8) { 
+    pow(2, 3)
+} catch {
+    println("TEST: Fail in expression \"pow(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sqrt...")
+test (tries; 5) { 
+    sqrt(25)
+} catch {
+    println("TEST: Fail in expression \"sqrt(25)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("ceil...")
+test (tries; 2) { 
+    ceil(1.5)
+} catch {
+    println("TEST: Fail in expression \"ceil(1.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("floor...")
+test (tries; 1) { 
+    floor(1.5)
+} catch {
+    println("TEST: Fail in expression \"floor(1.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("round...")
+test (tries; 1) { 
+    round(1.45)
+} catch {
+    println("TEST: Fail in expression \"round(1.45)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("fabs...")
+test (tries; 2.5) { 
+    fabs(-2.5)
+} catch {
+    println("TEST: Fail in expression \"fabs(-2.5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("ldexp...")
+test (tries; 24) { 
+    ldexp(3, 3)
+} catch {
+    println("TEST: Fail in expression \"ldexp(3, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("fmod...")
+test (tries; 1) { 
+    fmod(7, 2)
+} catch {
+    println("TEST: Fail in expression \"fmod(7, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("random...")
+test (tries; 10; 10) { 
+    10 * random()
+} catch {
+    println("TEST: Fail in expression \"random\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("factorial...")
+test (tries; 120) { 
+    factorial(5)
+} catch {
+    println("TEST: Fail in expression \"factorial(5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("deg...")
+test (tries; 180) { 
+    deg(PI)
+} catch {
+    println("TEST: Fail in expression \"deg(PI)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("rad...")
+test (tries; PI) { 
+    rad(180)
+} catch {
+    println("TEST: Fail in expression \"rad(180)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("dist...")
+test (tries; 2.82843; 0.00001) { 
+    dist(1, 2, 3, 4)
+} catch {
+    println("TEST: Fail in expression \"dist(1, 2, 3, 4)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("dist...")
+test (tries; 5.19615; 0.00001) { 
+    dist(1, 2, 3, 4, 5, 6)
+} catch {
+    println("TEST: Fail in expression \"dist(1, 2, 3, 4, 5, 6)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("min...")
+test (tries; 2) { 
+    fmin(2, 3)
+} catch {
+    println("TEST: Fail in expression \"fmin(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 2) { 
+    fmin(2.0, 3.0)
+} catch {
+    println("TEST: Fail in expression \"fmin(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 2) { 
+    fmin(2, 3.0)
+} catch {
+    println("TEST: Fail in expression \"fmin(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 2) { 
+    fmin(2.0, 3)
+} catch {
+    println("TEST: Fail in expression \"fmin(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("max...")
+test (tries; 3) { 
+    fmax(2, 3)
+} catch {
+    println("TEST: Fail in expression \"fmax(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 3) { 
+    fmax(2.0, 3.0)
+} catch {
+    println("TEST: Fail in expression \"fmax(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 3) { 
+    fmax(2, 3.0)
+} catch {
+    println("TEST: Fail in expression \"fmax(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 3) { 
+    fmax(2.0, 3)
+} catch {
+    println("TEST: Fail in expression \"fmax(2, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+

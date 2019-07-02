@@ -1,0 +1,46 @@
+#!/usr/local/bin/guash
+
+if (argc < 3) {
+    println("Use: source_text_file target_text_file.")
+    exit
+}
+
+fs = fopen(argv[2], "r")
+ft = fopen(argv[3], "w")
+
+while (!feof(fs)) {
+    if((line = fgets(fs)) == NULL) { 
+        break
+    }
+
+    fputs(line, ft)
+}
+
+fs = fclose(fs)
+ft = fclose(ft)
+
+println("Source file...")
+fs = fopen(argv[2], "r")
+
+while (!feof(fs)) {
+    if((line = fgets(fs)) == NULL) { 
+        break
+    }
+
+    print(line)
+}
+
+fs = fclose(fs)
+
+println("Target file...")
+ft = fopen(argv[3], "r")
+
+while (!feof(ft)) {
+    if((line = fgets(ft)) == NULL) { 
+        break
+    }
+
+    print(line)
+}
+
+ft = fclose(ft)

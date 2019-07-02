@@ -1,0 +1,22 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the printf functions...")
+
+println("sprintf...")
+test (tries; "a = 1.000000e-02, b = 1.234568, c = A, d = abc") { 
+    sprintf("a = %e, b = %f, c = %c, d = %s", 0.01, 1.23456789, 65, "abc")
+} catch {
+    println("TEST: Fail in expression \"sprintf(\"a = %e, b = %f, c = %c, d = %s\", 0.01, 1.234567788, 65, \"abc\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)

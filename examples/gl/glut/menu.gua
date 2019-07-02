@@ -1,0 +1,50 @@
+#!/usr/local/bin/glutguash
+
+menu_id = ""
+
+function display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glutWireTeapot(0.5);
+
+    glFlush();
+}
+
+function keyboard(key, x, y){
+    if (sprintf("%c", key) == "q") {
+        glutDestroyWindow($win);
+        exit(0);
+    }
+}
+
+function menu(n) {
+    println("Menu entry: " + n)
+}
+
+function init() {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+}
+
+function create_menu() {
+    menu_id = glutCreateMenu("menu");
+    
+    glutAddMenuEntry("Option 1", 1);
+    glutAddMenuEntry("Option 2", 2);
+    
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+}
+
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowSize(500, 500);
+glutInitWindowPosition(100, 100);
+win = glutCreateWindow("GLUT Tea Pot");
+
+create_menu();
+
+init();
+
+glutDisplayFunc("display");
+glutKeyboardFunc("keyboard");
+
+glutMainLoop();
+

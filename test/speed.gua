@@ -1,0 +1,66 @@
+#!/usr/local/bin/guash
+
+function mult(a, b) {
+    dim_a = dim(a)
+    dim_b = dim(b)
+    
+    c = matrix(0, dim_a[0], dim_b[1])
+    
+    for (i = 0; i < dim_a[0]; i = i + 1) {
+        for (j = 0; j < dim_b[1]; j = j + 1) {
+            s = 0
+            
+            for (k = 0; k < dim_a[1]; k = k + 1) {
+                s = s + a[i, k] * b[k, j]
+            }
+            
+            c[i, j] = s
+        }
+    }
+    
+    return(c);
+}
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the interpreter speed...")
+
+a = [1,2;3,4]
+b = [5,6;7,8]
+
+println("Internal matrix multiplication function...")
+test (tries; [19,22;43,50]) {
+    c = a * b
+} catch {
+    println("TEST: Fail in expression \"c = a * b\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+t1 = GUA_TIME
+
+println("Script matrix multiplication function...")
+test (tries; [19,22;43,50]) {
+    c = mult(a, b)
+} catch {
+    println("TEST: Fail in expression \"c = mult(a, b)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+t2 = GUA_TIME
+
+r = t2 / t1
+
+println("The internal matrix multiplication is " + r + " times faster.")
+

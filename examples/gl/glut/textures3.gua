@@ -1,0 +1,188 @@
+#!/usr/local/bin/glutguash
+
+delta_x = 0.0;
+delta_y = 0.0;
+mouse_x = 0;
+mouse_y = 0;
+
+texture1 = ""
+texture_width = 0
+texture_height = 0
+texture_names = ""
+
+#
+# Load the texture image.
+#
+function create_texture_images() {
+    texture = gloLoadPPM($texture_file, "texture_width", "texture_height");    
+    
+    $texture1 = glArrayOfByte(texture);
+}
+
+#
+# Texture and light initializations.
+#
+function init() {
+    light_position = glArrayOfFloat([1.0, 1.0, 1.0, 0.0]);
+        
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+	
+    glShadeModel(GL_FLAT);
+    glEnable(GL_DEPTH_TEST);
+    
+    glLight(GL_LIGHT0, GL_POSITION, light_position);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    
+    create_texture_images();
+
+    glPixelStore(GL_UNPACK_ALIGNMENT, 1);
+    
+    $texture_names = glGenTextures(1);
+    
+    glBindTexture(GL_TEXTURE_2D, $texture_names[0]);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexEnv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, $texture_width, $texture_height, 0, GL_RGB, GL_UNSIGNED_BYTE, $texture1);
+    
+    glEnable(GL_TEXTURE_2D);
+    
+    glFree(light_position);
+}
+
+function finish() {
+    $texture1 = glFree($texture1);
+}
+
+#
+# Display callback.
+#
+function display() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glBindTexture(GL_TEXTURE_2D, $texture_names[0]);
+    
+    # Draw the cube...
+    glRotate($delta_x, 1.0, 0.0, 0.0);
+	glRotate($delta_y, 0.0, 1.0, 0.0);
+	
+	glColor(1.0, 1.0, 1.0, 1.0);
+	
+    glBegin(GL_QUADS);
+		glNormal(0.0, 1.0, 0.0);
+        glTexCoord(0.0, 0.0); glVertex(0.7, 0.7, 0.7);
+		glTexCoord(1.0, 0.0); glVertex(0.7, 0.7, -0.7);
+		glTexCoord(1.0, 1.0); glVertex(-0.7, 0.7, -0.7);
+		glTexCoord(0.0, 1.0); glVertex(-0.7, 0.7, 0.7);
+	glEnd();
+    glBegin(GL_QUADS);
+		glNormal(1.0, 0.0, 0.0);
+        glTexCoord(0.0, 0.0); glVertex(0.7, 0.7, 0.7);
+		glTexCoord(1.0, 0.0); glVertex(0.7, -0.7, 0.7);
+		glTexCoord(1.0, 1.0); glVertex(0.7, -0.7, -0.7);
+		glTexCoord(0.0, 1.0); glVertex(0.7, 0.7, -0.7);
+	glEnd();
+	glBegin(GL_QUADS);
+		glNormal(0.0, 0.0, 1.0);
+        glTexCoord(0.0, 0.0); glVertex(-0.7, 0.7, 0.7);
+		glTexCoord(1.0, 0.0); glVertex(-0.7, -0.7, 0.7);
+		glTexCoord(1.0, 1.0); glVertex(0.7, -0.7, 0.7);
+		glTexCoord(0.0, 1.0); glVertex(0.7, 0.7, 0.7);
+	glEnd();
+	glBegin(GL_QUADS);
+		glNormal(-1.0, 0.0, 0.0);
+        glTexCoord(0.0, 0.0); glVertex(-0.7, 0.7, 0.7);
+		glTexCoord(1.0, 0.0); glVertex(-0.7, -0.7, 0.7);
+		glTexCoord(1.0, 1.0); glVertex(-0.7, -0.7, -0.7);
+		glTexCoord(0.0, 1.0); glVertex(-0.7, 0.7, -0.7);
+	glEnd();
+	glBegin(GL_QUADS);
+		glNormal(0.0, 0.0, -1.0);
+        glTexCoord(0.0, 0.0); glVertex(-0.7, 0.7, -0.7);
+		glTexCoord(1.0, 0.0); glVertex(-0.7, -0.7, -0.7);
+		glTexCoord(1.0, 1.0); glVertex(0.7, -0.7, -0.7);
+		glTexCoord(0.0, 1.0); glVertex(0.7, 0.7, -0.7);
+	glEnd();
+    glBegin(GL_QUADS);
+		glNormal(0.0, -1.0, 0.0);
+        glTexCoord(0.0, 0.0); glVertex(0.7, -0.7, 0.7);
+		glTexCoord(1.0, 0.0); glVertex(0.7, -0.7, -0.7);
+		glTexCoord(1.0, 1.0); glVertex(-0.7, -0.7, -0.7);
+		glTexCoord(0.0, 1.0); glVertex(-0.7, -0.7, 0.7);
+	glEnd();
+	
+    glFlush();
+}
+
+#
+# Reshape callback.
+#
+function reshape(width, height) {
+	glViewport(0, 0, width, height);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (width <= height) {
+		glOrtho(-1.5, 1.5, -1.5 * height / width, 1.5 * height / width, -10.0, 10.0);
+	} else {
+		glOrtho(-1.5 * width / height, 1.5 * width / height, -1.5, 1.5, -10.0, 10.0);
+    }
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+#
+# Keyboard callback.
+#
+function keyboard(key, x, y) {
+    if (key == 27) {
+        glutDestroyWindow($win);
+        exit(0);
+    }
+}
+
+#
+# Mouse callback.
+#
+function mouse(button, state, x, y) {
+    glutPostRedisplay();
+}
+
+#
+# Mouse motion callback.
+#
+function motion(x, y) {
+    $delta_x = ($mouse_x - x) * 1.0;
+    $delta_y = ($mouse_y - y) * 1.0;
+    
+    $mouse_x = x;
+    $mouse_y = y;
+
+    glutPostRedisplay();
+}
+
+# Get the textures path...
+script_file = fsFullPath($argv[1])
+script_path = fsPath(script_file)
+texture_file = script_path + "/images/13071980385.ppm"
+
+# Create the main window...
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowSize(500, 500);
+glutInitWindowPosition(100, 100);
+win = glutCreateWindow("Cube");
+
+init();
+
+glutReshapeFunc("reshape");
+glutDisplayFunc("display");
+glutKeyboardFunc("keyboard");
+glutMouseFunc("mouse");
+glutMotionFunc("motion");
+
+glutMainLoop();
+
+finish();
+

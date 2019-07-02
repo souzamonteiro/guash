@@ -1,0 +1,585 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing operator \"!\"...")
+
+test (tries; "01") {
+    a = 1
+    b = 0
+    c = !a
+    d = !b
+    e = toString(c) + toString(d)
+} catch {
+    println("TEST: Fail testing operator \"~\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \"~\"...")
+
+test (tries; -128) {
+    a = 127
+    b = ~a
+} catch {
+    println("TEST: Fail testing operator \"~\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \"**\"...")
+
+test (tries; "3.3-5.27084+3.56857*i-5.27084+3.56857*i{1,2,3}[7,10;15,22]GuaraScript") {
+    a = 1
+    b = 2.3
+    c = "GuaraScript"
+    d = 1+2*i
+    e = {1,2,3}
+    f = [1,2;3,4]
+    g = a ** b
+    h = b ** a
+    j = d ** b
+    k = d ** b
+    l = f ** 2
+    m = g + h + toString(j) + toString(k) + toString(e) + toString(l) + c
+} catch {
+    println("TEST: Fail testing operator \"**\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \"*\"...")
+
+test (tries; "4.61+2*i2.3+4.6*i{1,2,3}[1,2;3,4]GuaraScript") {
+    a = 1
+    b = 2.3
+    c = "GuaraScript"
+    d = 1+2*i
+    e = {1,2,3}
+    f = [1,2;3,4]
+    g = a * b
+    h = b * a
+    j = a * d
+    k = d * b
+    l = g + h + toString(j) + toString(k) + toString(e) + toString(f) + c
+} catch {
+    println("TEST: Fail testing operator \"*\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \"+\"...")
+
+test (tries; "6.61GuaraScriptGuaraScript2.3{1,2,3}[1,2;3,4]") {
+    a = 1
+    b = 2.3
+    c = "GuaraScript"
+    d = 1+2*i
+    e = {1,2,3}
+    f = [1,2;3,4]
+    g = a + b
+    h = b + a
+    j = a + c
+    k = c + b
+    l = g + h + j + k + toString(e) + toString(f)
+} catch {
+    println("TEST: Fail testing operator \"+\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \"-\"...")
+
+test (tries; "-2.61GuaraScriptGuaraScript2.3{1,2,3}[1,2;3,4]") {
+    a = 1
+    b = 2.3
+    c = "GuaraScript"
+    d = 1+2*i
+    e = {1,2,3}
+    f = [1,2;3,4]
+    g = a - b
+    h = b - a
+    j = a + c
+    k = c + b
+    l = g - h + j + k + toString(e) + toString(f)
+} catch {
+    println("TEST: Fail testing operator \"-\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \"<<\"...")
+
+test (tries; 128) {
+    (2 << 3) * (2 << 2)
+} catch {
+    println("TEST: Fail testing operator \"<<\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing operator \">>\"...")
+
+test (tries; 2) {
+    (512 >> 3) / (128 >> 2)
+} catch {
+    println("TEST: Fail testing operator \>>\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing relational operators \"<\" and \">\"...")
+
+test (tries; "1 0 1 0 1 0 1 0 1 0") {
+    a = 2
+    b = 3
+    c = "Hello"
+    d = "GuaraScript"
+    e = {1,2,3}
+    f = {4,5,6,7}
+    g = [1,2;3,4]
+    h = [5,6,7;8,9,10]
+    sprintf("%d %d %d %d %d %d %d %d %d %d", a < b, a > b, a < c, a > c, c > d, c < d, e < f, e > f, g < h, g > h)
+} catch {
+    println("TEST: Fail testing operators \"<\" and \">\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing relational operators \"<=\" and \">=\"...")
+
+test (tries; "1 0 1 0 1 0 1 0 1 0") {
+    a = 2
+    b = 3
+    c = "Hello"
+    d = "GuaraScript"
+    e = {1,2,3}
+    f = {4,5,6,7}
+    g = [1,2;3,4]
+    h = [5,6,7;8,9,10]
+    sprintf("%d %d %d %d %d %d %d %d %d %d", a <= b, a >= b, a <= c, a >= c, c >= d, c <= d, e <= f, e >= f, g <= h, g >= h)
+} catch {
+    println("TEST: Fail testing operators \"<=\" and \">=\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing relational operators \"==\" and \"!=\"...")
+
+test (tries; "1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1") {
+    a = 2
+    b = 3
+    c = "Hello"
+    d = "GuaraScript"
+    e = {1,2,3}
+    f = {4,5,6,7}
+    g = [1,2;3,4]
+    h = [5,6,7;8,9,10]
+    j = 2
+    k = 3
+    l = "Hello"
+    m = "GuaraScript"
+    n = {1,2,3}
+    o = {4,5,6,7}
+    p = [1,2;3,4]
+    q = [5,6,7;8,9,10]
+    sprintf("%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d", a != b, a == b, a != c, a == c, c != d, c == d, e != f, e == f, g != h, g == h, a == j, b == k, c == l, d == m, e == n, f == o, g == p, h == q)
+} catch {
+    println("TEST: Fail testing operators \"==\" and \"!=\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing binary operators \"&\", \"^\" and \"|\"...")
+
+test (tries; "1 6 7") {
+    # a = 101
+    # b = 011
+    # c = 001
+    # d = 110
+    # e = 111
+    a = 5
+    b = 3
+    c = a & b
+    d = a ^ b
+    e = a | b
+    sprintf("%d %d %d", c, d, e)
+} catch {
+    println("TEST: Fail testing operators \"&\", \"^\" and \"|\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing binary operator \"&|\"...")
+
+test (tries; [1,1,1,1;0,0,1,1;0,1,1,1;0,1,1,1]) {
+    a = [1,0,1,1;0,0,0,1;0,1,1,1;0,0,1,1]
+    b = a &| a
+} catch {
+    println("TEST: Fail testing operators \"&|\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing logic operators \"&&\" and \"||\"...")
+
+test (tries; "1 1 [0,1;1,1]") {
+    a = 1
+    b = 0
+    c = 1
+    d = [1,1;0,1]
+    e = [0,1;0,1]
+    f = [0,0;1,1]
+    g = a && b || c
+    h = a || b && c
+    j = d && e || f
+    sprintf("%d %d %s", g, h, toString(j))
+} catch {
+    println("TEST: Fail testing operators \"&&\" and \"||\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing the expression interpreter...")
+
+test (tries; 13) {
+    x = 2
+    y = 2 * x ** 2 + 2 * x + 1
+} catch {
+    println("TEST: Fail in expression \"y = x ** 2 + 2 * x + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing the complex number support...")
+
+test (tries; 3) {
+    1 + 2
+} catch {
+    println("TEST: Fail in expression \"1 + 2\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 5) {
+    2 * (1 + 2) - 1
+} catch {
+    println("TEST: Fail in expression \"2 * (1 + 2) - 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 22) {
+    3*4+5*2
+} catch {
+    println("TEST: Fail in expression \"3*4+5*2\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 34) {
+    2*(3*(1+5)-1)
+} catch {
+    println("TEST: Fail in expression \"2*(3*(1+5)-1)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 5) {
+    45 / (4 + 5)
+} catch {
+    println("TEST: Fail in expression \"45 / (4 + 5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 3) {
+    120 % 9
+} catch {
+    println("TEST: Fail in expression \"120 % 9\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 18-4*i; 0.00001) {
+    (7+2*i)+(11-6*i)
+} catch {
+    println("TEST: Fail in expression \"(7+2*i)+(11-6*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 8-9*i; 0.00001) {
+    (8-3*i)-(6*i)
+} catch {
+    println("TEST: Fail in expression \"(8-3*i)-(6*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 91-132*i; 0.00001) {
+    (9+4*i)*(3-16*i)
+} catch {
+    println("TEST: Fail in expression \"(9+4*i)*(3-16*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 0.2+0.4*i; 0.00001) {
+    i/(2+i)
+} catch {
+    println("TEST: Fail in expression \"i/(2+i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; -12+16*i; 0.00001) {
+    (2+4*i)**2
+} catch {
+    println("TEST: Fail in expression \"(2+4*i)**2\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 1.79891+1.11179*i; 0.00001) {
+    (2+4*i)**0.5
+} catch {
+    println("TEST: Fail in expression \"(2+4*i)**0.5\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing the matrix support...")
+
+test (tries; [6,8;10,12]) {
+    a = [1,2;3,4]
+    b = [5,6;7,8]
+    c = a + b
+} catch {
+    println("TEST: Fail in expression \"c = a + b\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; [-4,-4;-4,-4]) {
+    a = [1,2;3,4]
+    b = [5,6;7,8]
+    c = a - b
+} catch {
+    println("TEST: Fail in expression \"c = a - b\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; [19,22;43,50]) {
+    a = [1,2;3,4]
+    b = [5,6;7,8]
+    c = a * b
+} catch {
+    println("TEST: Fail in expression \"c = a * b\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; [1;2;3]) {
+    a = [2,3,-1;4,4,-3;2,-3,1]
+    b = [5;3;-1]
+    x = b / a
+} catch {
+    println("TEST: Fail in expression \"x = b / a\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; [19,22;43,50]) {
+    a = [1,2;3,4]
+    b = [5,6;7,8]
+    c = [0,0;0,0]
+    for (i = 0; i < 2; i = i + 1) {
+        for (j = 0; j < 2; j = j + 1) {
+            s = 0
+            for (k = 0; k < 2; k = k + 1) {
+                s = s + a[i,k] * b[k,j]
+            }
+            c[i,j] = s
+        }
+    }
+    d = c
+} catch {
+    println("TEST: Fail in expression \"c = a * b\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing the scripted functions support...")
+
+function fact (n) {
+    if (n == 0) {
+        return(1)
+    } else {
+        return(n * fact(n - 1))
+    }
+}
+
+test (tries; 120) {
+    fact(5)
+} catch {
+    println("TEST: Fail in expression \"fact(5)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing byte array access...")
+
+test (tries; "hxlyol") {
+    a = "hello"
+    b = "a"
+    $(b)[1] = "x"
+    @b[3] = "y"
+    @b = @b + @b[2]
+} catch {
+    println("TEST: Fail testing byte array access.")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+

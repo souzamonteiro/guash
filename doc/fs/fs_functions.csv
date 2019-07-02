@@ -1,0 +1,17 @@
+fileCopy
+fileDelete
+fileExists
+fileExtension
+fileFullPath
+fileIsDirectory
+fileIsExecutable
+fileIsReadable
+fileIsWritable
+fileLink
+fileList
+fileMkDir
+fileName
+filePath
+fileRename
+fileSize
+fileTime

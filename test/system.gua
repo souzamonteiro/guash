@@ -1,0 +1,32 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the system functions...")
+
+println("argv[1] = " + argv[1])
+
+fp = fopen("./test1.gua", "w")
+fputs("println(\"test1.gua\")\n", fp)
+fputs("println(\"argv[1] = \" + argv[1])\n", fp)
+fputs("source(\"./test2.gua\")\n", fp)
+fputs("println(\"argv[1] = \" + argv[1])\n\n", fp)
+fp = fclose(fp)
+
+fp = fopen("./test2.gua", "w")
+fputs("println(\"test2.gua\")\n", fp)
+fputs("println(\"argv[1] = \" + argv[1])\n", fp)
+fp = fclose(fp)
+
+println("source...")
+source("./test1.gua")
+
+println("argv[1] = " + argv[1])
+
+fsDelete("./test1.gua")
+fsDelete("./test2.gua")
+

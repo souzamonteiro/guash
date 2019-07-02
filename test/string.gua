@@ -1,0 +1,152 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the string functions...")
+
+println("at...")
+test (tries; "c") {
+    at("abcdefg", 2)
+} catch {
+    println("TEST: Fail in expression \"at({\"abcdefg\"}, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("string...")
+test (tries; "xyzxyzxyzx") {
+    string(10, "xyz")
+} catch {
+    println("TEST: Fail in expression \"string(10, \"xyz\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("strpos...")
+test (tries; 2) {
+    strpos("abcdefg", "c")
+} catch {
+    println("TEST: Fail in expression \"strpos(\"abcdefg\", \"c\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("range...")
+test (tries; "cde") {
+    range("abcdefg", 2, 4)
+} catch {
+    println("TEST: Fail in expression \"range(\"abcdefg\", 2, 4)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("tolower...")
+test (tries; "abcdefg") {
+    tolower("ABCDEFG")
+} catch {
+    println("TEST: Fail in expression \"tolower(\"ABCDEFG\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("toupper...")
+test (tries; "ABCDEFG") {
+    toupper("abcdefg")
+} catch {
+    println("TEST: Fail in expression \"toupper(\"abcdefg\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("split...")
+test (tries; {"a", "b", "c"}) {
+    split("a,b,c", ",")
+} catch {
+    println("TEST: Fail in expression \"split(\"a,b,c\", ",")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; {"1","2","3","\"alo mundo\"","4","{\"a\", 5, 6, \"b\"}","[1,2;\"d\",4]"}) {
+    a = "   1   2  3  \"alo mundo\"  4  {\"a\", 5, 6, \"b\"}  [1,2;\"d\",4]   "
+    b = split(trim(a))
+} catch {
+    println("TEST: Fail in expression \"b = split(trim(a))\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("ltrim...")
+test (tries; "abcde     ") {
+    ltrim("     abcde     ")
+} catch {
+    println("TEST: Fail in expression \"toupper(\"abcdefg\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("rtrim...")
+test (tries; "     abcde") {
+    rtrim("     abcde     ")
+} catch {
+    println("TEST: Fail in expression \"toupper(\"abcdefg\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("trim...")
+test (tries; "abcde") {
+    trim("     abcde     ")
+} catch {
+    println("TEST: Fail in expression \"toupper(\"abcdefg\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)

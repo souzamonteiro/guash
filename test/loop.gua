@@ -1,0 +1,93 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing statement \"while\"...")
+
+test (tries; "81") {
+    i = 0
+    while (i < 10) {
+        j = 0
+        while (j < 10) {
+            a[i , j] = toString(i * j)
+            j = j + 1
+        }
+        i = i + 1
+    }
+    a[9 ,9]
+} catch {
+    println("TEST: Fail testing statement \"while\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing statement \"do\"...")
+
+test (tries; "81") {
+    i = 0
+    do {
+        j = 0
+        do {
+            a[i , j] = toString(i * j)
+            j = j + 1
+        } while (j < 10)
+        i = i + 1
+    } while (i < 10)
+    a[9 ,9]
+} catch {
+    println("TEST: Fail testing statement \"do\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing statement \"for\"...")
+
+test (tries; "81") {
+    for (i = 0; i < 10; i = i + 1) {
+        for (j = 0; j < 10; j = j + 1) {
+            a[i , j] = toString(i * j)
+        }
+    }
+} catch {
+    println("TEST: Fail testing statement \"for\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing statement \"foreach\"...")
+
+test (tries; "81") {
+    a1 = {0,1,2,3,4,5,6,7,8,9}
+    a2 = {0,1,2,3,4,5,6,7,8,9}
+    foreach (a1; n1; v1) {
+        foreach (a2; n2; v2) {
+            a[i , j] = toString(v1 * v2)
+        }
+    }
+    a[9 ,9]
+} catch {
+    println("TEST: Fail testing statement \"foreach\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+

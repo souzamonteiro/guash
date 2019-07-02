@@ -1,0 +1,389 @@
+#!/usr/local/bin/guash
+#
+# extbuilder.gua
+#
+#     GuaraScript Extension Builder.
+#
+# Copyright (c) 2917 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>,
+#                    Hernane Borges de Barros Pereira,
+#                    Tiago Cajahyba.
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+# RCS: @(#) $Id: extbuilder.gua,v 1.2 2017/05/02 11:31:00 monteiro Exp $
+#
+
+#
+# Load the constants list.
+#
+function Builder_LoadConstantsList() {
+    if ($constants_list_file_name != "") {
+        # Get each constant definition from the supplied list...
+        fd = fopen($constants_list_file_name, "r")
+        
+        while (!feof(fd)) {
+            if((line = fgets(fd)) == NULL) { 
+                break
+            }
+            
+            record = split(trim(line, " \t\r\n"), ";")
+            
+            if (length(record) == 2) {
+                script_constant = trim(record[0], " \t\r\n")
+                c_constant = trim(record[1], " \t\r\n")
+            } else {
+                script_constant = trim(record[0], " \t\r\n")
+                c_constant = trim(record[0], " \t\r\n")
+            }
+            
+            $constants_list[script_constant] = c_constant
+        }
+        
+        fd = fclose(fd)
+    }
+}
+
+
+#
+# Load the functions list.
+#
+function Builder_LoadFunctionsList() {
+    if ($functions_list_file_name != "") {
+        # Get each function definition from the supplied list...
+        fd = fopen($functions_list_file_name, "r")
+        
+        while (!feof(fd)) {
+            if((line = fgets(fd)) == NULL) { 
+                break
+            }
+            
+            record = split(trim(line, " \t\r\n"), ";")
+            
+            if (length(record) == 2) {
+                script_function = trim(record[0], " \t\r\n")
+                c_function = trim(record[1], " \t\r\n")
+            } else {
+                script_function = trim(record[0], " \t\r\n")
+                c_function = trim(record[0], " \t\r\n")
+            }
+            
+            $functions_list[script_function] = c_function
+        }
+        
+        fd = fclose(fd)
+    }
+}
+
+#
+# Creates the extension .c file header.
+#
+function Builder_CreateHeader() {
+    fo = fopen($target_c_file_name, "w")
+    
+    fputs("/**\n", fo)
+    fputs(" * File:\n", fo)
+    fputs(" *     " +  fsName($target_c_file_name) + "\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Package:\n", fo)
+    fputs(" *     " + $extension_prefix + "\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Description:\n", fo)
+    fputs(" *     This file implements a GuaraScript extension.\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Copyright:\n", fo)
+    fputs(" *     Copyright (c) " + strftime("%Y", time()) + " " + $author_name + ".\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Permission to use, copy, modify, and distribute this software for any\n", fo)
+    fputs(" * purpose with or without fee is hereby granted, provided that the above\n", fo)
+    fputs(" * copyright notice and this permission notice appear in all copies.\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n", fo)
+    fputs(" * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n", fo)
+    fputs(" * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n", fo)
+    fputs(" * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n", fo)
+    fputs(" * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n", fo)
+    fputs(" * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n", fo)
+    fputs(" * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * RCS: @(#) $Id: " + fsName($target_c_file_name) + ",v 1.0 " + strftime("%Y/%m/%d %H:%M:%S", time()) + " monteiro Exp $\n", fo)
+    fputs(" *\n", fo)
+    fputs(" */\n", fo)
+    fputs("\n", fo)
+    
+    fputs("#include <stdlib.h>\n", fo)
+    fputs("#include <string.h>\n", fo)
+    fputs("#include \"interp.h\"\n\n", fo)
+    
+    fo = fclose(fo)
+}
+
+#
+# Reads the functions list and create a GuaraScript function wrapper to it.
+#
+function Builder_CreateFunctionWrapper() {
+    if ($functions_list != "") {
+        fo = fopen($target_c_file_name, "a+")
+        
+        # Create the function wrapper header...
+        fputs("/**\n", fo)
+        fputs(" * Group:\n", fo)
+        fputs(" *     C\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Function:\n", fo)
+        fputs(" *     Gua_Status " + $extension_prefix + "_FunctionWrapper(void *nspace, Gua_Short argc, Gua_Object *argv, Gua_Object *object, Gua_String error)\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Description:\n", fo)
+        fputs(" *     Function wrapper.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Arguments:\n", fo)
+        fputs(" *     nspace,    a pointer to a structure Gua_Namespace. Must do a cast before use it;\n", fo)
+        fputs(" *     argc,      the number of arguments to pass to the function;\n", fo)
+        fputs(" *     argv,      an array containing the arguments to the function;\n", fo)
+        fputs(" *                argv[0] is the function name;\n", fo)
+        fputs(" *     object,    a structure containing the return object of the function;\n", fo)
+        fputs(" *     error,     a pointer to the error message.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Results:\n", fo)
+        fputs(" *     The return object of the wrapped function.\n", fo)
+        fputs(" */\n", fo)
+        fputs("Gua_Status " + $extension_prefix + "_FunctionWrapper(void *nspace, Gua_Short argc, Gua_Object *argv, Gua_Object *object, Gua_String error)\n", fo)
+        fputs("{\n", fo)
+        fputs("    Gua_String errMessage;\n\n", fo)
+        
+        # Verify if a function name was supplied...
+        fputs("    if (argc == 0) {\n", fo)
+        fputs("        errMessage = (Gua_String) Gua_Alloc(sizeof(char) * MAX_ERROR_MSG_SIZE + 1);\n", fo)
+        fputs("        sprintf(errMessage, \"%s\\n\", \"no function specified\");\n", fo)
+        fputs("        strcat(error, errMessage);\n", fo)
+        fputs("        Gua_Free(errMessage);\n\n", fo)
+        fputs("        return GUA_ERROR;\n", fo)
+        fputs("    }\n\n", fo)
+        
+        # Add a function wrapper to each function name in the supplied list...
+        n = 0
+        
+        foraeach ($functions_list; script_function; c_function) {
+            n = n + 1
+            
+            if (n == 1) {
+                fputs("    if (strcmp(Gua_ObjectToString(argv[0]), \"" + trim(script_function, " \t\r\n") + "\") == 0) {\n", fo)
+            } else {
+                fputs("    } else if (strcmp(Gua_ObjectToString(argv[0]), \"" + trim(script_function, " \t\r\n") + "\") == 0) {\n", fo)
+            }
+        }
+        
+        if (n > 0) {
+            fputs("    \}\n\n", fo)
+        }
+        
+        fputs("    return GUA_OK;\n", fo)
+        fputs("}\n\n", fo)
+        
+        fo = fclose(fo)
+    }
+}
+
+#
+# Reads the constants list, the functions list and create a GuaraScript extension init function to them.
+#
+function Builder_CreateInitFunction() {
+    if (($functions_list != "") || ($constants_list != "")) {
+        fo = fopen($target_c_file_name, "a+")
+        
+        # Create the function wrapper header...
+        fputs("/**\n", fo)
+        fputs(" * Group:\n", fo)
+        fputs(" *     C\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Function:\n", fo)
+        fputs(" *     Gua_Status " + $extension_prefix + "_Init(void *nspace, int argc, char *argv[], char **env, Gua_String error)\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Description:\n", fo)
+        fputs(" *     Install the extension functions.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Arguments:\n", fo)
+        fputs(" *     nspace,    a pointer to a structure containing the variable and function namespace;\n", fo)
+        fputs(" *     argc,      the number of command line arguments;\n", fo)
+        fputs(" *     argv,      the command line arguments;\n", fo)
+        fputs(" *     env,       a pointer to the environment variables;\n", fo)
+        fputs(" *     error,     a pointer to the error message.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Results:\n", fo)
+        fputs(" *     Install the extension functions.\n", fo)
+        fputs(" */\n", fo)
+        fputs("Gua_Status " + $extension_prefix + "_Init(void *nspace, int argc, char *argv[], char **env, Gua_String error)\n", fo)
+        fputs("{\n", fo)
+        fputs("    Gua_Function function;\n", fo)
+        fputs("    Gua_Object object;\n", fo)
+        fputs("    Gua_String errMessage;\n\n", fo)
+
+        if ($functions_list_ != "") {
+            # Define the function wrapper to each function name in the supplied list...
+            fputs("    /* Define the function wrapper to each extension function... */\n", fo)
+            
+            foraeach ($functions_list; script_function; c_function) {
+                fputs("    Gua_LinkCFunctionToFunction(function, " + $extension_prefix + "_FunctionWrapper);\n", fo)
+                fputs("    if (Gua_SetFunction((Gua_Namespace *)nspace, \"" + trim(script_function, " \t\r\n") + "\", &function) != GUA_OK) {\n", fo)
+                fputs("        errMessage = (Gua_String) Gua_Alloc(sizeof(char) * MAX_ERROR_MSG_SIZE + 1);\n", fo)
+                fputs("        sprintf(errMessage, \"%s %-.20s...\\n\", \"can\'t set function\", \"" + trim(script_function, " \t\r\n") + "\");\n", fo)
+                fputs("        strcat(error, errMessage);\n", fo)
+                fputs("        Gua_Free(errMessage);\n", fo)
+                fputs("    }\n", fo)
+            }
+            
+            fputs("\n", fo)
+        }
+        
+        if ($constants_list != "") {
+            # Define the constant wrapper to each constant name in the supplied list...
+            fputs("    /* Define each extension constant... */\n", fo)
+            
+            foraeach ($constants_list; script_constant; c_constant) {
+                fputs("    Gua_IntegerToObject(object, " + c_constant + ");\n", fo)
+                fputs("    Gua_SetStoredObject(object);\n", fo)
+                fputs("    if (Gua_SetVariable((Gua_Namespace *)nspace, \"" + script_constant + "\", &object, SCOPE_GLOBAL) != GUA_OK) {\n", fo)
+                fputs("        errMessage = (Gua_String) Gua_Alloc(sizeof(char) * MAX_ERROR_MSG_SIZE + 1);\n", fo)
+                fputs("        sprintf(errMessage, \"%s %-.20s...\\n\", \"can\'t set variable\", \"" + script_constant + "\");\n", fo)
+                fputs("        strcat(error, errMessage);\n", fo)
+                fputs("        Gua_Free(errMessage);\n", fo)
+                fputs("    }\n", fo)
+            }
+            
+            fputs("\n", fo)
+        }
+        
+        fputs("    return GUA_OK;\n", fo)
+        fputs("}\n\n", fo)
+        
+        fo = fclose(fo)
+    }
+}
+
+#
+# Creates the .c file.
+#
+function Builder_CreateCFile() {
+    Builder_CreateHeader()
+    Builder_CreateFunctionWrapper()
+    Builder_CreateInitFunction()
+}
+
+#
+# Creates the .h file.
+#
+function Builder_CreateHFile() {
+    fo = fopen($target_h_file_name, "w")
+    
+    fputs("/**\n", fo)
+    fputs(" * File:\n", fo)
+    fputs(" *     " +  fsName($target_h_file_name) + "\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Package:\n", fo)
+    fputs(" *     " + $extension_prefix + "\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Description:\n", fo)
+    fputs(" *     This file implements a GuaraScript extension.\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Copyright:\n", fo)
+    fputs(" *     Copyright (c) " + strftime("%Y", time()) + " " + $author_name + ".\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * Permission to use, copy, modify, and distribute this software for any\n", fo)
+    fputs(" * purpose with or without fee is hereby granted, provided that the above\n", fo)
+    fputs(" * copyright notice and this permission notice appear in all copies.\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n", fo)
+    fputs(" * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n", fo)
+    fputs(" * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n", fo)
+    fputs(" * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n", fo)
+    fputs(" * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n", fo)
+    fputs(" * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n", fo)
+    fputs(" * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n", fo)
+    fputs(" *\n", fo)
+    fputs(" * RCS: @(#) $Id: " + fsName($target_h_file_name) + ",v 1.0 " + strftime("%Y/%m/%d %H:%M:%S", time()) + " monteiro Exp $\n", fo)
+    fputs(" *\n", fo)
+    fputs(" */\n", fo)
+    fputs("\n", fo)
+    
+    fputs("Gua_Status " + $extension_prefix + "_FunctionWrapper(void *nspace, Gua_Short argc, Gua_Object *argv, Gua_Object *object, Gua_String error);\n", fo)
+    fputs("Gua_Status " + $extension_prefix + "_Init(void *nspace, int argc, char *argv[], char **env, Gua_String error);\n", fo)
+    
+    fo = fclose(fo)
+}
+
+#
+# Configuration variables.
+#
+author_name = ""
+extension_prefix = ""
+constants_list_file_name = ""
+functions_list_file_name = ""
+target_c_file_name = ""
+target_h_file_name = ""
+############# Remover a proxima linha apos corrigir o bug #############
+constants_list = ""
+
+#
+# Main program.
+#
+if (argc < 3) {
+    println("Usage: extbuilder option1 value1 [option1 value1]")
+    exit
+}
+
+i = 2
+
+while (i < argc) {
+    if ((argv[i] == "-h") || (argv[i] == "--help")) {
+        println("Usage: extbuilder option1 value1 [option1 value1]")
+        println("-h    --help    show the options sumary")
+        println("-a              author name")
+        println("-p              extension prefix")
+        println("-c              constants list file")
+        println("-f              functions list file")
+        println("      --cfile   C output file name")
+        println("      --hfile   H output file name")
+        exit(0)
+    } elseif (argv[i] == "-a") {
+        i = i + 1
+        author_name = argv[i]
+    } elseif (argv[i] == "-p") {
+        i = i + 1
+        extension_prefix = argv[i]
+    } elseif (argv[i] == "-c") {
+        i = i + 1
+        constants_list_file_name = argv[i]
+    } elseif (argv[i] == "-f") {
+        i = i + 1
+        functions_list_file_name = argv[i]
+    } elseif (argv[i] == "--cfile") {
+        i = i + 1
+        target_c_file_name = argv[i]
+    } elseif (argv[i] == "--hfile") {
+        i = i + 1
+        target_h_file_name = argv[i]
+    }
+    i = i + 1
+} 
+
+#
+# Load the extension wrapper definition files.
+#
+Builder_LoadConstantsList()
+Builder_LoadFunctionsList()
+
+#
+# Build the extension skel.
+#
+Builder_CreateCFile()
+Builder_CreateHFile()
+

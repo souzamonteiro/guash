@@ -1,0 +1,121 @@
+turingmachine.gua
+
+This program implements a turing machine simulator.
+
+Copyright (C) 2009 Roberto Luiz Souza Monteiro
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Please to see all program options run:
+    ./turingmachine.gua --help
+
+On Windows, prefix the script name with the interpreter command:
+    guash.exe turingmachine.gua --help
+
+A machine definition is:
+    {"list of possible states","list of possible symbols","blank symbol", "initial state", "list of final states"}
+    So, the default machine is: {"1,2,3,4,5,h", "0,1", "0", "1", "h"} 
+
+Machine state table format:
+
+    STATE, CHAR, NEW_STATE, NEW_CHAR, MOVE_COMMAND
+
+    Where:
+        STATE is the current state in the STATE_REGISTER;
+        CHAR is the current character under the HEAD on TAPE;
+        NEW_STATE is the new state to store in the STATE_REGISTER;
+        NEW_CHAR is the new character to write on TAPE under the HEAD;
+        MOVE_COMMAND is the diretion to move the HEAD on: L(<), R(>) or N(none).
+
+    Lines begining with the hash character(#) are comments.
+
+    So, a simple program can be:
+        # This program duplicate any sequence of ones(1),
+        # separating the original from the copy by zero(0).
+        1, 1, 2, 0, >
+        2, 1, 2, 1, >
+        2, 0, 3, 0, >
+        3, 0, 4, 1, <
+        3, 1, 3, 1, >
+        4, 1, 4, 1, <
+        4, 0, 5, 0, <
+        5, 1, 5, 1, <
+        5, 0, 1, 1, >
+
+Tools:
+
+log2pbm.gua
+    If you are trying to create a celular automata to draw a bitmap,
+    you can use the log2pbm.gua script to converts the tape log to
+    a bitmap.
+
+Initial tape and command line to run examples:
+
+example01.tur:
+    Description: This program reads a sequence of ones from the tape and duplicate
+                 it, separating the copy from the original one, by a blank(0).
+    Tape: {1,1}
+    Command:
+        ./turingmachine.gua -i example01.tur -t '{\"1\",\"1\"}' -m none
+        or
+        ./turingmachine.gua -i example01.tur -o example01.log -t '{\"1\",\"1\"}' -m none
+        or
+        ./turingmachine.gua -i example01.tur -t '{\"1\",\"1\"}' -m '{\"1,2,3,4,5,h\",\"0,1\",\"0\",\"1\",\"h\"}'
+        or
+        ./turingmachine.gua -i example01.tur -t '{\"1\",\"1\"}' -m none -s 15
+
+example02.tur:
+    Description: This program draws a filed triangle.
+    Tape: {1}
+    Command:
+        ./turingmachine.gua -i example02.tur -o example02.log -t '{\"1\"}' -m none -s 15 --skip 13
+        ./log2pbm.gua -i example02.log -o example02.pbm
+
+example03.tur:
+    Description: This program draws a retangular filed triangle with border like a zipper.
+    Tape: {1}
+    Command:
+        ./turingmachine.gua -i example03.tur -o example03.log -t '{\"1\"}' -m none -s 15
+        ./log2pbm.gua -i example03.log -o example03.pbm
+
+example04.tur:
+    Description: This program draws a retangular filed triangle.
+    Tape: {1}
+    Command:
+        ./turingmachine.gua -i example04.tur -o example04.log -m none
+        ./log2pbm.gua -i example04.log -o example04.pbm
+
+example05.tur:
+    Description: This program draws a filed retangle.
+    Tape: {"x",0,0,0,0,0,0,0,0,0,0,"x"}
+    Command:
+        ./turingmachine.gua -i example05.tur -o example05.log -t '{\"x\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"x\"}' -m none -n 100 --skip 10
+        ./log2pbm.gua -i example05.log -o example05.pbm
+
+role90.tur:
+    Description: This program implements the role 90 automata.
+    Tape: {"x",0,0,0,0,1,0,0,0,0,"x"}
+    Command:
+        ./turingmachine.gua -i role90.tur -o role90.log -t '{\"x\",\"0\",\"0\",\"0\",\"0\",\"1\",\"0\",\"0\",\"0\",\"0\",\"x\"}' -m none -n 1000 --skip 11
+        ./log2pbm.gua -i role90.log -o role90.pbm
+    Windows:
+        guash.exe turingmachine.gua -i role90.tur -o role90.log -t '{\"x\",\"0\",\"0\",\"0\",\"0\",\"1\",\"0\",\"0\",\"0\",\"0\",\"x\"}' -m none -n 1000 --skip 11
+        guash.exe log2pbm.gua -i role90.log -o role90.pbm
+
+role90_run.gua:
+    Description: Automate generate the role 90 fractal.
+    Command:
+        ./role90_run.gua 100
+

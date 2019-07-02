@@ -1,0 +1,200 @@
+#!/usr/local/bin/guash
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing the TUI functions.")
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing clrscr()...");
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("The screen shoud be cleaned.");
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing textcolor() and textbackground()...");
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+for (j = 0; j < 15; j = j + 1) {
+    for (k = 0; k < 15; k = k + 1) {
+        textcolor(j);
+        textbackground(k);
+        putchar("*");
+    }
+}
+
+textbackground(WHITE);
+textcolor(BLACK);
+
+println("\nPress[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("The following lines will be colored:");
+
+textbackground(WHITE);
+textcolor(BLACK);
+println("BLACK over WHITE");
+textcolor(RED);
+println("RED over WHITE");
+textcolor(GREEN);
+println("GREEN over WHITE");
+textcolor(YELLOW);
+println("YELLOW over WHITE");
+textcolor(BLUE);
+println("BLUE over WHITE");
+textcolor(MAGENTA);
+println("MAGENTA over WHITE");
+textcolor(CYAN);
+println("CYAN over WHITE");
+
+textbackground(BLACK);
+textcolor(RED);
+println("RED over BLACK");
+textcolor(GREEN);
+println("GREEN over BLACK");
+textcolor(YELLOW);
+println("YELLOW over BLACK");
+textcolor(BLUE);
+println("BLUE over BLACK");
+textcolor(MAGENTA);
+println("MAGENTA over BLACK");
+textcolor(CYAN);
+println("CYAN over BLACK");
+textcolor(WHITE);
+println("WHITE over BLACK");
+
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing getch()...");
+println("Type a string and press ENTER:");
+
+while (1) {
+    c = getch();
+
+    if ((c == "\r") || (c == "\n")) {
+        break;
+    }
+
+    putchar(c);
+}
+
+println("\nPress[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing getche()...");
+println("Type a string and press ENTER:");
+
+while (1) {
+    c = getche();
+
+    if ((c == "\r") || (c == "\n")) {
+        break;
+    }
+}
+
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing getkey()...");
+println("Type any key:");
+
+c = -1
+
+while (c == -1) {
+    c = getkey();
+    
+    if (c != -1) {
+        printf("%c = %d\n", c, c);
+    }
+}
+
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr();
+gotoxy(0, 0);
+
+println("Testing entry() and box()...");
+println("Press[ENTER] to continue...")
+getch()
+
+clrscr;
+
+name = "";
+phone = "";
+title = "Phone Book";
+
+box(1, 1, 80, 24, RED, BLACK);
+box(5, 8, 76, 17, BLUE, CYAN);
+
+textcolor(WHITE);
+textbackground(BLUE);
+
+gotoxy((80 - length(title)) / 2, 8);
+printf("%s", title);
+
+textcolor(BLACK);
+textbackground(CYAN);
+
+gotoxy(10,12);
+printf("Name:");
+gotoxy(10,13);
+printf("Phone:");
+
+name = entry(17, 12, 30, BLACK, WHITE);
+
+textcolor(WHITE);
+textbackground(BLACK);
+
+phone = entry(17, 13, 20, BLACK, WHITE);
+
+textcolor(WHITE);
+textbackground(BLACK);
+
+gotoxy(10,19);
+printf("Name : %s", name);
+gotoxy(10,20);
+printf("Phone: %s", phone);
+
+textcolor(GREEN);
+textbackground(BLACK);
+
+gotoxy(10,22);
+printf("Press any key.");
+
+textcolor(WHITE);
+textbackground(BLACK);
+
+getch;
+
+clrscr();
+gotoxy(0, 0);

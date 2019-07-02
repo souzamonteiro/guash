@@ -1,0 +1,173 @@
+#!/usr/local/bin/guash
+
+# Data to train.
+dataX = [0.00,0.25,0.50,0.75,1.00,1.25,1.50,1.75,2.00,2.25,2.50,2.75,3.00,3.25,3.50,3.75,4.00,4.25,4.50,4.75,5.00,5.25,5.50,5.75,6.00,6.25,6.50,6.75,7.00,7.25,7.50,7.75,8.00,8.25,8.50,8.75,9.00,9.25,9.50,9.75,10.00]
+dataY = [2.0000,2.2197,2.3811,2.5136,2.7310,2.7827,2.8327,3.0351,2.9551,3.3973,3.5117,3.5909,3.7345,3.8419,4.0952,4.2879,4.4000,4.8764,5.2843,5.9241,6.3302,6.9608,7.3044,7.6791,8.2819,9.0139,9.3387,10.0420,10.4000,10.6437,10.4786,10.4928,10.7082,10.6233,10.8862,10.6830,10.8393,10.9186,10.8814,10.9779,11.0000]
+
+nData = length(dataX)
+
+#
+# ANN Topology:
+#
+#          -> x2
+#    w12 -        - w25
+#      -            -
+#    -  w13     w35  -
+#x1 ------>   x3 ------> x5 ------> (o1)
+#    -               -
+#      -           -
+#    w14 -       - w45
+#          -> x4
+#
+
+# Inputs.
+x1 = 0.0
+x2 = 0.0
+x3 = 0.0
+x4 = 0.0
+x5 = 0.0
+
+# Weights.
+w12 = 2.0 * random() - 1.0
+w22 = 2.0 * random() - 1.0
+w13 = 2.0 * random() - 1.0
+w33 = 2.0 * random() - 1.0
+w14 = 2.0 * random() - 1.0
+w44 = 2.0 * random() - 1.0
+w25 = 2.0 * random() - 1.0
+w35 = 2.0 * random() - 1.0
+w45 = 2.0 * random() - 1.0
+w55 = 2.0 * random() - 1.0
+
+#w12 = 0.680375
+#w22 = 0.59688
+#w13 = -0.211234
+#w33 = -0.604897
+#w14 = 0.566198
+#w44 = 0.536459
+#w25 = 0.823295
+#w35 = -0.329554
+#w45 = -0.444451
+#w55 = 0.10794
+
+println("Initial weights:")
+println("w12 = " + w12)
+println("w22 = " + w22)
+println("w13 = " + w13)
+println("w33 = " + w33)
+println("w14 = " + w14)
+println("w44 = " + w44)
+println("w25 = " + w25)
+println("w35 = " + w35)
+println("w45 = " + w45)
+println("w55 = " + w55 + "\n")
+
+# Outputs.
+o1 = 0.0
+
+# Trainning variables.
+maxEpochs = 200000
+lRate = 0.005
+maxSquareError = 0.001
+squareError = matrix(0.0, nData)
+
+epochsCounter = 0
+maxCount = 1000
+
+# Train.
+for (epoch = 1; epoch <= maxEpochs; epoch = epoch + 1) {
+    for (n = 0; n < nData; n = n + 1) {
+        # Pattern to learn.
+        x = dataX[n]
+        y = dataY[n]
+        
+        # Calculate the output of the first layer.
+        
+        # xj = sum(xij * wij) + bj
+        x1 = x
+        
+        x2 = x1 * w12 + w22
+        x3 = x1 * w13 + w33
+        x4 = x1 * w14 + w44
+        
+        # Activation function.
+        # Sigmoid: f(x) = 2 / (1 + e^(-2x)) - 1
+        #          df(x)/dx = 1 - f(x)^2
+        y2 = 2.0 / (1.0 + exp(-2.0 * x2)) - 1.0
+        y3 = 2.0 / (1.0 + exp(-2.0 * x3)) - 1.0
+        y4 = 2.0 / (1.0 + exp(-2.0 * x4)) - 1.0
+        
+        # Calculate the output of the second layer.
+        # Linear: f(x) = x
+        #         df(x)/dx = 1
+        x5 = y2 * w25 + y3 * w35 + y4 * w45 + w55
+        y5 = x5
+        
+        # Learn this pattern.
+        
+        e = y - y5
+        
+        squareError[n] = e * e
+        
+        # Adjust the weights of the second layer.
+        d = e
+        
+        w25 = w25 + lRate * d * 1.0 * y2
+        w35 = w35 + lRate * d * 1.0 * y3
+        w45 = w45 + lRate * d * 1.0 * y4
+        w55 = w55 + lRate * d * 1.0 * 1.0
+        
+        # Adjuste the weights of the first layer.
+        d5 = d * w25 + d * w35 + d * w45
+        
+        w12 = w12 + lRate * d5 * (1 - (2.0 / (1.0 + exp(-2.0 * x2)) - 1.0) ** 2) * x1
+        w22 = w22 + lRate * d5 * (1 - (2.0 / (1.0 + exp(-2.0 * x2)) - 1.0) ** 2) * 1.0
+        w13 = w13 + lRate * d5 * (1 - (2.0 / (1.0 + exp(-2.0 * x3)) - 1.0) ** 2) * x1
+        w33 = w33 + lRate * d5 * (1 - (2.0 / (1.0 + exp(-2.0 * x3)) - 1.0) ** 2) * 1.0
+        w14 = w14 + lRate * d5 * (1 - (2.0 / (1.0 + exp(-2.0 * x4)) - 1.0) ** 2) * x1
+        w44 = w44 + lRate * d5 * (1 - (2.0 / (1.0 + exp(-2.0 * x4)) - 1.0) ** 2) * 1.0
+    }
+    
+    sumSquareError = sum(squareError) / 2.0
+    
+    if (sumSquareError < maxSquareError) {
+        break
+    }
+    
+    epochsCounter = epochsCounter + 1
+    
+    if (epochsCounter >= maxCount) {
+        printf("Epoch = %d, average error = %g\n", epoch, sumSquareError)
+        epochsCounter = 0
+    }
+}
+
+# Show trainned weights.
+println("\nTrainned weights:")
+println("w12 = " + w12)
+println("w22 = " + w22)
+println("w13 = " + w13)
+println("w33 = " + w33)
+println("w14 = " + w14)
+println("w44 = " + w44)
+println("w25 = " + w25)
+println("w35 = " + w35)
+println("w45 = " + w45)
+println("w55 = " + w55)
+
+# Save trainned weights.
+fp = fopen("weights.gua", "w")
+
+fputs("w12 = " + w12 + "\n", fp)
+fputs("w22 = " + w22 + "\n", fp)
+fputs("w13 = " + w13 + "\n", fp)
+fputs("w33 = " + w33 + "\n", fp)
+fputs("w14 = " + w14 + "\n", fp)
+fputs("w44 = " + w44 + "\n", fp)
+fputs("w25 = " + w25 + "\n", fp)
+fputs("w35 = " + w35 + "\n", fp)
+fputs("w45 = " + w45 + "\n", fp)
+fputs("w55 = " + w55 + "\n", fp)
+
+fp = fclose(fp)
+

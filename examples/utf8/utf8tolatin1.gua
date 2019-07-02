@@ -1,0 +1,29 @@
+#!/usr/local/bin/guash
+
+fs = fopen("utf-8.txt", "r")
+ft = fopen("output-iso-8859-1.txt", "w")
+
+while (!feof(fs)) {
+    if((line = fgets(fs)) == NULL) {
+        break
+    }
+    
+    println("Number of characters: " + utf8len(trim(line, "\r\n")))
+    println("Number of bytes: " + length(trim(line, "\r\n")) + "\n")
+    println("ISO char at 4: " + at(line, 4))
+    println("ISO char at 5: " + at(line, 5))
+    println("UTF-8 char at 4: " + utf8at(line, 4))
+    println("UTF-8 char at 5: " + utf8at(line, 5))
+    println("ISO string between 4 and 5: " + range(line, 4, 5))
+    println("UTF-8 string between 4 and 5: " + utf8range(line, 4, 5))
+    println("Number of characters in UTF-8 string between 4 and 5: " + utf8len(utf8range(line, 4, 5)))
+    println("Number of bytes in UTF-8 string between 4 and 5: " + length(utf8range(line, 4, 5)))
+    
+    converted = utf8dec(line)
+    
+    fputs(converted, ft)
+}
+
+fs = fclose(fs)
+ft = fclose(ft)
+

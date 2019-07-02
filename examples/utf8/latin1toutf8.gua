@@ -1,0 +1,21 @@
+#!/usr/local/bin/guash
+
+fs = fopen("iso-8859-1.txt", "r")
+ft = fopen("output-utf-8.txt", "w")
+
+while (!feof(fs)) {
+    if((line = fgets(fs)) == NULL) {
+        break
+    }
+    
+    converted = utf8enc(line)
+    
+    println("Number of characters: " + utf8len(trim(converted, "\r\n")))
+    println("Number of bytes: " + length(trim(converted, "\r\n")))
+    
+    fputs(converted, ft)
+}
+
+fs = fclose(fs)
+ft = fclose(ft)
+

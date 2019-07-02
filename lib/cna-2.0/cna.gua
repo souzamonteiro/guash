@@ -1,0 +1,978 @@
+#!/usr/local/bin/guash
+#
+# cna.gua
+#
+#     This file implements the complex network analysis functions for an expression interpreter.
+#
+# Copyright (C) 2017 Roberto Luiz Souza Monteiro,
+#                    Hernane Borges de Barros Pereira.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: cna.gua,v 2.1 2017/02/07 14:22:00 monteiro Exp $
+#
+
+function cnaSaveFile(filename, adj, type = "edges") {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    # Each line in a Pajek files must terminate with CR+LF.
+    # Windows will automaticly converts "\n" to "\r\n", but
+    # Linux will not.
+    if ($SYS_HOST == "linux") {
+        new_line = "\r\n"
+    } else {
+        new_line = "\n"
+    }
+
+    fp = fopen(filename, "w")
+
+    # Save vertices...
+    fputs("*Vertices " + (dim_i - 1) + new_line, fp)
+    for (i = 1; i < dim_i; i = i + 1) {
+        fputs(i + " \"" + adj[i, 0] + "\"" + new_line, fp)
+    }
+
+    # Save edges...
+    if (type == "edges") {
+        fputs("*Edges" + new_line, fp)
+        for (i = 1; i < dim_i; i = i + 1) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[i, j] != 0) {
+                    fputs(i + " " + j + " " + adj[i, j] + new_line, fp)
+                }
+            }
+        }
+    # Save arcs...
+    } elseif (type == "arcs") {
+        fputs("*Arcs" + new_line, fp)
+        for (i = 1; i < dim_i; i = i + 1) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[i, j] != 0) {
+                    fputs(i + " " + j + " " + adj[i, j] + new_line, fp)
+                }
+            }
+        }
+    # Save matrix...
+    } elseif (type == "matrix") {
+        fputs("*Matrix" + new_line, fp)
+        for (i = 1; i < dim_i; i = i + 1) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                fputs(" " + adj[i, j], fp)
+            }
+            fputs(new_line, fp)
+        }
+    }
+
+    fp = fclose(fp)
+}
+
+function cnaLoadFile(file_name) {
+    fp = fopen(file_name, "r")
+
+    file_section = "none"
+
+    while (!feof(fp)) {
+        if((line = fgets(fp)) == NULL) { 
+            break
+        }
+
+        #record = split(trim(line, " \t\r\n"), " \t")
+        record = split(trim(line, " \t\r\n"))
+
+        if ((tolower(record[0]) == "*vertices") || (tolower(record[0]) == "*edges") || (tolower(record[0]) == "*arcs") || (tolower(record[0]) == "*matrix")) {
+            file_section = tolower(record[0])
+            if (file_section == "*vertices") {
+                n = eval(record[1]) + 1
+                adj = matrix(0, n, n)
+            }
+            i = 0
+            continue
+        }
+
+        if (file_section == "*vertices") {
+            adj[0, i + 1] = eval(record[1])
+            adj[i + 1, 0] = eval(record[1])
+            i = i + 1
+        } elseif (file_section == "*edges") {
+            i = eval(record[0])
+            j = eval(record[1])
+            if (length(record) == 2) {
+                adj[i, j] = 1
+                adj[j, i] = 1
+            } else {
+                adj[i, j] = eval(record[2])
+                adj[j, i] = eval(record[2])
+            }
+        } elseif (file_section == "*arcs") {
+            i = eval(record[0])
+            j = eval(record[1])
+            if (length(record) == 2) {
+                adj[i, j] = 1
+            } else {
+                adj[i, j] = eval(record[2])
+            }
+        } elseif (file_section == "*matrix") {
+            foreach(record; j; v) {
+                adj[i + 1, j + 1] = eval(v)
+                if (i == n) {
+                    break
+                }
+            }
+            i = i + 1
+        }
+    }
+
+    fp = fclose(fp)
+
+    return(adj)
+}
+
+function cnaDensity(adj, directed = FALSE) {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    
+    n = dim_i - 1
+    
+    # Remove vertex data from the matrix...
+    for (i = 0; i < dim_i; i = i + 1) {
+        adj[0, i] = 0
+        adj[i, 0] = 0
+    }
+    
+    nedges = count(adj) * 1.0
+    
+    if (directed) {
+        density = nedges / (n * (n - 1))
+    } else {
+        density = (nedges / 2.0) / ((n * (n - 1)) / 2.0)
+    }
+    
+    return(density)
+}
+
+function cnaDegrees(adj, directed = FALSE) {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+
+    degrees = matrix(0, dim_i, 3)
+    
+    for (i = 1; i < dim_i; i = i + 1) {
+        degrees[i, 0] = count(adj, i, 1, i, dim_j - 1)
+        degrees[i, 1] = count(adj, 1, i, dim_i - 1, i)
+        if (directed) {
+            degrees[i, 2] = degrees[i, 0] + degrees[i, 1]
+        } else {
+            if (degrees[i, 0] != 0) {
+                degrees[i, 2] = degrees[i, 0]
+            } else {
+                degrees[i, 2] = degrees[i, 1]
+            }
+        }
+    }
+
+    return(degrees)
+}
+
+function cnaDegreeDistribution(degrees) {
+    dim_degrees = dim(degrees)
+    dim_i = dim_degrees[0]
+    
+    for (i = 1; i < dim_i; i = i + 1) {
+        degree = degrees[i, 2]
+
+        try {
+            if (search(keys(degdist), degree) == NULL) {
+                degdist[degree] = 1
+            } else {
+                degdist[degree] = degdist[degree] + 1
+			}
+        } catch {
+                degdist[degree] = 1
+        }
+    }
+
+    hist = matrix(0, length(degdist), 3)
+    
+    i = 0
+    foreach(degdist; deg; dist) {
+        hist[i, 0] = deg
+        hist[i, 1] = dist
+		i = i + 1
+    }
+
+    dim_hist = dim(hist)
+
+    sumdegs = sum(hist, 0, 1, dim_hist[0] - 1, 1)
+
+    for (i = 0; i < dim_hist[0]; i = i + 1) {
+        hist[i, 2] = (hist[i, 1] / sumdegs) * 100
+    }
+    
+    # Sort data...
+    for (i = 0; i < dim_hist[0] - 1; i = i + 1) {
+        for (j = i; j < dim_hist[0]; j = j + 1) {
+            if (hist[i, 0] > hist[j, 0]) {
+                degree = hist[i, 0]
+                hist[i, 0] = hist[j, 0]
+                hist[j, 0] = degree
+                
+                frequency = hist[i, 1]
+                hist[i, 1] = hist[j, 1]
+                hist[j, 1] = frequency
+                
+                percentual = hist[i, 2]
+                hist[i, 2] = hist[j, 2]
+                hist[j, 2] = percentual
+            }
+        }
+    }
+    
+	return(hist)
+}
+
+function cnaAverageDegree(degrees) {
+    dim_degrees = dim(degrees)
+    dim_i = dim_degrees[0]
+    
+    avgdeg = avg(degrees, 1, 2, (dim_i - 1), 2)
+    
+    return(avgdeg)
+}
+
+function cnaClustering(adj, directed = FALSE) {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    # To calculate the clustering coefficient we need an undirected graph...
+    if (directed) {
+        for (i = 1; i < dim_i; i = i + 1) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[i, j] == 1) {
+                    adj[j, i] = 1
+                }
+            }
+        }
+    }
+    
+    clustering = matrix(0, dim_i, 1)
+
+    # Calculate the clustering coefficient for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        ki = count(adj, i, 1, i, (dim_j - 1))
+        
+        # If the vertex has any neighbor...
+        if (ki > 0) {
+            # Get all neighbor indexes...
+            ni = 0
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[i, j] == 1) {
+                    neighbor[ni] = j
+                    ni = ni + 1
+                }
+            }
+            n = 0
+            if (exists("neighbor")) {
+                for (j = 1; j < dim_j; j = j + 1) {
+                    if (adj[j, i] == 1) {
+                        if (search(neighbor, j) == NULL) {
+                            neighbor[ni] = j
+                            ni = ni + 1
+                        }
+                    }
+                }
+                
+                # Calculate the number of neighbors connected one to other...
+                foreach(neighbor; n1; i1) {
+                    foreach(neighbor; n2; j2) {
+                        if (n1 != n2) {
+                            if (adj[i1, j2] == 1) {
+                                n = n + 1
+                            }
+                        }
+                    }
+                }
+                
+                neighbor = NULL
+            }
+            
+            # Calculate the clustering coefficient to this vertex...
+            if ((ki == 0) || (ki == 1)) {
+                clustering[i, 0] = 0
+            } else {
+                clustering[i, 0] = (n / 2.0) / (0.5 * (ki * (ki - 1)))
+            }
+        }
+    }
+    
+    return(clustering)
+}
+
+function cnaAverageClustering(clustering) {
+    n = length(clustering) - 1
+    
+    avgclustering = (1.0 / n) * sum(clustering)
+    
+    return(avgclustering)
+}
+
+function cnaShortestPath(adj) {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+
+    matrix_one = one(dim_i, dim_j)
+    matrix_zero = zero(dim_i, dim_j)
+    
+    # Remove vertex data from the matrix.
+    for (i = 0; i < dim_i; i = i + 1) {
+        adj[0, i] = 0
+        adj[i, 0] = 0
+        matrix_one[0, i] = 0
+        matrix_one[i, 0] = 0
+    }
+    
+    geodesic = adj
+    
+    if ((adj == matrix_zero) || (adj == matrix_one)) {
+        return(geodesic)
+    }
+    
+    old = prod = adj
+    order = 1
+    
+    while (TRUE) {
+        prod = adj &| old
+        path = old || prod
+        order = order + 1
+        
+        for (i = 1; i < dim_i; i = i + 1) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if ((prod[i, j] == 1) && (geodesic[i, j] == 0) && (i != j)) {
+                    geodesic[i, j] = order
+                }
+            }
+        }
+        
+        if (path == matrix_one) {
+            break
+        } elseif (path == old) {
+            break
+        } elseif (order == dim_i) {
+            break
+        }
+        
+        old = prod
+    }
+
+    return(geodesic)
+}
+
+function cnaAverageShortestPath(geodesic) {
+    dim_geodesic = dim(geodesic)
+    dim_i = dim_geodesic[0]
+    dim_j = dim_geodesic[1]
+    
+    n = count(geodesic, 1, 1, dim_i - 1, dim_j - 1)
+    
+    if (n > 0) {
+        avgshortestpath = sum(geodesic, 1, 1, dim_i - 1, dim_j - 1) / n
+    } else {
+        avgshortestpath = 0
+    }
+    
+    return(avgshortestpath)
+}
+
+function cnaDiameter(geodesic) {
+    diameter = max(geodesic)
+    
+    return(diameter)
+}
+
+function cnaFloydWarshallShortestPath(adj, path = "") {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    geodesic = adj
+    
+    if (path != "") {
+        @path = matrix(-1, dim_i, dim_j)
+    }
+    
+    for (i = 1; i < dim_i; i = i + 1) {
+        for (j = 1; j < dim_j; j = j + 1) {
+            for (k = 1; k < dim_i; k = k + 1) {
+                if (geodesic[j, k] == 0) {
+                    geodesic[j, k] = 999999999
+                }
+                if (geodesic[j, i] == 0) {
+                    geodesic[j, i] = 999999999
+                }
+                if (geodesic[i, k] == 0) {
+                    geodesic[i, k] = 999999999
+                }
+                if ((geodesic[j, i] + geodesic[i, k]) < geodesic[j, k]) {
+                    geodesic[j, k] = geodesic[j, i] + geodesic[i, k]
+                    
+                    if (path != "") {
+                        @path[j, k] = i
+                    }
+                }
+            }
+        }
+    }
+    
+    for (i = 0; i < dim_i; i = i + 1) {
+        geodesic[0, i] = 0
+        geodesic[i, 0] = 0
+        geodesic[i, i] = 0
+    }
+    
+    # Fix geodesics...
+    for (i = 0; i < dim_i; i = i + 1) {
+        for (j = 0; j < dim_j; j = j + 1) {
+            if (geodesic[i, j] == 999999999) {
+                geodesic[i, j] = 0
+            }
+        }
+    }
+    
+    return(geodesic)
+}
+
+function cnaShortestPathWalk(geodesic, path, j, k) {
+    if (geodesic[j, k] == 0) {
+        return("")
+    }
+    
+    i = path[j, k]
+    
+    if (i == -1) {
+        return("")
+    } else {
+        pji = cnaShortestPathWalk(geodesic, path, j, i)
+        pik = cnaShortestPathWalk(geodesic, path, i, k)
+        
+        pjk = ""
+        
+        if (pji != "") {
+            pjk = pjk + pji + ", "
+        }
+        
+        pjk = pjk + i
+        
+        if (pik != "") {
+            pjk = pjk + ", " + pik
+        }
+        
+        return(pjk)
+    }
+    
+    return(path)
+}
+
+function cnaCountGeodesic(adj, geodesic, directed = FALSE) {
+    dim_geodesic = dim(geodesic)
+    dim_i = dim_geodesic[0]
+    dim_j = dim_geodesic[1]
+    
+    gjk = adj
+    
+    for (i = 0; i < dim_i; i = i + 1) {
+        gjk[0, i] = 0
+        gjk[i, 0] = 0
+        gjk[i, i] = 1
+    }
+    
+    diameter = cnaDiameter(geodesic)
+    
+    # Count how many geodesics are there between vertices i and j...
+    for (p = 2; p <= diameter; p = p + 1) {
+        npaths = adj ** p
+        
+        for (i = 1; i < dim_i; i = i + 1) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (i != j) {
+                    if (gjk[i, j] == 0) {
+                        gjk[i, j] = npaths[i, j]
+                    }
+                }
+            }
+        }
+    }
+    
+    return(gjk)
+}
+
+function cnaCentrality(adj, geodesic, directed = FALSE) {
+    dim_geodesic = dim(geodesic)
+    dim_i = dim_geodesic[0]
+    dim_j = dim_geodesic[1]
+    
+    # Column 0 contains the closeness centrality,
+    # Column 1 contains the betweenness centrality.
+    # Column 2 contains the normalized closeness centrality,
+    # Column 3 contains the normalized betweenness centrality.
+    centrality = matrix(0, dim_i, 5)
+    
+    n = dim_i - 1
+    
+    # Calculate the closeness centrality for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        s = sum(geodesic, i, 1, i, dim_j - 1)
+        
+        if (s > 0) {
+            centrality[i, 0] = 1.0 / s
+            centrality[i, 2] = (n - 1.0) / s
+            centrality[i, 4] = s
+        }
+    }
+    
+    # Calculate the betweenness centrality for each vertex...
+    gjk = cnaCountGeodesic(adj, geodesic, directed)
+    
+    for (i = 1; i < dim_i; i = i + 1) {
+        bc = 0
+        
+        for (j = 1; j < dim_i; j = j + 1) {
+            for (k = 1; k < dim_j; k = k + 1) {
+                # Must insert an if to test if it is a directed graph.
+                if ((j < k) && (j != i) && (i != k)) {
+                    spjk = geodesic[j, k]
+                    
+                    if ((geodesic[j, i] + geodesic[i, k]) == spjk) {
+                        bc = bc + (fmax(gjk[j, i], gjk[i, k]) / (gjk[j, k] * 1.0))
+                    }
+                }
+            }
+        }
+        
+        centrality[i, 1] = bc
+        centrality[i, 3] = (2.0 * bc) / (n ** 2 - 3 * n + 2)
+    }
+    
+    return(centrality)
+}
+
+function cnaVertexEfficiency(geodesic) {
+    dim_geodesic = dim(geodesic)
+    dim_i = dim_geodesic[0]
+    dim_j = dim_geodesic[1]
+
+    efficiency = matrix(0, dim_i, dim_j)
+
+    for (i = 1; i < dim_i; i = i + 1) {
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (geodesic[i , j] != 0) {
+                efficiency[i, j] = 1.0 / geodesic[i , j]
+            }
+        }
+    }
+
+    return(efficiency)
+}
+
+function cnaGlobalEfficiency(efficiency) {
+    dim_efficiency = dim(efficiency)
+    
+    n = dim_efficiency[0] - 1
+    
+    avgeff = (1.0 / (n * (n - 1))) * sum(efficiency)
+    
+    return(avgeff)
+}
+
+function cnaSubgraphEfficiency(adj, efficiency) {
+    dim_adj = dim(adj)
+    dim_efficiency = dim(efficiency)
+
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+
+    subgraph_efficiency = matrix(0, dim_i, 1)
+
+    # Calculate the local efficiency for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        # Get all neighbor indexes...
+        n = 0
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (adj[i, j] == 1) {
+                neighbor[n] = j
+                n = n + 1
+            }
+        }
+        if (exists("neighbor")) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[j, i] == 1) {
+                    if (search(neighbor, j) == NULL) {
+                        neighbor[n] = j
+                        n = n + 1
+                    }
+                }
+            }
+        }
+        # Sum all neighbors efficiency...
+        if (exists("neighbor")) {
+            s = 0.0
+            foreach(neighbor; n1; i1) {
+                foreach(neighbor; n2; j2) {
+                    s = s + efficiency[i1, j2]
+                }
+            }
+            
+            n = length(neighbor)
+            
+            neighbor = NULL
+            
+            # Calculate the local efficiency to this vertex...
+            if ((n == 0) || (n == 1)) {
+                subgraph_efficiency[i, 0] = 0.0
+            } else {
+                subgraph_efficiency[i, 0] = (1.0 / (n * (n - 1))) * s
+            }
+        }
+    }
+    
+    return(subgraph_efficiency)
+}
+
+function cnaLatoraSubgraphEfficiency(adj) {
+    dim_adj = dim(adj)
+    
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    subgraph_efficiency = matrix(0, dim_i, 1)
+    
+    # Calculate the local efficiency for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        # Get all neighbor indexes...
+        n = 0
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (adj[i, j] == 1) {
+                neighbor[n] = j
+                n = n + 1
+            }
+        }
+        if (exists("neighbor")) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[j, i] == 1) {
+                    if (search(neighbor, j) == NULL) {
+                        neighbor[n] = j
+                        n = n + 1
+                    }
+                }
+            }
+        }
+        # Calculate the vertex efficiency...
+        temp = adj
+        for (k = 1; k < dim_i; k = k + 1) {
+            temp[i, k] = 0
+            temp[k, i] = 0
+        }
+        if (exists("neighbor")) {
+            for (k = 1; k < dim_i; k = k + 1) {
+                if (search(neighbor, k) == NULL) {
+                    for (j = 1; j < dim_j; j = j + 1) {
+                        temp[j, k] = 0
+                        temp[k, j] = 0
+                    }
+                }
+            }
+        }
+        geodesic = cnaShortestPath(temp)
+        efficiency = cnaVertexEfficiency(geodesic)
+        # Sum all neighbors efficiency...
+        if (exists("neighbor")) {
+            s = 0.0
+            foreach(neighbor; n1; i1) {
+                foreach(neighbor; n2; j2) {
+                    s = s + efficiency[i1, j2]
+                }
+            }
+            
+            n = length(neighbor)
+            
+            neighbor = NULL
+            
+            # Calculate the local efficiency to this vertex...
+            if ((n == 0) || (n == 1)) {
+                subgraph_efficiency[i, 0] = 0.0
+            } else {
+                subgraph_efficiency[i, 0] = (1.0 / (n * (n - 1))) * s
+            }
+        }
+    }
+    
+    return(subgraph_efficiency)
+}
+
+function cnaLatoraSubgraphEfficiencyFW(adj) {
+    dim_adj = dim(adj)
+    
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    subgraph_efficiency = matrix(0, dim_i, 1)
+    
+    # Calculate the local efficiency for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        # Get all neighbor indexes...
+        n = 0
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (adj[i, j] == 1) {
+                neighbor[n] = j
+                n = n + 1
+            }
+        }
+        if (exists("neighbor")) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[j, i] == 1) {
+                    if (search(neighbor, j) == NULL) {
+                        neighbor[n] = j
+                        n = n + 1
+                    }
+                }
+            }
+        }
+        # Calculate the vertex efficiency...
+        temp = adj
+        for (k = 1; k < dim_i; k = k + 1) {
+            temp[i, k] = 0
+            temp[k, i] = 0
+        }
+        if (exists("neighbor")) {
+            for (k = 1; k < dim_i; k = k + 1) {
+                if (search(neighbor, k) == NULL) {
+                    for (j = 1; j < dim_j; j = j + 1) {
+                        temp[j, k] = 0
+                        temp[k, j] = 0
+                    }
+                }
+            }
+        }
+        geodesic = cnaFloydWarshallShortestPath(temp)
+        efficiency = cnaVertexEfficiency(geodesic)
+        # Sum all neighbors efficiency...
+        if (exists("neighbor")) {
+            s = 0.0
+            foreach(neighbor; n1; i1) {
+                foreach(neighbor; n2; j2) {
+                    s = s + efficiency[i1, j2]
+                }
+            }
+            
+            n = length(neighbor)
+            
+            neighbor = NULL
+            
+            # Calculate the local efficiency to this vertex...
+            if ((n == 0) || (n == 1)) {
+                subgraph_efficiency[i, 0] = 0.0
+            } else {
+                subgraph_efficiency[i, 0] = (1.0 / (n * (n - 1))) * s
+            }
+        }
+    }
+    
+    return(subgraph_efficiency)
+}
+
+function cnaPlasticitySubgraphEfficiency(adj) {
+    dim_adj = dim(adj)
+    
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    subgraph_efficiency = matrix(0, dim_i, 1)
+    
+    # Calculate the local efficiency for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        # Get all neighbor indexes...
+        n = 0
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (adj[i, j] == 1) {
+                neighbor[n] = j
+                n = n + 1
+            }
+        }
+        if (exists("neighbor")) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[j, i] == 1) {
+                    if (search(neighbor, j) == NULL) {
+                        neighbor[n] = j
+                        n = n + 1
+                    }
+                }
+            }
+        }
+        # Calculate the vertex efficiency...
+        temp = adj
+        for (k = 1; k < dim_i; k = k + 1) {
+            temp[i, k] = 0
+            temp[k, i] = 0
+        }
+        geodesic = cnaShortestPath(temp)
+        efficiency = cnaVertexEfficiency(geodesic)
+        # Sum all neighbors efficiency...
+        if (exists("neighbor")) {
+            s = 0.0
+            foreach(neighbor; n1; i1) {
+                foreach(neighbor; n2; j2) {
+                    s = s + efficiency[i1, j2]
+                }
+            }
+            
+            n = length(neighbor)
+            
+            neighbor = NULL
+            
+            # Calculate the local efficiency to this vertex...
+            if ((n == 0) || (n == 1)) {
+                subgraph_efficiency[i, 0] = 0.0
+            } else {
+                subgraph_efficiency[i, 0] = (1.0 / (n * (n - 1))) * s
+            }
+        }
+    }
+    
+    return(subgraph_efficiency)
+}
+
+function cnaPlasticitySubgraphEfficiencyFW(adj) {
+    dim_adj = dim(adj)
+    
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+    
+    subgraph_efficiency = matrix(0, dim_i, 1)
+    
+    # Calculate the local efficiency for each vertex...
+    for (i = 1; i < dim_i; i = i + 1) {
+        # Get all neighbor indexes...
+        n = 0
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (adj[i, j] == 1) {
+                neighbor[n] = j
+                n = n + 1
+            }
+        }
+        if (exists("neighbor")) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[j, i] == 1) {
+                    if (search(neighbor, j) == NULL) {
+                        neighbor[n] = j
+                        n = n + 1
+                    }
+                }
+            }
+        }
+        # Calculate the vertex efficiency...
+        temp = adj
+        for (k = 1; k < dim_i; k = k + 1) {
+            temp[i, k] = 0
+            temp[k, i] = 0
+        }
+        geodesic = cnaFloydWarshallShortestPath(temp)
+        efficiency = cnaVertexEfficiency(geodesic)
+        # Sum all neighbors efficiency...
+        if (exists("neighbor")) {
+            s = 0.0
+            foreach(neighbor; n1; i1) {
+                foreach(neighbor; n2; j2) {
+                    s = s + efficiency[i1, j2]
+                }
+            }
+            
+            n = length(neighbor)
+            
+            neighbor = NULL
+            
+            # Calculate the local efficiency to this vertex...
+            if ((n == 0) || (n == 1)) {
+                subgraph_efficiency[i, 0] = 0.0
+            } else {
+                subgraph_efficiency[i, 0] = (1.0 / (n * (n - 1))) * s
+            }
+        }
+    }
+    
+    return(subgraph_efficiency)
+}
+
+function cnaGetSubgraphs(adj) {
+    dim_adj = dim(adj)
+    
+    dim_i = dim_adj[0]
+    dim_j = dim_adj[1]
+
+    subgraph = matrix("", dim_i, 1)
+    
+    # Find all subgraphs...
+    for (i = 1; i < dim_i; i = i + 1) {
+        # Get all neighbor indexes...
+        n = 0
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (adj[i, j] == 1) {
+                neighbor[n] = j
+                n = n + 1
+            }
+        }
+        if (exists("neighbor")) {
+            for (j = 1; j < dim_j; j = j + 1) {
+                if (adj[j, i] == 1) {
+                    if (search(neighbor, j) == NULL) {
+                        neighbor[n] = j
+                        n = n + 1
+                    }
+                }
+            }
+            
+            # Store this subgraph...
+            subgraph[i, 0] = trim(toString(neighbor), "{}")
+            
+            neighbor = NULL
+        }
+    }
+    
+    return(subgraph)
+}
+
+function cnaLocalEfficiency(subgraph_efficiency) {
+    dim_subgraph_efficiency = dim(subgraph_efficiency)
+    
+    n = dim_subgraph_efficiency[0] - 1
+    
+    local_efficiency = (1.0 / n) * sum(subgraph_efficiency)
+    
+    return(local_efficiency)
+}
+
+function cnaLabels(adj) {
+    dim_adj = dim(adj)
+    dim_i = dim_adj[0]
+    
+    for (i = 1; i < dim_i; i = i + 1) {
+        labels[i] = adj[i, 0]
+    }
+    
+    return(labels)
+}
+

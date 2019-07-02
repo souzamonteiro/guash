@@ -1,0 +1,298 @@
+#!/usr/local/bin/guash
+#
+# turingmachine.gua
+#
+#     This file implements a turing machine simulator.
+#
+# Copyright (C) 2009 Roberto Luiz Souza Monteiro
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: turingmachine.gua,v 1.0 2009/10/31 22:25:00 monteiro Exp $
+#
+
+#
+# Configuration variables.
+#
+debug = FALSE
+input_file = "noname"
+output_file = "tape.log"
+tape_file = "noname"
+machine_definition = {"1,2,3,4,5,h", "0,1", "0", "1", "h"}
+blank = "0"
+tape[0] = "0"
+initial_tape = tape
+tape_size = 1
+state_register = "1"
+max_iter = 50
+skip = 1
+
+#
+# The main program.
+#
+
+# Parse command line oprions...
+if (argc < 3) {
+    println("Usage: turingmachine option1 value1 [option1 value1]")
+    exit
+}
+
+i = 2
+
+while (i < argc) {
+    if ((argv[i] == "-h") || (argv[i] == "--help")) {
+        println("Usage: turingmachine option1 value1 [option1 value1]")
+        println("-h  --help  show the options sumary")
+        println("-d          debug mode")
+        println("-i          input file name")
+        println("-o          output file mame")
+        println("-m          machine definition(default='{\"1,2,3,4,5,h\", \"0,1\", \"0\", \"1\", \"h\"}')")
+        println("-t          initial tape(default='{\"0\"}')")
+        println("-s          initial tape size(default=1)")
+        println("    --tf    initial tape file name")
+        println("-n          number of max iteractions")
+        println("    --skip  skip n iteractions before log the tape")
+        exit(0)
+    } elseif (argv[i] == "-d") {
+        debug = TRUE
+    } elseif (argv[i] == "-i") {
+        i = i + 1
+        input_file = argv[i]
+    } elseif (argv[i] == "-o") {
+        i = i + 1
+        output_file = argv[i]
+    } elseif (argv[i] == "-m") {
+        i = i + 1
+        if (trim(argv[i]) == "none") {
+            machine_definition = "none"
+        } else {
+            machine_definition = eval(argv[i])
+        }
+    } elseif (argv[i] == "-t") {
+        i = i + 1
+        initial_tape = eval(argv[i])
+    } elseif (argv[i] == "-s") {
+        i = i + 1
+        tape_size = eval(argv[i])
+    } elseif (argv[i] == "--tf") {
+        i = i + 1
+        tape_file = argv[i]
+    } elseif (argv[i] == "-n") {
+        i = i + 1
+        max_iter = eval(argv[i])
+    } elseif (argv[i] == "--skip") {
+        i = i + 1
+        if (argv[i] != "0") {
+            skip = eval(argv[i])
+        }
+    }
+    i = i + 1
+}
+
+# Check if the input file name was suplied.
+if (output_file == "noname") {
+    println("Error: input file name is mandatory.")
+    exit(1)
+}
+
+# Check if a machine definition was supplyed...
+if (type(machine_definition) == 4) {
+    if (length(machine_definition) != 5) {
+        println("Error: bad machine definition.")
+        println("Must be: {\"list of possible states\", \"list of possible sybols\",")
+        println("          \"blank symbol\", \"initial state\", \"list of final states\"}")
+        exit(1)
+    }
+} else {
+    if (machine_definition != "none") {
+        println("Error: bad machine definition.")
+        println("Must be: {\"list of possible states\", \"list of possible symbols\",")
+        println("          \"blank symbol\", \"initial state\", \"list of final states\"}")
+        exit(1)
+    }
+}
+
+# Parse the machine definition...
+if (type(machine_definition) == 4) {
+    states = split(trim(machine_definition[0]), ",")
+    symbols = split(trim(machine_definition[1]), ",")
+    blank = trim(machine_definition[2])
+    initial_state = trim(machine_definition[3])
+    final_states = split(trim(machine_definition[4]), ",")
+}
+
+# Init the status register...
+if (type(machine_definition) == 4) {
+    state_register = initial_state
+}
+
+# Build the tape...
+if (tape_size != length(tape)) {
+    tape = NULL
+    for (i = (tape_size / 2); i > 0; i = i - 1) {
+        tape[-i] = blank
+    }
+    tape[0] = blank
+    for (i = 1; i < (tape_size / 2); i = i + 1) {
+        tape[i] = blank
+    }
+}
+
+# If any initial tape value was supplyed, fill the tape with it...
+if (initial_tape != tape) {
+    foreach (initial_tape; tape_pos; tape_char) {
+        tape[tape_pos] = tape_char
+    }
+}
+
+# If a tape file name was suplied, read it...
+if (tape_file != "noname") {
+    fd = fopen(tape_file, "r")
+    if ((line = fgets(fd)) == NULL) {
+        println("Error: could not read from tape file " + tape_file)
+        exit(1)
+    } else {
+        tape = eval(trim(line, " \t\r\n"))
+        tape_size = length(tape)
+    }
+    fclose(fd)
+}
+
+# Put the head at the middle of the tape...
+head = 0
+
+# Show debug information...
+if (debug) {
+    if (type(machine_definition) == 4) {
+        println("States = " + toString(states))
+        println("Symbols = " + toString(symbols))
+        println("Blank char = " + blank)
+        println("Initial state = " + initial_state)
+        println("Final states = " + toString(final_states))
+    } else {
+        println("Blank char = " + blank)
+    }
+    println("Tape = " + toString(tape))
+    println("Tape size = " + length(tape))
+    print("Max manber of iteractions = " + max_iter + "\n\n")
+}
+
+# Read the state table...
+fi = fopen(input_file, "r")
+
+i = 0
+
+while (!feof(fi)) {
+    if ((line = fgets(fi)) == NULL) { 
+        break
+    }
+
+    if (length(trim(line, " \t\r\n")) > 0) {
+        # Any line begining with the hash character(#) is a comment.
+        if (at(trim(line, " \t\r\n"), 0) != "#") {
+            instructions[i] = trim(line, " \t\r\n")
+            i = i + 1
+        }
+    }
+}
+
+fclose(fi)
+
+# Run the state table...
+fo = fopen(output_file, "w")
+
+fputs(toString(tape) + "\n", fo)
+
+i = 1
+
+do {
+    found = FALSE
+
+    foreach (instructions; transition_number; transition) {
+        # Parse state table instruction...
+        instruction = split(transition, ",")
+        state = trim(instruction[0])
+        char = trim(instruction[1])
+        new_state = trim(instruction[2])
+        new_char = trim(instruction[3])
+        move_command = trim(instruction[4])
+        
+        # Any state must be in the list of possible states, if it was defined...
+        if (type(machine_definition) == 4) {
+            if (search(states, state) == NULL) {
+                println("Error: invalid state " + state)
+                break
+            }
+        }
+        
+        # Run the specified command...
+        if ((state == state_register) && (char == tape[head])) {
+            # Show debug information...
+            if (debug) {
+                println("Tape = " + toString(tape))
+                println("Head pos = " + head)
+                println("Instruction = " + toString(instruction) + "\n")
+            }
+            
+            state_register = new_state
+            tape[head] = new_char
+            if ((move_command == "L") || (move_command == "<")) {
+                head = head - 1
+                if (search(keys(tape), head) == NULL) {
+                    tape[head] = blank
+                }
+            } elseif ((move_command == "R") || (move_command == ">")) {
+                head = head + 1
+                if (search(keys(tape), head) == NULL) {
+                    tape[head] = blank
+                }
+            } elseif (move_command == "N") {
+            } else {
+                println("Error: invalid move command " + move_command)
+                break
+            }
+
+            # If a final state was found, stop machine...
+            if (type(machine_definition) == 4) {
+                if (search(final_states, state) != NULL) {
+                    printf("Break: final state %s found ", state)
+                    break
+                }
+            }
+
+            found = TRUE
+            break
+        }
+    }
+
+    # Write the tape to the tape log...
+    if (found) {
+        # Skip n iteracions before log the tape...
+        if ((i % skip) == 0) {
+            fputs(toString(tape) + "\n", fo)
+        }
+
+        i = i + 1
+
+        if (i >= max_iter) {
+            break
+        }
+    } else {
+        printf("Error: invalid (state, char)=(%s, %s) pair found\n", state_register, tape[head])
+    }
+} while (found)
+
+fclose(fo)
+

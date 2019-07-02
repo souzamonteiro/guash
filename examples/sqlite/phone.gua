@@ -1,0 +1,464 @@
+#!/usr/local/bin/guash
+#
+# phone.gua
+#
+#     This file implements a simple phone book.
+#
+# Copyright (C) 2005 Roberto Luiz Souza Monteiro
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: phone.gua,v 1.1 2015/03/11 15:02:00 monteiro Exp $
+#
+
+script_file = fsFullPath($argv[1])
+script_path = fsPath(script_file)
+file = script_path + "/phone.db"
+
+record["name"] = "";
+record["phone"] = "";
+
+title = "PHONE BOOK";
+copyright = "Copyright(C) 2013 by Roberto Luiz Souza Monteiro.";
+
+boxtitle = "";
+
+#
+# Database callback.
+#
+function fetchRow(row) {
+    $record["name"] = row["name"];
+    $record["phone"] = row["phone"];
+    
+    # Get only one row.
+    return(1)
+}
+
+#
+# Edit a record.
+#
+function editRecord(getAll = TRUE) {
+    clrscr;
+    
+    box(1, 1, 80, 24, RED, BLACK);
+    box(5, 8, 76, 17, WHITE, CYAN);
+    
+    textcolor(RED);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($title)) / 2, 3);
+    printf("%s", $title);
+
+    textcolor(BLUE);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($copyright)) / 2, 5);
+    printf("%s", $copyright);
+
+    textcolor(BLACK);
+    textbackground(WHITE);
+    
+    gotoxy((80 - length($boxtitle)) / 2, 8);
+    printf("%s", $boxtitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+    
+    gotoxy(10,12);
+    printf("Name:");
+    gotoxy(10,13);
+    printf("Phone:");
+    
+    $record["name"] = entry(17, 12, 50, BLACK, WHITE);
+    
+    if (!getAll) {
+        return(TRUE);
+    }
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    $record["phone"] = entry(17, 13, 20, BLACK, WHITE);
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    gotoxy(10,22);
+    printf("Ok( [Y] Yes, [N] No )?");
+    
+    while (TRUE) {
+        option = getch();
+        
+        if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+            break;
+        }
+    }
+    
+    if (toupper(option) == "Y") {
+        return(TRUE);
+    } else {
+        return(FALSE);
+    }
+}
+
+#
+# Edit a record.
+#
+function editPhone() {
+    clrscr;
+    
+    box(1, 1, 80, 24, RED, BLACK);
+    box(5, 8, 76, 17, WHITE, CYAN);
+    
+    textcolor(RED);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($title)) / 2, 3);
+    printf("%s", $title);
+
+    textcolor(BLUE);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($copyright)) / 2, 5);
+    printf("%s", $copyright);
+
+    textcolor(BLACK);
+    textbackground(WHITE);
+    
+    gotoxy((80 - length($boxtitle)) / 2, 8);
+    printf("%s", $boxtitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+    
+    gotoxy(10,12);
+    printf("Name:");
+    gotoxy(17,12);
+    printf($record["name"]);
+    gotoxy(10,13);
+    printf("Phone:");
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    $record["phone"] = entry(17, 13, 20, BLACK, WHITE);
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    gotoxy(10,22);
+    printf("Ok( [Y] Yes, [N] No )?");
+    
+    while (TRUE) {
+        option = getch();
+        
+        if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+            break;
+        }
+    }
+    
+    if (toupper(option) == "Y") {
+        return(TRUE);
+    } else {
+        return(FALSE);
+    }
+}
+
+#
+# Show a record.
+#
+function showRecord() {
+    clrscr;
+    
+    box(1, 1, 80, 24, RED, BLACK);
+    box(5, 8, 76, 17, WHITE, CYAN);
+    
+    textcolor(RED);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($title)) / 2, 3);
+    printf("%s", $title);
+    
+    textcolor(BLUE);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($copyright)) / 2, 5);
+    printf("%s", $copyright);
+    
+    textcolor(BLACK);
+    textbackground(WHITE);
+    
+    gotoxy((80 - length($boxtitle)) / 2, 8);
+    printf("%s", $boxtitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+    
+    gotoxy(10,12);
+    printf("Name:");
+    gotoxy(10,13);
+    printf("Phone:");
+    
+    textcolor(RED);
+    
+    gotoxy(17,12);
+    printf($record["name"]);
+    gotoxy(17,13);
+    printf($record["phone"]);
+}
+
+#
+# Insert a new record.
+#
+function insertRecord() {
+    $record["name"] = "";
+    $record["phone"] = "";
+    
+    $boxtitle = "New Record";
+    
+    if (editRecord()) {
+        sqliteExecute($db, "INSERT INTO phone(name, phone) VALUES('" + $record["name"] + "','" + $record["phone"] + "')")
+    }
+}
+
+#
+# Update a record.
+#
+function updateRecord() {
+    $boxtitle = "Edit Record";
+    
+    editRecord(FALSE);
+
+    found = FALSE;
+
+    $record["phone"] = "";
+    
+    sqliteExecute($db, "SELECT * FROM phone WHERE name LIKE '%" + $record["name"] + "%'", "fetchRow")
+    
+    if (length($record["phone"]) != 0) {
+        found = TRUE;
+    }
+    
+    if (found) {
+        showRecord;
+        
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,22);
+        printf("Ok( [Y] Yes, [N] No )?");
+        
+        while (TRUE) {
+            option = getch();
+            
+            if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+                break;
+            }
+        }
+        
+        if (toupper(option) == "Y") {
+            name = $record["name"]
+            
+            if (editPhone()) {
+                sqliteExecute($db, "UPDATE phone SET phone = '" + $record["phone"] + "' WHERE name = '" + name + "'")
+            }
+        } else {
+            return;
+        }
+    } else {
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,20);
+        printf("Record not found!");
+        gotoxy(10,22);
+        printf("Press any key to continue...");
+        getch;
+    }
+}
+
+#
+# Delete a record.
+#
+function deleteRecord() {
+    $boxtitle = "Delete Record";
+    
+    editRecord(FALSE);
+
+    found = FALSE;
+
+    $record["phone"] = "";
+    
+    sqliteExecute($db, "SELECT * FROM phone WHERE name LIKE '%" + $record["name"] + "%'", "fetchRow")
+    
+    if (length($record["phone"]) != 0) {
+        found = TRUE;
+    }
+    
+    if (found) {
+        showRecord;
+        
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,22);
+        printf("Ok( [Y] Yes, [N] No )?");
+        
+        while (TRUE) {
+            option = getch();
+            
+            if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+                break;
+            }
+        }
+        
+        if (toupper(option) == "Y") {
+            sqliteExecute($db, "DELETE FROM phone WHERE name = '" + $record["name"] + "'")
+        } else {
+            return;
+        }
+    } else {
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,20);
+        printf("Record not found!");
+        gotoxy(10,22);
+        printf("Press any key to continue...");
+        getch;
+    }
+}
+
+#
+# Search record.
+#
+function searchRecord() {
+    $boxtitle = "Search Record";
+
+    editRecord(FALSE);
+
+    found = FALSE;
+
+    $record["phone"] = "";
+    
+    sqliteExecute($db, "SELECT * FROM phone WHERE name LIKE '%" + $record["name"] + "%'", "fetchRow")
+    
+    if (length($record["phone"]) != 0) {
+        found = TRUE;
+    }
+    
+    if (found) {
+        showRecord;
+    } else {
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,20);
+        print("Record not found!");
+    }
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    gotoxy(10,22);
+    printf("Press any key to continue...");
+    getch;
+}
+
+#
+# The main program.
+#
+
+# Open the database.
+if (fsExists(file)) {
+    db = sqliteOpen(file)
+} else {
+    db = sqliteOpen(file)
+    
+    sqliteExecute(db, "CREATE TABLE phone(name text, phone text)")
+}
+
+option = "";
+
+# Show the main menu.
+while (TRUE) {
+    menutitle = "General Options";
+
+    clrscr;
+
+    box(1, 1, 80, 24, RED, BLACK);
+    box(29, 9, 49, 17, WHITE, CYAN);
+
+    textcolor(RED);
+    textbackground(BLACK);
+
+    gotoxy((80 - length(title)) / 2, 3);
+    printf("%s", title);
+
+    textcolor(BLUE);
+    textbackground(BLACK);
+
+    gotoxy((80 - length(copyright)) / 2, 5);
+    printf("%s", copyright);
+
+    textcolor(BLACK);
+    textbackground(WHITE);
+
+    gotoxy((80 - length(menutitle)) / 2, 9);
+    printf("%s", menutitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+
+    gotoxy(33, 11);
+    printf("[1] NEW");
+    gotoxy(33, 12);
+    printf("[2] EDIT");
+    gotoxy(33, 13);
+    printf("[3] DELETE");
+    gotoxy(33, 14);
+    printf("[4] SEARCH");
+    gotoxy(33, 15);
+    printf("[5] EXIT");
+
+    textcolor(GREEN);
+    textbackground(BLACK);
+
+    gotoxy(10,22);
+    printf("Select an option.");
+    
+    option = getch();
+
+    if (option == "1") {
+        insertRecord;
+    } elseif (option == "2") {
+        updateRecord;
+    } elseif (option == "3") {
+        deleteRecord;
+    } elseif (option == "4") {
+        searchRecord;
+    } elseif (option == "5") {
+        # Close the database and exit.
+        db = sqliteClose(db);
+        
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        clrscr;
+        
+        break;
+    }
+}
+

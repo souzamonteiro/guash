@@ -1,0 +1,789 @@
+2015-12-15 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*printf.c:
+*printf.h:
+Memory leak fix on function printf.
+
+2015-12-14 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*system.c:
+*system.h:
+Added functions load and include..
+Bug fix on function source.
+
+2015-11-24 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*interp.c (Gua_ParseEqual):
+*interp.h:
+Bug fix on matrix comparation.
+
+2015-11-14 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*math.c (Gua_ParseAssignFunction):
+*math.h:
+Bug fix on fabs function.
+
+2015-11-11 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*interp.c (Gua_ParseAssignFunction):
+*interp.h:
+Bug fix on ETS.
+
+2015-10-30 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*sqlite.c:
+Bug fix on sqliteExists and sqliteOneColumn functions.
+
+2015-10-26 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*glw.c:
+*glwm.c:
+*glwm.h:
+Bug fix on GLWM multi-window event handle.
+
+*glfw.c:
+*glfw.h:
+*guash.c:
+Removed GLFW support.
+
+2015-10-22 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*guash.c:
+Added GLWM support.
+
+*glwm.c:
+Implemented GLWM support.
+
+2015-10-13 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+*interp.c:
+Bug fix on function Gua_KeyValuePairsToArray.
+
+2015-10-11 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* match.c:
+* match.h:
+Created functions match and glob.
+
+* regexp.c:
+* regexp.h:
+Created regular expression functions regexp and regsub.
+
+* glo.c:
+* glo.h:
+Package Glutil renamed to Glo.
+
+* glft.c:
+* glft.h:
+* glf.c:
+* glf.h:
+Added package Glf for font render on OpenGL.
+
+* time.c:
+* time.h:
+All time related functions moved to package Time.
+
+* strptime.c:
+* strptime.h:
+Created an OS independent version of the BSD strptime function.
+
+* interp.c:
+* interp.h:
+Bug fix on function creation and search scope. Now functions are created on the local scop ever.
+
+2014-08-06 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* glutil.c:
+* glutil.h:
+Reimplementation of functions glutilLoadPPM and glutilSavePPM.
+
+2014-08-05 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* system.c:
+* system.h:
+Bug fix on source function.
+
+2014-07-22 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* string.c:
+* string.h:
+Bug fix on ltrim, rtrim and trim functions.
+
+2014-07-16 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* gl.c:
+* gl.h:
+Added functions glArrayOfFloat and glFree.
+
+2014-07-15 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* gl.c:
+* gl.h:
+Namespace Gles renamed to Gl.
+
+2014-07-14 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* utf8.c:
+Added functions utf8at and utf8range.
+
+2014-07-11 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* utf8.c:
+Added function utf8len.
+
+2014-07-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* utf8.c:
+* utf8.h:
+Namespace Charset renamed to Utf8, functions utf8_encode e utf8_decode, renamed to utf8enc and utf8dec.
+
+2014-07-09 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* charset.c:
+* charset.h:
+Added support to the UTF-8 charset.
+
+2013-10-11 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* icon*.*:
+Added Windows app icon.
+
+2013-10-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* sqlite.c:
+Function sqliteExec renamed to sqliteExecute.
+
+2013-10-04 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Bug fix on ETS.
+
+* sqlite.c:
+Bug fix on database callback return.
+
+2013-10-03 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* sqlite.c:
+Added support to the SQLite database.
+
+2013-10-02 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Bug fix on the generic handles support.
+
+2013-10-01 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* guash.c:
+* interp.c:
+* interp.h:
+* system.c:
+* system.h:
+Added generic handles support.
+
+2013-09-28 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Bug fix on matrices of file handles.
+
+2013-09-27 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Bug fix on arrays of file handles.
+
+2013-09-26 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Bug fix on file handle console print.
+
+2013-09-24 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* system.c:
+* system.h:
+Bug fix on file handle console print.
+
+* file.c:
+* file.h:
+Removed functions remove and rename.
+
+* fs.c:
+* fs.h:
+Finished implementation.
+
+2013-09-23 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* fs.c:
+* fs.h:
+* guash.c:
+Implemented functions fileExtension, fileName e filePath.
+
+2013-09-21 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* fs.c:
+* fs.h:
+* guash.c:
+Create the file system access library.
+
+2013-09-19 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Bug fix on file handle copy.
+
+2013-09-16 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* gl.c:
+* glu.c:
+* glut.c:
+* guash.c:
+* Makefile.MacOSX:
+Mac OS X port.
+
+* file.c:
+* file.h:
+* guash.c:
+* interp.c:
+* interp.h:
+* system.c:
+* system.h:
+New file access architecture.
+
+2013-09-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Namespace re-implemented as hash table.
+
+2013-09-09 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+New GEA (GuaraScript Extension Architecture).
+
+* gles.c:
+Finished OpenGL ES 1.1 implementation.
+
+2013-09-06 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* glutil.c:
+* glutil.h:
+Created the GuaraScript OpenGL GLUTIL library.
+
+* gles.c:
+Finished OpenGL ES 1.1 implementation.
+
+2013-09-03 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Added support for non-null terminated strings.
+
+* gles.c:
+Finished OpenGL ES 1.1 implementation.
+
+2013-09-02 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* string.c:
+* string.h:
+Added string function.
+
+* matrix.c:
+* matrix.h:
+Bug fix on trans function.
+
+2013-08-31 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+Bug fix on non-null terminated string.
+
+2013-08-29 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* glut.c:
+Added ETS support to all GLUT callback functions.
+
+2013-08-27 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* glu.c:
+* glu.h:
+Add some OpenGL GLU support.
+
+2013-08-13 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* glut.c:
+* glut.h:
+Finished GLUT implementation.
+
+2013-08-13 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+Changed global name space variable from container to nspace.
+
+2013-06-29 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* string.c:
+* string.h:
+Bug fix on ltrim, rtrim and trim functions.
+
+2013-03-06 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* Makefile:
+Bug fix on compile glguash.
+
+2013-02-26 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Bug fix on variable assignment.
+
+2013-02-07 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+Changed Gua_Namespace pointers names from namespace to container.
+
+2012-12-21 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Better implementation of in-line functions.
+
+2012-12-17 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Fixed memory management problems.
+
+2012-12-17 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* guash.c:
+Fixed memory management problems.
+
+2012-12-17 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Completed the implementation of in-line functions.
+
+2012-12-17 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Redesign of function Gua_ParseAssign* to support in-line functions.
+
+2012-12-16 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+Completed the implementation of the mechanism for accessing strings as arrays of characters.
+
+2012-12-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ParseAssignVariable):
+* interp.h:
+String assignment bug fix.
+
+2012-12-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Redesign of function Gua_ParseAssign and added support to access strings as arrays of bytes.
+
+2012-12-06 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* math.c:
+Finished complex numbers support at functions cos, sin, tan, cosh, sinh, tanh, exp, log, pow, sqrt.
+
+2012-11-29 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+New ETS implementation.
+
+2012-11-11 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+New interpreter design.
+
+2012-10-20 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+* guash.c:
+* printf.c:
+* printf.h:
+* system.c:
+* system.h:
+Started new object-oriented model implementation.
+
+2012-06-25 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* guash.c:
+* guash.h:
+* math.c:
+* math.h:
+Windows support removed.
+
+2012-02-13 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* string.c:
+* string.h:
+Bug fix on functions ltrim, rtrim and trim.
+
+2011-11-22 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* math.c:
+* math.h:
+Added function roundl.
+
+2011-11-17 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* guash.c:
+* interp.c:
+* interp.h:
+* system.c:
+* system.h:
+Finished the first Virtual File System(VFS) implementation.
+
+2011-11-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* math.c:
+* math.h:
+Added function srandom.
+
+2011-06-28 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Started the Virtual File System(VFS) implementation.
+
+2011-06-23 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+ETS(Error Tracking System) improvements.
+
+2011-06-09 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* math.c: Changed names of functions min and max to fmin and fmax.
+* matrix.c: Added min and max functions.
+
+2011-06-08 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c: Structure Gua_StatusTable redesigned.
+* interp.h: Error Strings implemented as contants.
+* guash.c (main): Fixed erro on exit function call.
+
+2011-04-27 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+New exit function implementation, in order to solve memory deallocation problems.
+
+2011-04-20 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c:
+* interp.h:
+Fixed memory access problems and changed lexer functions prefix from Parse to Scan.
+
+2011-04-07 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+Fixed memory access problems.
+
+2011-03-31 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_IsMatrixApproximatelyEqual):
+* interp.h:
+Added support to test complex matrix and complex numbers accepting approximate results.
+
+2011-02-28 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ParseEqual):
+* interp.h:
+Reengineering.
+
+2011-02-24 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ParseLess):
+* interp.h:
+Reengineering.
+
+2011-02-23 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ParseLeftShift):
+* interp.h:
+Reengineering.
+
+2011-02-15 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ParseValue):
+* interp.h:
+Added support to access atrings as arrays.
+
+2010-12-03 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* string.c (String_StringFunctionWrapper):
+* string.h:
+Added function replace.
+
+2010-12-03 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ParseNumber):
+* interp.h:
+Fixed float number detection.
+
+2010-10-28 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* interp.c (Gua_ElapsedTime):
+* interp.h:
+Created type Gua_Time.
+
+2010-10-11 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* *.c:
+* *.h:
+* *.gua:
+Reengineering: changed Expr_ and EXPR_ to Gua_ GUA_.
+
+2010-10-10 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c (Expr_ParseValue):
+* expr.h:
+Reengineering.
+
+2010-09-30 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c:
+* expr.h:
+Added the exists function.
+ 
+2009-10-27 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* system.h:
+* math.c:
+* matrix.c:
+* guash.c:
+* Makefile.mingw32:
+Started a basic Windows port.
+
+2009-10-04 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c: Try to fix a bug in the variable scope search.
+
+2009-09-28 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* matrix.c: Added the count function.
+
+2009-09-27 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c: Fixed return type of operators <, <=, > and >= to be integer.
+* string.c (String_StringFunctionWrapper): Function split changed to consume all spaces between fields in string been parsed and added support to parse arrays and matrices embedded into strings.
+
+2009-09-26 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c: Added indirection operator(@).
+* expr.c: Fixed return type of operator equal(==) to be integer.
+
+2009-09-23 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* Makefile: Moved to the root directory.
+* tab2spaces.sh: Changed to work with the new makefile.
+* README:
+* LEIAME:
+Updated.
+
+2009-09-22 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c: Fixed memory allocation problems on return array and matrices from scripted functions.
+* printf.c: Fixed compiler warnings.
+* matrix.c:
+* matrix.h:
+Added functions delrow and delcol.
+
+2009-09-21 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c:
+* expr.h:
+Added operator matrix boolean multiplication(&|) and support to matrices to the boolean AND and OR operators.
+
+2009-07-04 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c: Updated change time and date.
+* expr.h: Updated change time and date.
+* matrix.c: Updated change time and date.
+* matrix.h: Updated change time and date.
+* string.c: Added ltrim, rtrim and trim functions and improve the split function.
+* string.h: Updated change time and date.
+
+2009-07-03 Roberto Luiz Souza Monteiro <roberto@souzamonteiro.com>
+
+* expr.c (Expr_Evaluate): Fixed a bug in the error track system.
+* matrix.c: Added sum and avg functions.
+
+2005-12-30 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* string.c (String_StringFunctionWrapper, String_Init): Added function split.
+
+2005-10-18 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_EvalFunction): Fixed a memory leak in the namespace.
+* expr.c (Expr_ParseValue): Fixed a bug in the global variable search engine.
+
+2005-10-12 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_ParseFunction): Fixed a memory leak in the argv array.
+
+2005-09-25 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c: Fixed a bug in the env array creation.
+
+2005-09-23 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* guash.c: Added library information on startup.
+* matrix.c: Added cross and dot functions.
+
+2005-09-01 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* array.h:
+* complex.h:
+* expr.h:
+* math.h:
+* matrix.h:
+* printf.h:
+* string.h:
+* system.h:
+Changed to make public all general purpose functions.
+
+2005-08-31 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* printf.c: Finished release 1.0.
+* guash.c: Finished release 1.0.
+* Makefile: guash source file renamed from exprMain.c to guash.c.
+
+2005-08-21 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* system.c: Finished release 1.0.
+
+2005-08-10 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c: Finished first public release.
+* Makefile: Executable name changed to guash.
+
+2005-07-25 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_EvalExpression): Added function eval.
+* system.c (System_SourceWrapper): Added function source.
+* testExpr.tst: Renamed to test_001.tst.
+* test_002.tst: Added new tests.
+
+2005-07-18 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* LICENSE: Changed license from BSD to GPL and LGPL.
+* expr.c: Finished support to complex numbers.
+* testExpr.tst: Added tests to complex numbers.
+
+2005-05-08 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* math.c (Math_MathFunctionWrapper): Added function round.
+
+2005-04-02 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* math.c (Math_MathFunctionWrapper): Added function factorial.
+
+2004-11-02 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_BuiltInFunction): Fixed function matrix2D.
+* expr.c (Expr_IsMatrixEqual, Expr_ParseLess, Expr_ParseEqual): Added support to compare matrixes.
+* testExpr.tst: Added tests to compare matrixes.
+
+2004-10-28 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_CountMatrixElements, Expr_ParseMatrixElements, Expr_BuiltInFunction): Added function matrix2D.
+* expr.c (Expr_ParseValue): Added support to create matrixes from expressions like [1,2;3,4].
+* testExpr.tst: Added more matrixes tests.
+
+2004-10-28 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_GetMatrixDim, Expr_BuiltInFunction): Added functions matrix and dim.
+* exprMain.c (main): Added support to show matrix.
+* testExpr.tst: Added tests to matrix.
+
+2004-10-27 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_MatrixToString, Expr_BuiltInFunction): Added support to show matrix.
+
+2004-10-26 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_ArgsToString, Expr_ParseValue, Expr_ParseAssign): Added support to muntidimensional associative arrays.
+* expr.c (Expr_CopyArray): Fixed bug when copying arrays with only one element.
+
+* testExpr.tst: Added tests to muntidimensional associative arrays.
+
+2004-10-24 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* math.c: Added support random numbers generation.
+* expr.h: Added the matrix type.
+
+* testExpr.tst: Added tests to random numbers.
+
+2004-10-18 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_ParseLess, Expr_ParseEqual, Expr_IsArrayEqual): Added support to compare arrays.
+* expr.h (Expr_IsArrayEqual): Added function prototype.
+
+* testExpr.tst: Added tests to array comparation.
+
+2004-10-17 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c: Renamed parsers Expr_Parse0 to Expr_Parse13.
+* expr.c (Expr_ParseOperator, Expr_ParsePower): Added support to the power operator(**).
+
+* testExpr.tst: Added tests to the power operator.
+
+2004-08-27 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c: Added constants EXPR_INTEGER, EXPR_REAL, EXPR_STRING, EXPR_ARRAY and EXPR_MATRIX.
+* expr.c (Expr_ArrayToString): Added support to convert arrays to string.
+* expr.c (Expr_BuiltInFunction): Added functions arrayToString and type.
+
+* exprMain.c (main): Added support to show arrays.
+
+* testExpr.tst: Added tests to arrays and functions arrayToString and type.
+
+2004-08-21 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c: Changed the associative arrays model.
+
+* expr.c (Expr_BuiltInFunction): Removed math functions and math constants.
+* expr.c (Expr_SetVariable): Changed string allocation and started arrays support.
+
+* exprMain.c (main): Added support to the math module.
+
+* math.c:
+* math.h:
+Created to support math functions in a more portable way.
+
+* core.c:
+* core.h:
+Renamed to system.c and system.h
+
+2004-08-05 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* expr.c (Expr_SetVariable): Fixed memory allocation problems.
+
+2004-08-05 Roberto Luiz Souza Monteiro <info@souzamonteiro.com>
+
+* LICENSE:
+* ChangeLog:
+Created.
+
+* expr.c:
+* expr.h:
+* core.c:
+* core.h:
+* exprMain.c:
+* testExpr.tst:
+Changed license terms from GNU GPL/LGPL to BSD style license.
+
+* expr.c: Fixed memory allocation problems.

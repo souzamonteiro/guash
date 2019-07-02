@@ -1,0 +1,63 @@
+# This program implements the role 90 automata.
+# This is a Turing Machine structured state table.
+# Description:
+#     We have 2 main state groups to represents the left cell value:
+#         L=0 and L=1
+#     Symbolic variables(it realy does not exist):
+#         L represents the left cell value;
+#         H represents the cell value under the HEAD;
+#         R represents the right cell value.
+#         S represents the state register.
+#         TAPE_DELIMITER=x
+# The main program starts here:
+# The left tape delimiter was found for the first time.
+# So the left cell has a blank(0) value by default.
+# IF S=1 AND H=TAPE_DELIMITER GOTO 5
+1, x, 5, x, >
+# L=0
+    # IF L=0 AND (H=0 OR H=1) GOTO 10
+    5, 0, 10, 0, >
+    5, 1, 10, 1, >
+# L=1
+    # IF L=1 AND (H=0 OR H=1) GOTO 20
+    6, 0, 20, 0, >
+    6, 1, 20, 1, >
+# L=0, (H=0 OR H=1)
+    # IF L=0 AND (H=0 OR H=1) AND R=0 GOTO 11
+    10, 0, 11, 0, <
+        # H=(L XOR R)=(0 XOR 0)=0
+        # IF H=0 DO L=0 TO THE NEXT ITERACTION AND GOTO 5
+        11, 0, 5, 0, >
+        # IF H=1 DO L=1 TO THE NEXT ITERACTION AND GOTO 6
+        11, 1, 6, 0, >
+    # IF L=0 AND (H=0 OR H=1) AND R=1 GOTO 12
+    10, 1, 12, 1, <
+        # H=(L XOR R)=(0 XOR 1)=1
+        # IF H=0 DO L=0 TO THE NEXT ITERACTION AND GOTO 5
+        12, 0, 5, 1, >
+        # IF H=1 DO L=1 TO THE NEXT ITERACTION AND GOTO 6
+        12, 1, 6, 1, >
+# L=1, (H=0 OR H=1)
+    # IF L=1 AND (H=0 OR H=1) AND R=0 GOTO 21
+    20, 0, 21, 0, <
+        # H=(L XOR R)=(1 XOR 0)=1
+        # IF H=0 DO L=0 TO THE NEXT ITERACTION AND GOTO 5
+        21, 0, 5, 1, >
+        # IF H=1 DO L=1 TO THE NEXT ITERACTION AND GOTO 6
+        21, 1, 6, 1, >
+    # IF L=1 AND (H=0 OR H=1) AND R=1 GOTO 22
+    20, 1, 22, 1, <
+        # H=(L XOR R)=(1 XOR 1)=0
+        # IF H=0 DO L=0 TO THE NEXT ITERACTION AND GOTO 5
+        22, 0, 5, 0, >
+        # IF H=1 DO L=1 TO THE NEXT ITERACTION AND GOTO 6
+        22, 1, 6, 0, >
+# IF (S=10 OR S=20) AND H=TAPE_DELIMITER GOTO 30
+# The right tape delimiter was found, so we must to rewind the tape...
+10, x, 30, x, <
+20, x, 30, x, <
+    # Rewind the tape...
+    30, 0, 30, 0, <
+    30, 1, 30, 1, <
+    # Restart the automata...
+    30, x, 5, x, >

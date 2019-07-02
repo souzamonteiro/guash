@@ -1,0 +1,71 @@
+guash(The GuaraScript Shell)
+
+Copyright (C) 2005, 2012, 2013 Roberto Luiz Souza Monteiro.
+Copyright (C) 2014, 2015 Roberto Luiz Souza Monteiro,
+                         Hernane Borges de Barros Pereira,
+                         Marcelo A. Moret.
+
+This software is distributed under the terms of the GNU GPL an LGPL licenses.
+
+Please read the files COPYING and COPYING.LIB for further information.
+
+You can get the last GuaraScript version at
+http://www.guarascript.org
+
+LINUX (UNIX) SYSTEMS
+
+To install the GuaraScript interpreter on a Linux machine:
+
+1) Unpack the distribution file:
+    tar xvzf guash-x.y.z.tar.gz
+2) Enter the distribution directory:
+    cd guash-x.y.z/
+3) Clean up the distribution directory:
+    make clean
+4) Copile the source code:
+    make
+    make ./bin/glutguash
+    make ./bin/glwmguash
+5) Install binaries:
+    make install
+    make install_glutguash
+    make install_glwmguash
+6) Install syntax highlight for GTK based IDEs:
+    make install_language_specs
+
+glguash is the GuaraScript interpreter with the OpenGL, GLU, GLUT and GLUTIL extensions
+built in. glguash is neccessary in order to run the OpenGL examples provided with guash.
+
+WINDOWS
+
+To install the GuaraScript interpreter on a Windows machine:
+
+1) Unpack the distribution file;
+2) Double-click on an example program, on the examples/opengl folder.
+   When prompted to inform the application to run the script,
+   select glguash.exe, in the bin directory of the distribution.
+
+MAC OS X
+
+To install the GuaraScript interpreter on a Mac OS X machine:
+
+1) Create the target directory:
+    mkdir /usr/local
+    mkdir /usr/local/bin
+2) Unpack the distribution file:
+    tar xvzf guash-x.y.z.zip
+3) Enter the distribution directory:
+    cd guash-x.y.z/
+4) Clean up the distribution directory:
+    make clean
+5) Copile the source code:
+    make -f Makefile.MacOSX
+    make -f Makefile.MacOSX ./bin/glutguash
+    make -f Makefile.MacOSX ./bin/glwmguash
+6) Install binaries:
+    make -f Makefile.MacOSX install
+    make -f Makefile.MacOSX install_glutguash
+    make -f Makefile.MacOSX install_glwmguash
+6) Install syntax highlight for GTK based IDEs:
+    make install_language_specs
+

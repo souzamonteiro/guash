@@ -1,0 +1,218 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the scripted functions support...")
+
+function f1 (x) {
+    return(@x + 1)
+}
+
+test (tries; 4) {
+    y = 1
+    z = f1("y") + 2
+} catch {
+    println("TEST: Fail in expression \"z = f1(\"y\") + 2\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+function f2 (x) {
+    $(x) = @x + 1
+}
+
+test (tries; 3) {
+    a = 1
+    b = "a"
+    f2(b)
+    c = @b + 1
+} catch {
+    println("TEST: Fail in expression \"c = @b + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+function f3 () {
+    $a = $a + 1
+}
+
+test (tries; 3) {
+    a = 1
+    f3;
+    c = a + 1
+} catch {
+    println("TEST: Fail in expression \"c = a + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+b = NULL
+function f4 (x) {
+    $(x)[1] = $(x)[1] + 1 
+}
+
+test (tries; 3) {
+    b[1] = 1
+    f4("b")
+    c = b[1] + 1
+} catch {
+    println("TEST: Fail in expression \"c = b[1] + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+b = NULL
+ 
+function f4 (x) {
+    $(x)[1] = @x[1] + 1 
+}
+
+test (tries; 3) {
+    b[1] = 1
+    f4("b")
+    c = b[1] + 1
+} catch {
+    println("TEST: Fail in expression \"c = b[1] + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+function f5 (x) {
+    @x = @x + 1 
+}
+
+test (tries; 3) {
+    a = 1
+    b = "a"
+    f5(b)
+    c = @b + 1
+} catch {
+    println("TEST: Fail in expression \"c = @b + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+b = NULL
+ 
+function f6 (x) {
+    @x[1] = @x[1] + 1 
+}
+
+test (tries; 3) {
+    b[1] = 1
+    f6("b")
+    c = b[1] + 1
+} catch {
+    println("TEST: Fail in expression \"c = b[1] + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+function f6 (x) {
+    @x[1,1] = @x[1,1] + 1 
+}
+
+test (tries; 6) {
+    b = [1,2;3,4]
+    f6("b")
+    c = "b"
+    d = @c[1,1] + 1
+} catch {
+    println("TEST: Fail in expression \"d = @c[1,1] + 1\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 9) {
+    f(x)=x**2+2*x+1
+    f(2)
+} catch {
+    println("TEST: Fail in expression \"f(2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 10) {
+    f(x)=x**2+2*x+1
+    f(2)
+    f(x)=x**2+2*x+2
+    f(2)
+} catch {
+    println("TEST: Fail in expression \"f(2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+test (tries; 3) {
+    function f7() {
+        a = 1
+        b = 2
+        
+        function f8(x, y) {
+            z = x + y
+            #println("x + y = " + z)
+            #println("a = " + $("a"))
+            #println("b = " + $("b"))
+            return(z)
+        }
+        
+        c = f8(a, b)
+        #println("c = " + c)
+        return(c)
+    }
+
+    f7()
+} catch {
+    println("TEST: Fail in expression \"f7()\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+

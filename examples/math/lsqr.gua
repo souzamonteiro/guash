@@ -1,0 +1,111 @@
+#!/usr/local/bin/guash
+
+if ((argc < 3) || (argc > 5)) {
+    println("Usage: lsqr input \[begin \[end\]\]")
+    exit
+}
+
+try {
+    in = fopen(argv[2], "r")
+} catch {
+    println("Error: can't open file \"" + argv[2] + "\"")
+    exit
+}
+
+println("input: " + argv[2])
+
+begin = -1
+end = -1
+
+if (argc > 3) {
+    begin = eval(argv[3])
+}
+if (argc > 4) {
+    end = eval(argv[4])
+}
+
+x = 0.0
+y = 0.0
+sx = 0.0
+sy = 0.0
+sxy = 0.0
+sx2 = 0.0
+sy2 = 0.0
+a = 0.0
+b = 0.0
+n = 0.0
+l = 0
+
+#
+# Read each value of the series and calculate
+# a and b to y = a*x + b
+#
+while (!feof(in)) {
+    if((line = fgets(in)) == NULL) { 
+        break
+    }
+    
+    if (length(trim(line, " \t\r\n")) == 0) {
+        break
+    }
+    
+    data  = split(trim(line, " \t\r\n"), " \t,;")
+    
+    if (end != -1) {
+        if ((l >= begin) && (l <= end)) {
+            n = n + 1
+            x = eval(data[0]) * 1.0
+            y = eval(data[1]) * 1.0
+
+            sx = sx + x
+            sy = sy + y
+            sxy = sxy + x * y
+            sx2 = sx2 + x * x
+            sy2 = sy2 + y * y
+        }
+        if (l >= end) {
+            break
+        }
+    } else {
+        if (l >= begin) {
+            n = n + 1
+            x = eval(data[0])
+            y = eval(data[1])
+
+            sx = sx + x
+            sy = sy + y
+            sxy = sxy + x * y
+            sx2 = sx2 + x * x
+            sy2 = sy2 + y * y
+        }
+    }
+
+    l = l + 1
+}
+
+in = fclose(in)
+
+a = (sx * sy - n * sxy) / (sx * sx - n * sx2)
+b = (sy - a * sx) / n
+s = ((sxy - sx * (sy / n)) ** 2) / ((sx2 - (sx * sx) / n) * (sy2 - (sy * sy) / n))
+
+println("\nComputation:")
+println("y     = a*x + b")
+println("a     = (sx * sy - n * sxy) / (sx * sx - n * sx2)")
+println("b     = (sy - a * sx) / n")
+println("R^2   = ((sxy - sx * (sy / n)) ** 2) / ((sx2 - (sx * sx) / n) * (sy2 - (sy * sy) / n))\n")
+
+printf("\nsx    = %.50g\n", sx)
+printf("sy    = %.50g\n", sy)
+printf("sxy   = %.50g\n", sxy)
+printf("sx*sx = %.50g\n", sx*sx)
+printf("sx2   = %.50g\n", sx2)
+printf("sy2   = %.50g\n", sy2)
+printf("n     = %.50g\n", n)
+
+println("\nResult:")
+printf("a     = %.10g\n", a)
+printf("b     = %.10g\n", b)
+printf("R^2   = %.10g\n", s)
+
+exit
