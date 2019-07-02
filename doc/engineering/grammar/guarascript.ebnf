@@ -1,0 +1,339 @@
+token types = token number
+            | token string
+            | token array
+            | token matrix
+            | token comment
+            | token operator
+            | token delimiter
+            | token keyword
+            | token arguments separator
+            | token command separator;
+
+token number = number;
+
+token string = string;
+
+token array = array;
+
+token matrix = matrix;
+
+token comment = comment;
+
+token operator = token assign
+               | token or
+               | token and
+               | token bit or
+               | token bit xor
+               | token bit and
+               | token and or
+               | token eq
+               | token ne
+               | token less
+               | token le
+               | token greater
+               | token ge
+               | token left shift
+               | token right shift
+               | token plus
+               | token minus
+               | token power
+               | token mult
+               | token div
+               | token mod
+               | token not
+               | token bit not
+               | token indirection
+               | token macro;
+               
+token assign = '=';
+
+token or = '||';
+
+token and = '&&';
+
+token bit or = '|';
+
+token bit xor = '^';
+
+token bit and = '&';
+
+token and or = '&|';
+
+token eq = '==';
+
+token ne = '!=';
+
+token less = '<';
+
+token le = '<=';
+
+token greater = '>';
+
+token ge = '>=';
+
+token left shift = '<<';
+
+token right shift = '>>';
+
+token plus = '+';
+
+token minus = '-';
+
+token power = '**';
+
+token mult = '*';
+
+token div = '/';
+
+token mod = '%';
+
+token not = '!';
+
+token bit not = '~';
+
+token indirection = '@';
+
+token macro = '$';
+
+token delimiter = token open parenthesis
+                | token close parenthesis
+                | token open brace
+                | token close brace
+                | token open bracket
+                | token close bracket;
+                
+token open parenthesis = '(';
+
+token close parenthesis = ')';
+
+token open brace = '{';
+
+token close brace = '}';
+
+token open bracket = '[';
+
+token close bracket = ']';
+
+token keyword = token function
+              | token return
+              | token if
+              | token while
+              | token do
+              | token for
+              | token foreach
+              | token continue
+              | token break
+              | token try
+              | token test;
+
+token function = 'function';
+
+token return = 'return';
+
+token if = 'if';
+
+token while = 'while';
+
+token do = 'do';
+
+token for = 'for';
+
+token foreach = 'foreach';
+
+token continue = 'continue';
+
+token break = 'break';
+
+token try = 'try';
+
+token test = 'test';
+
+token comma = ',';
+
+token semi_colon = ';';
+
+token new line = '\n';
+
+token arguments separator = token comma;
+
+token command separator = token semi_colon | token new line;
+
+program = {command, [command separator, command]};
+
+command separator = token command separator;
+
+command = function
+        | return
+        | if
+        | while
+        | do
+        | for
+        | foreach
+        | continue
+        | break
+        | try
+        | test
+        | expression
+        | comment;
+        
+function = token function, identifier, token open parenthesis, arguments, token close parenthesis, token open brace, command, token close brace;
+
+return = toke return, [token open parenthesis, expression, token close parenthesis];
+
+if = token if, token open parenthesis, expression, token close parenthesis, token open brace, command, token close brace, {elseif}, [else];
+
+elseif = token elseif, token open parenthesis, expression, token close parenthesis, token open brace, command, token close brace;
+
+else = token else, token open brace, command, token close brace;
+
+while = token while, token open parenthesis, expression, token close parenthesis, token open brace, command, token close brace;
+
+do = token do, token open brace, command, token close brace, 'while', token open parenthesis, expression, token close parenthesis;
+
+for = token for, token open parenthesis, [expression], token semi_colon, [expression], token semi_colon, [expression], token close parenthesis, token open brace, command, token close brace;
+
+foreach = token foreach', token open parenthesis, expression, token semi_colon, identifier, token semi_colon, identifier, token close parenthesis, token open brace, command, token open brace;
+
+continue = token continue;
+
+break = token break;
+
+try = token try, token open parenthesis, expression, token close parenthesis, token open brace, command, token close brace, [catch];
+
+catch = token catch, token open brace, command, token close brace;
+
+test = token test, token open parenthesis, expression, [token semi_colon, expression, [token semi_colon, expression]], token close parenthesis, token open brace, command, token close brace, [catch];
+     
+comment = token comment, text;
+
+expression = value
+           | operation
+           | token open parenthesis, expression, token close parenthesis
+           | variable
+           | function call;
+                           
+operation = operator assign;
+
+operator assign = operator or, {token assign, operator or};
+
+operator or = operator and, {token or, operator and};
+
+operator and = operator bit or, {token and, operator bit or};
+
+operator bit or = operator bit xor, {token bit or, operator bit xor};
+
+operator bit xor = operator bit and, {token bit xor, operator bit and};
+
+operator bit and = operator and or, {token bit and, operator and or};
+
+operator and or = operator eq, {token and or, operator eq};
+
+operator eq = operator ne, {token eq, operator ne};
+
+operator ne = operator less, {token ne, operator less};
+
+operator less = operator le, {token less, operator le};
+
+operator le = operator greater, {token le, operator greater};
+
+operator greater = operator ge, {token greater, operator ge};
+
+operator ge = operator left shift, {token ge, operator left shift};
+
+operator left shift = operator right shift, {token left shift, operator right shift};
+
+operator right shift = operator plus, {token right shift, operator plus};
+
+operator plus = operator minus, {token plus, operator minus};
+
+operator minus = operator power, {token minus, operator power};
+
+operator power = operator mult, {token power, operator mult};
+
+operator mult = operator div, {token mult, operator div};
+
+operator div = operator mod, {token div, operator mod};
+
+operator mod = operator not, {token mod, operator not};
+
+operator not = token not, operator bit not;
+
+operator bit not = token bit not, operator indirection;
+
+operator indirection = token indirection, operator macro;
+
+operator macro = token macro, expression;
+
+variable = identifier;
+
+function call = identifier, [token open parenthesis, arguments, token close parenthesis];
+
+arguments = expression, {token arguments separator, expression};
+          
+value = number
+      | string
+      | array
+      | matrix
+      | element;
+      
+element = identifier, token open bracket, list, token close bracket;
+
+identifier = '_', {alphanumeric}
+           | letter, {alphanumeric};
+           
+matrix = token open bracket, element list, token close bracket;
+
+element list = list, {token semi_colon, list};
+
+array = token open brace, list, token close brace;
+
+list = value, {token comma, value};
+     
+string = token double_quote, text, token double_quote;
+
+number = integer
+       | real;
+       
+real = integer, ['.', decimal, [exponent]]
+     | '.', decimal, [exponent];
+     
+exponent = 'e', decimal
+         | 'E', decimal
+         | 'e', sign, decimal
+         | 'E', sign, decimal;
+         
+integer = decimal
+        | '0', octal
+        | '0x', hexadecimal
+        | '0X', hexadecimal
+        | sign, decimal;
+        
+sign = '+' | '-';
+
+hexadecimal = hexadecimal digit, {hexadecimal digit};
+            
+octal = decimal;
+
+decimal = digit, {digit};
+        
+text = ascii, {ascii};
+     
+alphanumeric = digit
+             | letter
+             | '_';
+             
+hexadecimal digit = hexadecimal letter
+                  | digit;
+                  
+hexadecimal letter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
+                   | 'a' | 'b' | 'c' | 'd' | 'e' | 'f';
+                   
+digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
+letter = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
+       | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T'
+       | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
+       | 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j'
+       | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't'
+       | 'u' | 'v' | 'w' | 'x' | 'y' | 'z';
+

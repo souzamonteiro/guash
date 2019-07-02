@@ -1,0 +1,282 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the matrix functions...")
+
+println("gauss...")
+test (tries; [2.0,3.0,-1.0;0.0,-2.0,-1.0;0.0,0.0,5.0]; 0.00001) { 
+    gauss([2,3,-1;4,4,-3;2,-3,1])
+} catch {
+    println("TEST: Fail in expression \"gauss([2,3,-1;4,4,-3;2,-3,1])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("jordan...")
+test (tries; [1.0,0.0,0.0;0.0,-3.0,0.0;0.0,0.0,1.0/3.0]; 0.00001) { 
+    jordan([1,1,2;2,-1,-1;1,-1,-1])
+} catch {
+    println("TEST: Fail in expression \"jordan([1,1,2;2,-1,-1;1,-1,-1])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("det...")
+test (tries; 156) {
+    det([2,5,7;3,1,4;6,8,2])
+} catch {
+    println("TEST: Fail in expression \"det([2,5,7;3,1,4;6,8,2])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("one...")
+test (tries; [1.0,1.0,1.0;1.0,1.0,1.0;1.0,1.0,1.0]) {
+    one(3, 3)
+} catch {
+    println("TEST: Fail in expression \"one(3, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("zero...")
+test (tries; [0.0,0.0,0.0;0.0,0.0,0.0;0.0,0.0,0.0]) {
+    zero(3, 3)
+} catch {
+    println("TEST: Fail in expression \"zero(3, 3)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("diag...")
+test (tries; [1.0,0.0,0.0;0.0,1.0,0.0;0.0,0.0,1.0]; 0.00001) {
+    diag(3, 3, 1.0)
+} catch {
+    println("TEST: Fail in expression \"diag(3, 3, 1.0)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("trans...")
+test (tries; [1,4,7;2,5,8;3,6,9]) {
+    trans([1,2,3;4,5,6;7,8,9])
+} catch {
+    println("TEST: Fail in expression \"trans([1,2,3;4,5,6;7,8,9])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("cross...")
+test (tries; [-3.0,6.0,-3.0]) { 
+    cross([1,2,3], [4,5,6])
+} catch {
+    println("TEST: Fail in expression \"cross([1,2,3], [4,5,6])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("dot...")
+test (tries; 48) {
+    dot([1,2,5], [2,-7,12])
+} catch {
+    println("TEST: Fail in expression \"dot([1,2,5], [2,-7,12])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sum...")
+test (tries; 45) {
+    sum([1,2,3;4,5,6;7,8,9])
+} catch {
+    println("TEST: Fail in expression \"sum([1,2,3;4,5,6;7,8,9])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sum...")
+test (tries; 28) {
+    sum([1,2,3;4,5,6;7,8,9], 1, 1, 2, 2)
+} catch {
+    println("TEST: Fail in expression \"sum([1,2,3;4,5,6;7,8,9], 1, 1, 2, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("avg...")
+test (tries; 5) {
+    avg([1,2,3;4,5,6;7,8,9])
+} catch {
+    println("TEST: Fail in expression \"avg([1,2,3;4,5,6;7,8,9])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("avg...")
+test (tries; 7) {
+    avg([1,2,3;4,5,6;7,8,9], 1, 1, 2, 2)
+} catch {
+    println("TEST: Fail in expression \"avg([1,2,3;4,5,6;7,8,9], 1, 1, 2, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("count...")
+test (tries; 9) {
+    count([1,2,3;4,5,6;7,8,9])
+} catch {
+    println("TEST: Fail in expression \"count([1,2,3;4,5,6;7,8,9])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("count...")
+test (tries; 4) {
+    count([1,2,3;4,5,6;7,8,9], 1, 1, 2, 2)
+} catch {
+    println("TEST: Fail in expression \"count([1,2,3;4,5,6;7,8,9], 1, 1, 2, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("min...")
+test (tries; 3) {
+    min([7,4,3;22,9,8;5,11,14])
+} catch {
+    println("TEST: Fail in expression \"min([7,4,3;22,9,8;5,11,14])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("min...")
+test (tries; 8) {
+    min([7,4,3;22,9,8;5,11,14], 1, 1, 2, 2)
+} catch {
+    println("TEST: Fail in expression \"min([7,4,3;22,9,8;5,11,14], 1, 1, 2, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("max...")
+test (tries; 22) {
+    max([7,4,3;22,9,8;5,11,14])
+} catch {
+    println("TEST: Fail in expression \"max([7,4,3;22,9,8;5,11,14])\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("max...")
+test (tries; 14) {
+    max([7,4,3;22,9,8;5,11,14], 1, 1, 2, 2)
+} catch {
+    println("TEST: Fail in expression \"max([7,4,3;22,9,8;5,11,14], 1, 1, 2, 2)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("delrow...")
+test (tries; [1,2,3;7,8,9]) {
+    delrow([1,2,3;4,5,6;7,8,9], 1)
+} catch {
+    println("TEST: Fail in expression \"delrow([1,2,3;4,5,6;7,8,9], 1)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("delcol...")
+test (tries; [1,3;4,6;7,9]) {
+    delcol([1,2,3;4,5,6;7,8,9], 1)
+} catch {
+    println("TEST: Fail in expression \"delcol([1,2,3;4,5,6;7,8,9], 1)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)

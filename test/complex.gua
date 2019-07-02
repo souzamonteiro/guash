@@ -1,0 +1,74 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the complex functions...")
+
+println("abs...")
+test (tries; 5; 0.000001) { 
+    abs(4+3*i)
+} catch {
+    println("TEST: Fail in expression \"abs(4+3*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("arg...")
+test (tries; 0.643501; 0.000001) { 
+    arg(4+3*i)
+} catch {
+    println("TEST: Fail in expression \"arg(4+3*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("conj...")
+test (tries; complex(4,-3)) { 
+    conj(4+3*i)
+} catch {
+    println("TEST: Fail in expression \"conj(4+3*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("imag...")
+test (tries; 3) { 
+    imag(4+3*i)
+} catch {
+    println("TEST: Fail in expression \"imag(4+3*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("real...")
+test (tries; 4) { 
+    real(4+3*i)
+} catch {
+    println("TEST: Fail in expression \"real(4+3*i)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)

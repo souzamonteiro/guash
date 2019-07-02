@@ -1,0 +1,138 @@
+#!/usr/local/bin/guash
+
+fp = fopen("test.txt", "w")
+fputs("Test\n", fp)
+fp = fclose(fp)
+
+fsCopy("test.txt", "test.bak")
+
+fsDelete("test.bak")
+
+if (fsExists("test.txt")) {
+    println("File \"test.txt\" exists.")
+} else {
+    println("File \"test.txt\" does not exists.")
+}
+
+if (fsExists("test.bak")) {
+    println("File \"test.bak\" exists.")
+} else {
+    println("File \"test.bak\" does not exists.")
+}
+
+println("File \"test.txt\" extension: \"" + fsExtension("test.txt") + "\".")
+println("File \"test.txt\" full path: \"" + fsFullPath("test.txt") + "\".")
+
+if (fsIsDirectory("test.txt")) {
+    println("File \"test.txt\" is a directory.")
+} else {
+    println("File \"test.txt\" is not a directory.")
+}
+
+if (fsIsDirectory("/tmp")) {
+    println("File \"/tmp\" is a directory.")
+} else {
+    println("File \"/tmp\" is not a directory.")
+}
+
+if (fsIsExecutable("test.txt")) {
+    println("File \"test.txt\" is executable.")
+} else {
+    println("File \"test.txt\" is not executable.")
+}
+
+if (fsIsExecutable("/bin/sh")) {
+    println("File \"/bin/sh\" is executable.")
+} else {
+    println("File \"/bin/sh\" is not executable.")
+}
+
+if (fsIsReadable("test.txt")) {
+    println("File \"test.txt\" is readable.")
+} else {
+    println("File \"test.txt\" is not readable.")
+}
+
+if (fsIsReadable("/etc/shadow")) {
+    println("File \"/etc/shadow\" is readable.")
+} else {
+    println("File \"/etc/shadow\" is not readable.")
+}
+
+if (fsIsWritable("test.txt")) {
+    println("File \"test.txt\" is writable.")
+} else {
+    println("File \"test.txt\" is not writable.")
+}
+
+if (fsIsWritable("/etc/shadow")) {
+    println("File \"/etc/shadow\" is writable.")
+} else {
+    println("File \"/etc/shadow\" is not writable.")
+}
+
+if (fsLink("test.txt", "test.bak")) {
+    println("Created link \"test.bak\" to file \"test.txt\".")
+} else {
+    println("Could not create link \"test.bak\" to file \"test.txt\".")
+}
+
+if (fsLink("test.bin", "test.bak")) {
+    println("Created link \"test.bak\" to file \"test.bin\".")
+} else {
+    println("Could not create link \"test.bak\" to file \"test.bin\".")
+}
+
+fsDelete("test.bak")
+
+println("Directory list: ")
+dir_list = fsList("./")
+println(dir_list)
+println(length(dir_list) + " entries")
+
+if (fsMkDir("tmp")) {
+    println("Created directory \"tmp\".")
+} else {
+    println("Could not created directory \"tmp\".")
+}
+
+if (fsMkDir("/test")) {
+    println("Created directory \"/test\".")
+} else {
+    println("Could not created directory \"/test\".")
+}
+
+println("Name of file \"/bin/sh\": " + fsName("/bin/sh"))
+
+println("Path of file \"/bin/sh\": " + fsPath("/bin/sh"))
+
+fsRename("test.txt", "test.bak")
+
+fsRename("test.bak", "test.txt")
+
+if ((size = fsSize("test.txt")) != -1) {
+    println("Size of file \"test.txt\": " + size + " bytes.")
+} else {
+    println("Could not get size of file \"test.txt\".")
+}
+
+if ((file_size = fsSize("test.bak")) != -1) {
+    println("Size of file \"test.bak\": " + file_size + " bytes.")
+} else {
+    println("Could not get size of file \"test.bak\".")
+}
+
+if ((file_time = fsTime("test.txt")) != -1) {
+    println("Creation time of file \"test.txt\": " + strftime("%Y/%m/%d %H:%M", file_time) + ".")
+} else {
+    println("Could not get the creation time of file \"test.txt\".")
+}
+
+if ((file_time = fsTime("test.bak")) != -1) {
+    println("Creation time of file \"test.bak\": " + strftime("%Y/%m/%d %H:%M", file_time) + ".")
+} else {
+    println("Could not get the creation time of file \"test.bak\".")
+}
+
+fsDelete("tmp")
+

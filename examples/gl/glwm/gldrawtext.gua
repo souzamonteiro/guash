@@ -1,0 +1,94 @@
+#!/usr/local/bin/glwmguash
+
+function closeWindow(window) {
+    println("Close");
+    
+    glwmSetCloseWindow(window, 1);
+}
+
+function keyPress(window, key, x, y) {
+    printf("Key press: key = %d, x = %d, y = %d\n", key, x, y);
+    if (key == 27) {
+        glwmSetCloseWindow(window, 1);
+    } elseif ((key == 72) || (key == 104)) {
+        glwmHideWindow(window);
+        $t1 = glwmGetTime();
+        $hided = 1;
+    }
+}
+
+# Get the app path...
+script_file = fsFullPath($argv[1]);
+script_path = fsPath(script_file);
+
+window = "";
+window = glwmCreateWindow("GLWM Test");
+
+if (!exists("window")) {
+    printf("Error: %s.\n", "creating window");
+    
+    exit(1);
+}
+
+glwmRegisterCloseFunc(window, "closeWindow");
+glwmRegisterKeyPressFunc(window, "keyPress");
+
+glwmSetWindowTitle(window, "GLWM Test 2");
+
+glwmSetWindowPos(window, 100, 100);
+glwmSetWindowSize(window, 640, 480);
+
+t1 = glwmGetTime();
+hided = 0
+
+while(!glwmCloseWindow(window)) {
+    t2 = glwmGetTime();
+    
+    if (hided) {
+        if ((t2 - t1) >= 5.0) {
+            glwmShowWindow(window);
+            hided = 0
+        }
+    }
+    
+    width = glwmWindowWidth(window);
+    height = glwmWindowHeight(window);
+    ratio = width / (1.0 * height);
+    
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0);
+    glMatrixMode(GL_MODELVIEW);
+    
+    glLoadIdentity();
+    glRotate(1.0 * (t2 - t1) * 50.0, 0.0, 0.0, 1.0);
+    
+    glBegin(GL_TRIANGLES);
+    glColor(1.0, 0.0, 0.0, 1.0);
+    glVertex(-0.6, -0.4, 0.0);
+    glColor(0.0, 1.0, 0.0, 1.0);
+    glVertex(0.6, -0.4, 0.0);
+    glColor(0.0, 0.0, 1.0, 1.0);
+    glVertex(0.0, 0.6, 0.0);
+    glEnd();
+    
+    glColor(1.0, 0.0, 0.0, 1.0);
+    glfDrawText(0.0, 0.8, $script_path + "/fonts/6x13.bdf", utf8dec("A maçã está uma delícia!"));
+    glColor(0.0, 1.0, 0.0, 1.0);
+    glfDrawText(0.0, 0.7, $script_path + "/fonts/6x13.bdf", "Hello World!");
+    glColor(0.0, 0.0, 1.0, 1.0);
+    glfDrawText(0.0, 0.6, $script_path + "/fonts/6x13.bdf", "Hello World!");
+    
+    glFlush();
+    
+    glwmSwapBuffers(window);
+    glwmMainIteration();
+}
+
+glwmDestroyWindow(window);
+
+glwmTerminate();
+

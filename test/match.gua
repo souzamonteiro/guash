@@ -1,0 +1,34 @@
+#!/usr/local/bin/guash
+
+if (match("abc_123_456_def", "abc*")) {
+    println("The string matches the pattern.")
+} else {
+    println("The string does not matches the pattern.")
+}
+
+if (match("abc_123_456_def", "abc*_???_???_?_")) {
+    println("The string matches the pattern.")
+} else {
+    println("The string does not matches the pattern.")
+}
+
+if (match("abc_123_456_def", "abc*_???_???_def")) {
+    println("The string matches the pattern.")
+} else {
+    println("The string does not matches the pattern.")
+}
+
+# Get the script path...
+script_file = fsFullPath($argv[1])
+script_path = fsPath(script_file)
+
+println("Search path: " + script_path)
+
+println("Pattern: \"m*.gua\"")
+dir_list = glob(script_path, "m*.gua")
+println(dir_list)
+
+println("\nPattern: \"s*.gua\"")
+dir_list = glob(script_path, "s*.gua")
+println(dir_list)
+

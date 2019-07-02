@@ -1,0 +1,15 @@
+script_file = fsFullPath($argv[1]);
+script_path = fsPath(script_file);
+
+source(script_path + "/" + "cna.gua")
+
+if ($SYS_HOST == "windows") {
+    if (fsExists(script_path + "/" + "libcna.dll")) {
+        load(script_path + "/" + "libcna.dll")
+    }
+} else {
+    if (fsExists(script_path + "/" + "libcna.so")) {
+        load(script_path + "/" + "libcna.so")
+    }
+}
+

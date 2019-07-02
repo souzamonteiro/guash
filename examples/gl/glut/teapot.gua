@@ -1,0 +1,33 @@
+#!/usr/local/bin/glutguash
+
+function display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glutWireTeapot(0.5);
+
+    glFlush();
+}
+
+function keyboard(key, x, y){
+    if (sprintf("%c", key) == "q") {
+        glutDestroyWindow($win);
+        exit(0);
+    }
+}
+
+function init() {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+}
+
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowSize(500, 500);
+glutInitWindowPosition(100, 100);
+win = glutCreateWindow("GLUT Tea Pot");
+
+init();
+
+glutDisplayFunc("display");
+glutKeyboardFunc("keyboard");
+
+glutMainLoop();
+

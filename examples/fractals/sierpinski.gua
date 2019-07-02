@@ -1,0 +1,367 @@
+#!/usr/local/bin/guash
+#
+# sierpinski.gua
+#
+#     This file draws the Sierpinski triangle.
+#
+# Copyright (C) 2009 Roberto Luiz Souza Monteiro
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: sierpinski.gua,v 1.0 2009/10/05 04:49:00 monteiro Exp $
+#
+
+#
+# Save a pixmap to a given file using the Netpbm formats.
+#
+function Pixmap_Save(filename, pixmap, format = "PBM") {
+    dim_pixmap = dim(pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    fd = fopen(filename, "w")
+
+    # Type P1 is a bitmap file(PBM).
+    if (format == "PBM") {
+        if (length(dim_pixmap) != 2) {
+            fclose(fd)
+
+            return(FALSE)
+        }
+
+        # Save the Netpbm format type and the image size...
+        fputs("P1\n" , fd)
+        fputs("" + dim_j + " " + dim_i + "\n" , fd)
+
+        for (i = 0; i < dim_i; i = i + 1) {
+            for (j = 0; j < dim_j; j = j + 1) {
+                fputs("" + pixmap[i, j], fd)
+                if (j < (dim_j - 1)) {
+                    fputs(" ", fd)
+                } else {
+                    fputs("\n", fd)
+                }
+            }
+        }
+    }
+
+    fclose(fd)
+
+    return(TRUE)
+}
+
+#
+# Draw a line in a pixmap given the pixmap matrix,
+# its coordinates and pixel color.
+#
+function Pixmap_Line(pixmap, x1, y1, x2, y2, color = 1) {
+    dim_pixmap = dim(@pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    if (length(dim_pixmap) == 2) {
+        if ((x1 < 0) || (x1 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y1 < 0) || (y1 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x2 < 0) || (x2 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y2 < 0) || (y2 > (dim_j - 1))) {
+            return(FALSE)
+        }
+
+        if (x1 < x2) {
+            # Draw a line...
+            dx = x2 - x1
+            dy = y2 - y1
+
+            a = dy * 1.0 / dx * 1.0
+            b = y1 - a * x1
+
+            # Coordinates must be integer...
+            x = eval(sprintf("%.0f", x1))
+            
+            if (y1 < y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", a * x + b))
+                    
+                    @pixmap[y, x] = color
+                    x = x + 1
+                }
+            } elseif (y1 > y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", fabs(a * x + b)))
+                    
+                    @pixmap[y, x] = color
+                    x = x + 1
+                }
+            } elseif (y1 == y2) {
+                # Coordinates must be integer...
+                y = eval(sprintf("%.0f", y1))
+
+                while (x <= x2) {
+                    @pixmap[y, x] = color
+                    x = x + 1
+                }
+            }
+        } elseif (x1 > x2) {
+            # We must swap vertices coordinates...
+            x = x1
+            x1 = x2
+            x2 = x
+            y = y1
+            y1 = y2
+            y2 = y
+
+            # Draw a line...
+            dx = x2 - x1
+            dy = y2 - y1
+
+            a = dy * 1.0 / dx * 1.0
+            b = y1 - a * x1
+
+            # Coordinates must be integer...
+            x = eval(sprintf("%.0f", x1))
+            
+            if (y1 < y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", a * x + b))
+
+                    @pixmap[y, x] = color
+                    x = x + 1
+                }
+            } elseif (y1 > y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", fabs(a * x + b)))
+
+                    @pixmap[y, x] = color
+                    x = x + 1
+                }
+            } elseif (y1 == y2) {
+                # Coordinates must be integer...
+                y = eval(sprintf("%.0f", y1))
+
+                while (x <= x2) {
+                    @pixmap[y, x] = color
+                    x = x + 1
+                }
+            }
+        } elseif (x1 == x2) {
+            # Coordinates must be integer...
+            x = eval(sprintf("%.0f", x1))
+            y = eval(sprintf("%.0f", y1))
+
+            while (y <= y2) {
+                @pixmap[y, x] = color
+                y = y + 1
+            }
+        }
+    }
+
+    return(TRUE)
+}
+
+#
+# Draw a triangle in a pixmap given the pixmap matrix,
+# its coordinates and pixel color.
+#
+function Pixmap_Triangle(pixmap, x1, y1, x2, y2, x3, y3, color = 1) {
+    dim_pixmap = dim(@pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    if (length(dim_pixmap) == 2) {
+        if ((x1 < 0) || (x1 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y1 < 0) || (y1 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x2 < 0) || (x2 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y2 < 0) || (y2 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x3 < 0) || (x3 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y3 < 0) || (y3 > (dim_j - 1))) {
+            return(FALSE)
+        }
+
+        Pixmap_Line(pixmap, x1, y1, x2, y2, color)
+        Pixmap_Line(pixmap, x2, y2, x3, y3, color)
+        Pixmap_Line(pixmap, x3, y3, x1, y1, color)
+    }
+
+    return(TRUE)
+}
+
+#
+# Draw the inside Sierpinski triangles recusivily in a pixmap,
+# given the pixmap matrix its coordinates and pixel color.
+#
+function Sierpinski_Triangle(n, pixmap, x1, y1, x2, y2, x3, y3, color = 1) {
+    dim_pixmap = dim(@pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    # Do the number of specified subdivisions...
+    if (n >= 1) {
+        if (length(dim_pixmap) == 2) {
+            if ((x1 < 0) || (x1 > (dim_i - 1))) {
+                return(FALSE)
+            }
+            if ((y1 < 0) || (y1 > (dim_j - 1))) {
+                return(FALSE)
+            }
+            if ((x2 < 0) || (x2 > (dim_i - 1))) {
+                return(FALSE)
+            }
+            if ((y2 < 0) || (y2 > (dim_j - 1))) {
+                return(FALSE)
+            }
+            if ((x3 < 0) || (x3 > (dim_i - 1))) {
+                return(FALSE)
+            }
+            if ((y3 < 0) || (y3 > (dim_j - 1))) {
+                return(FALSE)
+            }
+
+            # Coordinates must be integer.
+            x1 = eval(sprintf("%.0f", x1))
+            y1 = eval(sprintf("%.0f", y1))
+            x2 = eval(sprintf("%.0f", x2))
+            y2 = eval(sprintf("%.0f", y2))
+            x3 = eval(sprintf("%.0f", x3))
+            y3 = eval(sprintf("%.0f", y3))
+
+            # Draw the main triangle...
+            Pixmap_Triangle(pixmap, x1, y1, x2, y2, x3, y3, color)
+
+            # Draw the inside triangles...
+            Sierpinski_Triangle(n - 1, pixmap, x1, y1, (x1 + x2) / 2, (y1 + y2) / 2, (x1 + x3) / 2, (y1 + y3) / 2, color)
+            Sierpinski_Triangle(n - 1, pixmap, (x1 + x2) / 2, (y1 + y2) / 2, x2, y2, (x3 + x2) / 2, (y3 + y2) / 2, color)
+            Sierpinski_Triangle(n - 1, pixmap, (x3 + x1) / 2, (y3 + y1) / 2, (x3 + x2) / 2, (y3 + y2) / 2, x3, y3, color)
+        }
+    }
+}
+
+#
+# Draw the Sierpinski triangle in a pixmap given the pixmap matrix,
+# its coordinates and pixel color.
+#
+function Sierpinski_Draw(n, pixmap, x1, y1, x2, y2, x3, y3, color = 1) {
+    dim_pixmap = dim(@pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    if (length(dim_pixmap) == 2) {
+        if ((x1 < 0) || (x1 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y1 < 0) || (y1 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x2 < 0) || (x2 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y2 < 0) || (y2 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x3 < 0) || (x3 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y3 < 0) || (y3 > (dim_j - 1))) {
+            return(FALSE)
+        }
+
+        Sierpinski_Triangle(n, pixmap, x1, y1, x2, y2, x3, y3, color)
+    }
+
+    return(TRUE)
+}
+
+#
+# Configuration variables.
+#
+output_file = "noname"
+image_size = "200x200"
+margin = 10
+interactions = 7
+
+#
+# The main program.
+#
+if (argc < 3) {
+    println("Usage: sierpinski option1 value1 [option1 value1]")
+    exit
+}
+
+i = 2
+
+while (i < argc) {
+    if ((argv[i] == "-h") || (argv[i] == "--help")) {
+        println("Usage: sierpinski option1 value1 [option1 value1]")
+        println("-h    --help    show the options sumary")
+        println("-i              number of iteractions(default=7)")
+        println("-o              output file")
+        println("-m              margin in pixels(default=10)")
+        println("-s              image size(default=200x200")
+        exit(0)
+    } elseif (argv[i] == "-i") {
+        i = i + 1
+        iteractions = eval(argv[i])
+    } elseif (argv[i] == "-o") {
+        i = i + 1
+        output_file = argv[i]
+    } elseif (argv[i] == "-m") {
+        i = i + 1
+        margin = eval(argv[i])
+    } elseif (argv[i] == "-s") {
+        i = i + 1
+        image_size = argv[i]
+    }
+    i = i + 1
+} 
+
+# Check if the input file name was suplied.
+if (output_file == "noname") {
+    println("Error: output file name is mandatory.")
+    exit(1)
+}
+
+# Create a blank pixmap...
+dim_pixmap = split(trim(image_size), "x")
+
+dim_i = eval(dim_pixmap[0])
+dim_j = eval(dim_pixmap[1])
+
+pixmap1 = matrix(0, dim_i, dim_j)
+
+# Draw the Sierpinski triangle...
+Sierpinski_Draw(interactions, "pixmap1", margin, dim_j - margin, dim_i / 2, margin, dim_i - margin, dim_j - margin)
+
+# Save the fractal image...
+Pixmap_Save(output_file, pixmap1)
+

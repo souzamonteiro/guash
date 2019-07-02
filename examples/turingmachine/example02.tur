@@ -1,0 +1,6 @@
+# This program draws a filed triangle.
+1, 1, 2, 1, <
+2, 0, 3, 1, >
+2, 1, 2, 1, <
+3, 0, 2, 1, <
+3, 1, 3, 1, >

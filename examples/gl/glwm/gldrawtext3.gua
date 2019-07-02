@@ -1,0 +1,208 @@
+#!/usr/local/bin/glwmguash
+
+function display(window) {
+    glwmMakeCurrent(window);
+    
+    width = glwmWindowWidth(window);
+    height = glwmWindowHeight(window);
+    ratio = width / (1.0 * height);
+    
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0);
+    glMatrixMode(GL_MODELVIEW);
+    
+    glLoadIdentity();
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glColor(0.5, 1.0, 0.5, 1.0);
+    
+    vertices = glArrayOfFloat([-0.75, -0.75, 0.75, -0.75, 0.0, 0.75]);
+    
+    glEnableClientState(GL_VERTEX_ARRAY);
+    
+    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    
+    glDisableClientState(GL_VERTEX_ARRAY);
+    
+    vertices = glFree(vertices);
+    
+    glFlush();
+    
+    glwmSwapBuffers(window);
+}
+
+function display2(window) {
+    glwmMakeCurrent(window);
+    
+    t2 = glwmGetTime();
+    
+    width = glwmWindowWidth(window);
+    height = glwmWindowHeight(window);
+    ratio = width / (1.0 * height);
+    
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ratio, ratio, -1.0, 1.0, 1.0, -1.0);
+    glMatrixMode(GL_MODELVIEW);
+    
+    glLoadIdentity();
+    glRotate(1.0 * (t2 - t1) * 50.0, 0.0, 0.0, 1.0);
+    
+    glBegin(GL_TRIANGLES);
+    glColor(1.0, 0.0, 0.0, 1.0);
+    glVertex(-0.6, -0.4, 0.0);
+    glColor(0.0, 1.0, 0.0, 1.0);
+    glVertex(0.6, -0.4, 0.0);
+    glColor(0.0, 0.0, 1.0, 1.0);
+    glVertex(0.0, 0.6, 0.0);
+    glEnd();
+    
+    glColor(1.0, 0.0, 0.0, 1.0);
+    glfDrawText(0.0, 0.8, $script_path + "/fonts/6x13.bdf", utf8dec("A maçã está uma delícia!"));
+    glColor(0.0, 1.0, 0.0, 1.0);
+    glfDrawText(0.0, 0.7, $script_path + "/fonts/6x13.bdf", "Hello World!");
+    glColor(0.0, 0.0, 1.0, 1.0);
+    glfDrawText(0.0, 0.6, $script_path + "/fonts/6x13.bdf", "Hello World!");
+    
+    glFlush();
+    
+    glwmSwapBuffers(window);
+}
+
+function reshape(window) {
+    glwmMakeCurrent(window);
+    
+    printf("width = %d\n", glwmWindowWidth(window));
+    printf("height = %d\n", glwmWindowHeight(window));
+    printf("x = %d\n", glwmWindowXPos(window));
+    printf("y = %d\n", glwmWindowYPos(window));
+}
+
+function idle(window) {
+    glwmMakeCurrent(window);
+    
+    printf("Idle\n");
+}
+
+function closeWindow(window) {
+    glwmMakeCurrent(window);
+    
+    printf("Close\n");
+    
+    glwmDestroyWindow(window);
+    
+    #glwmExitMainLoop();
+}
+
+function closeWindow2(window) {
+    glwmMakeCurrent(window);
+    
+    printf("Close\n");
+    
+    glwmDestroyWindow(window);
+    
+    #glwmExitMainLoop();
+}
+
+function keyPress(window, key, x, y) {
+    glwmMakeCurrent(window);
+    
+    printf("Key press: key = %d, x = %d, y = %d\n", key, x, y);
+    if (key == 27) {
+        glwmExitMainLoop();
+    }
+}
+
+function keyRelease(window, key, x, y) {
+    glwmMakeCurrent(window);
+    
+    printf("Key release: key = %d, x = %d, y = %d\n", key, x, y);
+}
+
+function mouseEnter(window) {
+    glwmMakeCurrent(window);
+    
+    printf("Mouse entered\n");
+}
+
+function mouseLeave(window) {
+    glwmMakeCurrent(window);
+    
+    printf("Mouse leaved\n");
+}
+
+function mouseMotion(window, x, y) {
+    glwmMakeCurrent(window);
+    
+    printf("Mouse motion: x = %d, y = %d\n", x, y);
+}
+
+function mouseButtonPress(window, button, state, x, y) {
+    glwmMakeCurrent(window);
+    
+    printf("Mouse button press: button = %d, state = %d, x = %d, y = %d\n", button, state, x, y);
+}
+
+function mouseButtonRelease(window, button, state, x, y) {
+    glwmMakeCurrent(window);
+    
+    printf("Mouse button release: button = %d, state = %d, x = %d, y = %d\n", button, state, x, y);
+}
+
+# Get the app path...
+script_file = fsFullPath($argv[1]);
+script_path = fsPath(script_file);
+
+window = glwmCreateWindow("GLWM Test");
+
+if (!exists("window")) {
+    printf("Error: %s.\n", "creating window");
+    
+    exit(1);
+}
+
+glwmRegisterDisplayFunc(window, "display");
+glwmRegisterReshapeFunc(window, "reshape");
+#glwmRegisterIdleFunc(window, "idle");
+glwmRegisterKeyPressFunc(window, "keyPress");
+glwmRegisterKeyReleaseFunc(window, "keyRelease");
+glwmRegisterMouseEnterFunc(window, "mouseEnter");
+glwmRegisterMouseLeaveFunc(window, "mouseLeave");
+glwmRegisterMouseMotionFunc(window, "mouseMotion");
+glwmRegisterMouseButtonPressFunc(window, "mouseButtonPress");
+glwmRegisterMouseButtonReleaseFunc(window, "mouseButtonRelease");
+glwmRegisterCloseFunc(window, "closeWindow");
+
+glwmSetWindowPos(window, 100, 100);
+glwmSetWindowSize(window, 640, 480);
+
+window2 = glwmCreateWindow("GLWM Test 2");
+
+if (!exists("window2")) {
+    printf("Error: %s.\n", "creating window");
+    
+    exit(1);
+}
+
+glwmRegisterDisplayFunc(window2, "display2");
+glwmRegisterCloseFunc(window2, "closeWindow2");
+
+t1 = glwmGetTime();
+
+glwmMainLoop();
+
+#glwmDestroyWindow(window);
+#glwmDestroyWindow(window2);
+
+glwmTerminate();
+

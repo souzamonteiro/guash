@@ -1,0 +1,115 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+function callback(row) {
+    $("lastRow") = row
+    
+    return(0)
+}
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the sqlite functions...")
+
+script_file = fsFullPath($argv[1])
+script_path = fsPath(script_file)
+file_name = script_path + "/test.db"
+
+if (fsExists(file_name)) {
+    fsDelete(file_name)
+}
+    
+db = sqliteOpen(file_name)
+
+sqliteExecute(db, "CREATE TABLE test(col1 text, col2 text)")
+
+println("sqliteEval...")
+test (tries; "value 1" + " " + "value 2") {
+    a = ""
+    sqliteExecute(db, "INSERT INTO test(col1, col2) VALUES('value 1','value 2')")
+#    script = 'a = col1 + " "
+#              a = a + col2'
+#    sqliteEval(db, "SELECT * FROM test", script)
+    sqliteEval(db, "SELECT * FROM test",
+         'a = col1 + " "
+          a = a + col2'
+    )
+    a
+} catch {
+    println("TEST: Fail in expression \"sqliteEval(db, \"SELECT * FROM test\", ...)\".")
+    if (exists("GUA_RESULT")) {
+        print("      Expected result ")
+        println(GUA_DESIRED)
+        print("      But got ")
+        println(GUA_RESULT)
+    } else {
+        println("Error: " + GUA_ERROR)
+    }
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sqliteExecute...")
+test (tries; toString({"value 1","value 2"})) {
+    lastRow = ""
+    
+    sqliteExecute(db, "INSERT INTO test(col1, col2) VALUES('value 1','value 2')")
+    sqliteExecute(db, "SELECT * FROM test", "callback")
+    
+    row = toString($("lastRow"))
+} catch {
+    println("TEST: Fail in expression \"sqliteExecute(db, \"SELECT * FROM test\", \"callback\")\".")
+    if (exists("GUA_RESULT")) {
+        print("      Expected result ")
+        println(GUA_DESIRED)
+        print("      But got ")
+        println(GUA_RESULT)
+    } else {
+        println("Error: " + GUA_ERROR)
+    }
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sqliteExists...")
+test (tries; 1) {
+    lastRow = ""
+    
+    sqliteExecute(db, "INSERT INTO test(col1, col2) VALUES('value 1','value 2')")
+    sqliteExists(db, "SELECT * FROM test")
+    #sqliteExists(db, "SELECT * FROM test1")
+    #sqliteExists(db, "SELECT * FROM test WHERE col1 = 'one'")
+} catch {
+    println("TEST: Fail in expression \"sqliteExists(db, \"SELECT * FROM test\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+    println(GUA_ERROR)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("sqliteOneColumn...")
+test (tries; "value 10") {
+    lastRow = ""
+    
+    for (i = 0; i <= 10; i = i + 1) {
+        sqliteExecute(db, "INSERT INTO test(col1, col2) VALUES('value " + sprintf("%02d", i) + "','value 2')")
+    }
+    sqliteOneColumn(db, "SELECT * FROM test ORDER BY col1 DESC")
+} catch {
+    println("TEST: Fail in expression \"sqliteOneColumn(db, \"SELECT * FROM test\")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+db = sqliteClose(db)
+

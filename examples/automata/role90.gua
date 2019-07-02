@@ -1,0 +1,126 @@
+#!/usr/local/bin/guash
+#
+# role90.gua
+#
+#     This file implements the role 90 automata.
+#
+# Copyright (C) 2009 Roberto Luiz Souza Monteiro
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: role90.gua,v 1.0 2009/10/05 04:49:00 monteiro Exp $
+#
+
+#
+# Save a pixmap to a given file using the Netpbm formats.
+#
+function Pixmap_Save(filename, pixmap, format = "PBM") {
+    dim_pixmap = dim(pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    fd = fopen(filename, "w")
+
+    # Type P1 is a bitmap file(PBM).
+    if (format == "PBM") {
+        if (length(dim_pixmap) != 2) {
+            fclose(fd)
+
+            return(FALSE)
+        }
+
+        # Save the Netpbm format type and the image size...
+        fputs("P1\n" , fd)
+        fputs("" + dim_j + " " + dim_i + "\n" , fd)
+
+        for (i = 0; i < dim_i; i = i + 1) {
+            for (j = 0; j < dim_j; j = j + 1) {
+                fputs("" + pixmap[i, j], fd)
+                if (j < (dim_j - 1)) {
+                    fputs(" ", fd)
+                } else {
+                    fputs("\n", fd)
+                }
+            }
+        }
+    }
+
+    fclose(fd)
+
+    return(TRUE)
+}
+
+#
+# Configuration variables.
+#
+output_file = "noname"
+image_size = "200x200"
+
+#
+# The main program.
+#
+if (argc < 3) {
+    println("Usage: role90 option1 value1 [option1 value1]")
+    exit
+}
+
+i = 2
+
+while (i < argc) {
+    if ((argv[i] == "-h") || (argv[i] == "--help")) {
+        println("Usage: role90 option1 value1 [option1 value1]")
+        println("-h    --help    show the options sumary")
+        println("-o              output file")
+        println("-s              image size(default=200x200")
+        exit(0)
+    } elseif (argv[i] == "-o") {
+        i = i + 1
+        output_file = argv[i]
+    } elseif (argv[i] == "-s") {
+        i = i + 1
+        image_size = argv[i]
+    }
+    i = i + 1
+} 
+
+# Check if the input file name was suplied.
+if (output_file == "noname") {
+    println("Error: output file name is mandatory.")
+    exit(1)
+}
+
+# Create a blank pixmap...
+dim_pixmap = split(trim(image_size), "x")
+
+dim_i = eval(dim_pixmap[0])
+dim_j = eval(dim_pixmap[1])
+
+pixmap = matrix(0, dim_i, dim_j)
+
+# Draw the the role 90 automata image...
+
+# The seed...
+pixmap[0, dim_j / 2] = 1
+
+# Now the magic...
+for (i = 1; i < dim_i; i = i + 1) {
+    for (j = 1; j < dim_j - 2; j = j + 1) {
+        pixmap[i, j] = pixmap[i - 1, j - 1] ^ pixmap[i - 1, j + 1]
+    }
+}
+
+# Save the fractal image...
+Pixmap_Save(output_file, pixmap)
+

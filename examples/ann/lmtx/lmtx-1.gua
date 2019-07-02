@@ -1,0 +1,183 @@
+#!/usr/local/bin/guash
+
+#
+# Prepare the ANN.
+#
+function prepare(nn, randomize = FALSE) {
+    dim_nn = dim(nn)
+    dim_i = dim_nn[0]
+    dim_j = dim_nn[1]
+    
+    # Clear inputs and outputs.
+    for (i = 0; i < dim_i; i = i + 1) {
+        nn[0, i] = 0.0
+        nn[i, 0] = 0.0
+        nn[i, dim_j - 1] = 0.0
+        nn[dim_i - 1, i] = 0.0
+    }
+    
+    # Clear the lower triangular matrix.
+    for (i = 1; i < dim_i; i = i + 1) {
+        for (j = 1; j < dim_j; j = j + 1) {
+            if (i > j) {
+                nn[i, j] = 0.0
+            }
+        }
+    }
+    
+    # Set random weights.
+    if (randomize) {
+        for (i = 1; i < (dim_i - 1); i = i + 1) {
+            for (j = 1; j < (dim_j - 1); j = j + 1) {
+                if (nn[i, j] == 1) {
+                    nn[i, j] = 2.0 * random() - 1.0
+                }
+            }
+        }
+    }
+    
+    return(nn)
+}
+
+# Data to train.
+data_x = [0.00,0.25,0.50,0.75,1.00,1.25,1.50,1.75,2.00,2.25,2.50,2.75,3.00,3.25,3.50,3.75,4.00,4.25,4.50,4.75,5.00,5.25,5.50,5.75,6.00,6.25,6.50,6.75,7.00,7.25,7.50,7.75,8.00,8.25,8.50,8.75,9.00,9.25,9.50,9.75,10.00]
+data_y = [2.0000,2.2197,2.3811,2.5136,2.7310,2.7827,2.8327,3.0351,2.9551,3.3973,3.5117,3.5909,3.7345,3.8419,4.0952,4.2879,4.4000,4.8764,5.2843,5.9241,6.3302,6.9608,7.3044,7.6791,8.2819,9.0139,9.3387,10.0420,10.4000,10.6437,10.4786,10.4928,10.7082,10.6233,10.8862,10.6830,10.8393,10.9186,10.8814,10.9779,11.0000]
+
+ndata = length(data_x)
+
+# Number of input neurons.
+ni = 1
+# Number of input neurons.
+no = 1
+
+# Create the learning matrix.
+#nn = [0,0,0,0,0,0,0;
+#      0,0,1,1,1,0,0;
+#      0,0,1,0,0,1,0;
+#      0,0,0,1,0,1,0;
+#      0,0,0,0,1,1,0;
+#      0,0,0,0,0,1,0;
+#      0,0,0,0,0,0,0]
+
+nn = [0,0,0,0,0,0,0;0,0,1,1,1,0,0;0,0,1,0,0,1,0;0,0,0,1,0,1,0;0,0,0,0,1,1,0;0,0,0,0,0,1,0;0,0,0,0,0,0,0]
+
+# Setup network for train.
+nn = prepare(nn, TRUE)
+
+# Trainning variables.
+max_epochs = 200000
+lrate = 0.005
+max_residual_sum_of_squares = 0.001
+squared_error = matrix(0.0, ndata)
+
+epochs_counter = 0
+max_count = 1000
+
+# Train.
+for (epoch = 1; epoch <= max_epochs; epoch = epoch + 1) {
+    for (n = 0; n < ndata; n = n + 1) {
+        # Pattern to learn.
+        x = data_x[n]
+        y = data_y[n]
+        
+        # Calculate the output of the first layer.
+        nn[1,0] = x
+        
+        # xj = sum(xij * wij) + bj
+        
+        nn[0,2] = nn[1,0] * nn[1,2] + nn[2,2]
+        nn[0,3] = nn[1,0] * nn[1,3] + nn[3,3]
+        nn[0,4] = nn[1,0] * nn[1,4] + nn[4,4]
+        
+        # Activation function.
+        # Sigmoid: f(x) = 2 / (1 + e^(-2x)) - 1
+        #          df(x)/dx = 1 - f(x)^2
+        nn[2,0] = 2.0 / (1.0 + exp(-2.0 * nn[0,2])) - 1.0
+        nn[2,6] = 1.0 - (2.0 / (1.0 + exp(-2.0 * nn[0,2])) - 1.0) ** 2.0
+        nn[3,0] = 2.0 / (1.0 + exp(-2.0 * nn[0,3])) - 1.0
+        nn[3,6] = 1.0 - (2.0 / (1.0 + exp(-2.0 * nn[0,3])) - 1.0) ** 2.0
+        nn[4,0] = 2.0 / (1.0 + exp(-2.0 * nn[0,4])) - 1.0
+        nn[4,6] = 1.0 - (2.0 / (1.0 + exp(-2.0 * nn[0,4])) - 1.0) ** 2.0
+        
+        # Calculate the output of the second layer.
+        # Linear: f(x) = x
+        #         df(x)/dx = 1
+        nn[0,5] = nn[2,0] * nn[2,5] + nn[3,0] * nn[3,5] + nn[4,0] * nn[4,5] + nn[5,5]
+        nn[5,0] = nn[0,5]
+        nn[5,6] = 1.0
+        
+        # Learn this pattern.
+        
+        # Squared error.
+        e = y - nn[5,0]
+        
+        squared_error[n] = e * e
+        
+        # Calculate delta for the second layer (last layer).
+        nn[6,5] = e
+        
+        # Adjust the weights of the second layer.
+        nn[2,5] = nn[2,5] + lrate * nn[6,5] * 1.0 * nn[2,0]
+        nn[3,5] = nn[3,5] + lrate * nn[6,5] * 1.0 * nn[3,0]
+        nn[4,5] = nn[4,5] + lrate * nn[6,5] * 1.0 * nn[4,0]
+        nn[5,5] = nn[5,5] + lrate * nn[6,5] * 1.0 * 1.0
+        
+        # Calculate delta for the first layer.
+        nn[6,4] = nn[6,5] * nn[4,5]
+        nn[6,3] = nn[6,5] * nn[3,5]
+        nn[6,2] = nn[6,5] * nn[2,5]
+        
+        # Adjuste the weights of the first layer.
+        nn[1,2] = nn[1,2] + lrate * nn[6,2] * nn[2,6] * nn[1,0]
+        nn[2,2] = nn[2,2] + lrate * nn[6,2] * nn[2,6] * 1.0
+        
+        nn[1,3] = nn[1,3] + lrate * nn[6,3] * nn[3,6] * nn[1,0]
+        nn[3,3] = nn[3,3] + lrate * nn[6,3] * nn[3,6] * 1.0
+
+        nn[1,4] = nn[1,4] + lrate * nn[6,4] * nn[4,6] * nn[1,0]
+        nn[4,4] = nn[4,4] + lrate * nn[6,4] * nn[4,6] * 1.0
+    }
+    
+    residual_sum_of_squares = sum(squared_error) / 2.0
+    
+    if (residual_sum_of_squares < max_residual_sum_of_squares) {
+        break
+    }
+    
+    epochs_counter = epochs_counter + 1
+    
+    if (epochs_counter >= max_count) {
+        printf("Epoch = %d, residual sum of squares (RSS) = %g\n", epoch, residual_sum_of_squares)
+        epochs_counter = 0
+    }
+}
+
+# Show trainned weights.
+println("\nTrainned weights:")
+println("nn[1,2] = " + nn[1,2])
+println("nn[2,2] = " + nn[2,2])
+println("nn[1,3] = " + nn[1,3])
+println("nn[3,3] = " + nn[3,3])
+println("nn[1,4] = " + nn[1,4])
+println("nn[4,4] = " + nn[4,4])
+println("nn[2,5] = " + nn[2,5])
+println("nn[3,5] = " + nn[3,5])
+println("nn[4,5] = " + nn[4,5])
+println("nn[5,5] = " + nn[5,5])
+
+# Save trainned weights.
+fp = fopen("weights-1.gua", "w")
+
+fputs("nn[1,2] = " + nn[1,2] + "\n", fp)
+fputs("nn[2,2] = " + nn[2,2] + "\n", fp)
+fputs("nn[1,3] = " + nn[1,3] + "\n", fp)
+fputs("nn[3,3] = " + nn[3,3] + "\n", fp)
+fputs("nn[1,4] = " + nn[1,4] + "\n", fp)
+fputs("nn[4,4] = " + nn[4,4] + "\n", fp)
+fputs("nn[2,5] = " + nn[2,5] + "\n", fp)
+fputs("nn[3,5] = " + nn[3,5] + "\n", fp)
+fputs("nn[4,5] = " + nn[4,5] + "\n", fp)
+fputs("nn[5,5] = " + nn[5,5] + "\n", fp)
+
+fp = fclose(fp)
+

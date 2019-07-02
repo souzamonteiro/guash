@@ -1,0 +1,11 @@
+# This program duplicate any sequence of ones(1),
+# separating the original from the copy by zero(0).
+1, 1, 2, 0, >
+2, 1, 2, 1, >
+2, 0, 3, 0, >
+3, 0, 4, 1, <
+3, 1, 3, 1, >
+4, 1, 4, 1, <
+4, 0, 5, 0, <
+5, 1, 5, 1, <
+5, 0, 1, 1, >

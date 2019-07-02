@@ -1,0 +1,295 @@
+: To unbundle, sh this file
+echo x - glob.c 1>&2
+sed 's/^X//' >glob.c <<'@@@End of glob.c'
+X/*
+X * robust glob pattern matcher
+X * ozan s. yigit/dec 1994
+X * public domain
+X *
+X * glob patterns:
+X *	*	matches zero or more characters
+X *	?	matches any single character
+X *	[set]	matches any character in the set
+X *	[^set]	matches any character NOT in the set
+X *		where a set is a group of characters or ranges. a range
+X *		is written as two characters seperated with a hyphen: a-z denotes
+X *		all characters between a to z inclusive.
+X *	[-set]	set matches a literal hypen and any character in the set
+X *	[]set]	matches a literal close bracket and any character in the set
+X *
+X *	char	matches itself except where char is '*' or '?' or '['
+X *	\char	matches char, including any pattern character
+X *
+X * examples:
+X *	a*c		ac abc abbc ...
+X *	a?c		acc abc aXc ...
+X *	a[a-z]c		aac abc acc ...
+X *	a[-a-z]c	a-c aac abc ...
+X *
+X * $Log: glob.c,v $
+X * Revision 1.3  1995/09/14  23:24:23  oz
+X * removed boring test/main code.
+X *
+X * Revision 1.2  94/12/11  10:38:15  oz
+X * cset code fixed. it is now robust and interprets all
+X * variations of cset [i think] correctly, including [z-a] etc.
+X * 
+X * Revision 1.1  94/12/08  12:45:23  oz
+X * Initial revision
+X */
+X
+X#ifndef NEGATE
+X#define NEGATE	'^'			/* std cset negation char */
+X#endif
+X
+X#define TRUE    1
+X#define FALSE   0
+X
+Xint
+Xamatch(char *str, char *p)
+X{
+X	int negate;
+X	int match;
+X	int c;
+X
+X	while (*p) {
+X		if (!*str && *p != '*')
+X			return FALSE;
+X
+X		switch (c = *p++) {
+X
+X		case '*':
+X			while (*p == '*')
+X				p++;
+X
+X			if (!*p)
+X				return TRUE;
+X
+X			if (*p != '?' && *p != '[' && *p != '\\')
+X				while (*str && *p != *str)
+X					str++;
+X
+X			while (*str) {
+X				if (amatch(str, p))
+X					return TRUE;
+X				str++;
+X			}
+X			return FALSE;
+X
+X		case '?':
+X			if (*str)
+X				break;
+X			return FALSE;
+X/*
+X * set specification is inclusive, that is [a-z] is a, z and
+X * everything in between. this means [z-a] may be interpreted
+X * as a set that contains z, a and nothing in between.
+X */
+X		case '[':
+X			if (*p != NEGATE)
+X				negate = FALSE;
+X			else {
+X				negate = TRUE;
+X				p++;
+X			}
+X
+X			match = FALSE;
+X
+X			while (!match && (c = *p++)) {
+X				if (!*p)
+X					return FALSE;
+X				if (*p == '-') {	/* c-c */
+X					if (!*++p)
+X						return FALSE;
+X					if (*p != ']') {
+X						if (*str == c || *str == *p ||
+X						    (*str > c && *str < *p))
+X							match = TRUE;
+X					}
+X					else {		/* c-] */
+X						if (*str >= c)
+X							match = TRUE;
+X						break;
+X					}
+X				}
+X				else {			/* cc or c] */
+X					if (c == *str)
+X						match = TRUE;
+X					if (*p != ']') {
+X						if (*p == *str)
+X							match = TRUE;
+X					}
+X					else
+X						break;
+X				}
+X			}
+X
+X			if (negate == match)
+X				return FALSE;
+X/*
+X * if there is a match, skip past the cset and continue on
+X */
+X			while (*p && *p != ']')
+X				p++;
+X			if (!*p++)	/* oops! */
+X				return FALSE;
+X			break;
+X
+X		case '\\':
+X			if (*p)
+X				c = *p++;
+X		default:
+X			if (c != *str)
+X				return FALSE;
+X			break;
+X
+X		}
+X		str++;
+X	}
+X
+X	return !*str;
+X}
+X
+@@@End of glob.c
+echo x - glot.c 1>&2
+sed 's/^X//' >glot.c <<'@@@End of glot.c'
+X/*
+X * glob tester
+X *
+X *	glot [pattern input]
+X *
+X * pattern assertions:
+X *	pattern  ~   string	(matches)
+X *	pattern !~   string	(does not match)
+X *
+X */
+X
+X#include <stdio.h>
+X#include <ctype.h>
+X#include <stdlib.h>
+X#include <string.h>
+X
+X#define BIG	1024
+X
+Xint test(char *);
+Xextern int amatch(char *, char *);
+X
+Xvoid
+Xmain(int argc, char **argv)
+X{
+X        int len;
+X        char line[BIG];
+X	FILE *fp = stdin;
+X	int err = 0;
+X
+X	if (argc > 1)
+X		if ((fp = fopen(argv[1], "r")) == NULL) {
+X			printf("oops: %s: cannot open.\n", argv[1]);
+X			exit(1);
+X		}
+X
+X        while (fgets(line, sizeof line, fp) != NULL) {
+X                line[len = strlen(line) - 1] = 0;
+X                err += test(line);
+X        }
+X
+X	if (err == 0)
+X		printf("ok.\n");
+X	else
+X		printf("%d errors.\n", err);
+X
+X	exit(0);
+X}
+X
+Xint
+Xtest(char *line)
+X{
+X	char *pat, *str, *opr;
+X
+X	if ((pat = strtok(line, " \t")) == NULL)
+X			return 0;
+X
+X	if ((opr = strtok(NULL, " \t")) == NULL ||
+X	    (str = strtok(NULL, " \t")) == NULL) {
+X		fprintf(stderr, "oops: malformed input: \"%s\"\n", line);
+X		return 1;
+X	}
+X
+X	else {
+X		int r, n;
+X
+X		if (strcmp(opr, "~") == 0)
+X			r = 1;
+X		else if (strcmp(opr, "!~") == 0)
+X			r = 0;
+X		else {
+X			fprintf(stderr, "oops: malformed op: %s\n", opr);
+X			return 1;
+X		}
+X
+X		n = amatch(str, pat);
+X
+X		if (r != n) {
+X			printf("? %s %s %s\n", pat, opr, str);
+X			return 1;
+X		}
+X
+X		return 0;	/* matched */
+X	}
+X}
+@@@End of glot.c
+echo x - glot.dat 1>&2
+sed 's/^X//' >glot.dat <<'@@@End of glot.dat'
+X*		~	a
+X*		~	abc
+X?		~	a
+X[		!~	a
+X[--z]		~	-
+X[--z]		~	a
+X[-]abc		~	-abc
+X[-a-]?		~	zd
+X[-abc]?		!~	dd
+X[-abc]?		~	-b
+X[a-c][a-c][a-c]	~	abc
+X[]		!~	a
+X[]-z]abc	~	^abc
+X[]]abc		~	]abc
+X[]abc[a]	~	a
+X[]abc[de]	~	[
+X[]abc[de]	~	]
+X[]abc[de]	~	d
+X[^a-z]		!~	a
+X[^a-z]		~	A
+X[a-z]		~	a
+X[ab		!~	a
+X[abc]??[def]	!~	abca
+X[abc]??[def]	!~	abcg
+X[abc]??[def]	~	abcd
+X[b-		!~	a
+X[z-a]		~	a
+X[z-a]		~	z
+X\?\?\*!\[abc\]	~	??*![abc]
+Xab[a-z]?a*b	!~	abCdaxxxxb
+Xab[a-z]?a*b	!~	abc
+Xab[a-z]?a*b	~	abcdab
+Xab[a-z]?a*b	~	abcdaxxxxb
+Xxxx		~	xxx
+@@@End of glot.dat
+echo x - makefile 1>&2
+sed 's/^X//' >makefile <<'@@@End of makefile'
+XCFLAGS=-O
+X
+XGOBJ = glob.o
+XTOBJ = glot.o
+X
+Xall: $(GOBJ)
+X
+Xglot: $(GOBJ) $(TOBJ)
+X	$(CC) -o glot $(GOBJ) $(TOBJ)
+X
+Xtest: glot glot.dat
+X	glot glot.dat
+X
+Xclean:
+X	rm -f *.o core	
+@@@End of makefile

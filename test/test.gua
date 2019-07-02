@@ -1,0 +1,81 @@
+#!/usr/local/bin/guash
+
+exe_name = argv[2]
+test_dir = argv[3]
+
+tries = 10
+
+if (argc > 4) {
+    tries = eval(argv[4])
+}
+
+fp = fopen(test_dir + "/test.csv", "w")
+
+fputs("\"Test\", \"Time\"\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/array.gua " + tries)
+}
+fputs("\"array.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/complex.gua " + tries)
+}
+fputs("\"complex.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/file.gua " + tries + " " + test_dir)
+}
+fputs("\"file.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/function.gua " + tries)
+}
+fputs("\"function.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/interp.gua " + tries)
+}
+fputs("\"interp.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/loop.gua " + tries)
+}
+fputs("\"loop.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/math.gua " + tries)
+}
+fputs("\"math.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/matrix.gua " + tries)
+}
+fputs("\"matrix.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/numeric.gua " + tries)
+}
+fputs("\"numeric.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/printf.gua " + tries)
+}
+fputs("\"printf.gua\", " + GUA_TIME + "\n", fp)
+
+#test (50) {
+#	exec(exe_name + " " + test_dir + "/sqlite.gua " + tries)
+#}
+#fputs("\"sqlite.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/string.gua " + tries)
+}
+fputs("\"string.gua\", " + GUA_TIME + "\n", fp)
+
+test (50) {
+	exec(exe_name + " " + test_dir + "/time.gua " + tries)
+}
+fputs("\"time.gua\", " + GUA_TIME + "\n", fp)
+
+fp = fclose(fp)

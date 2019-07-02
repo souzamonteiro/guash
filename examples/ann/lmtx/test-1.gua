@@ -1,0 +1,29 @@
+#!/usr/local/bin/guash
+
+source("weights-1.gua")
+
+# Calculate the output of the first layer.
+nn[1,0] = 5.1267
+
+# xj = sum(xij * wij) + bj
+
+nn[0,2] = nn[1,0] * nn[1,2] + nn[2,2]
+nn[0,3] = nn[1,0] * nn[1,3] + nn[3,3]
+nn[0,4] = nn[1,0] * nn[1,4] + nn[4,4]
+
+# Activation function.
+# Sigmoid: f(x) = 2 / (1 + e^(-2x)) - 1
+#          df(x)/dx = 1 - f(x)^2
+nn[2,0] = 2.0 / (1.0 + exp(-2.0 * nn[0,2])) - 1.0
+nn[3,0] = 2.0 / (1.0 + exp(-2.0 * nn[0,3])) - 1.0
+nn[4,0] = 2.0 / (1.0 + exp(-2.0 * nn[0,4])) - 1.0
+
+# Calculate the output of the second layer.
+# Linear: f(x) = x
+#         df(x)/dx = 1
+nn[0,5] = nn[2,0] * nn[2,5] + nn[3,0] * nn[3,5] + nn[4,0] * nn[4,5] + nn[5,5]
+nn[5,0] = nn[0,5]
+
+# Show the result.
+println("nn[1,0] = " + nn[1,0] + ", nn[5,0] = " + nn[5,0])
+

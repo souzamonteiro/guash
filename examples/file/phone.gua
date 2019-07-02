@@ -1,0 +1,423 @@
+#!/usr/local/bin/guash
+#
+# phone.gua
+#
+#     This file implements a simple phone book.
+#
+# Copyright (C) 2005 Roberto Luiz Souza Monteiro
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# RCS: @(#) $Id: phone.gua,v 1.1 2015/03/11 15:02:00 monteiro Exp $
+#
+
+script_file = fsFullPath($argv[1])
+script_path = fsPath(script_file)
+file = script_path + "/phone.txt"
+
+record["name"] = "";
+record["phone"] = "";
+
+title = "PHONE BOOK";
+copyright = "Copyright(C) 2005 by Roberto Luiz Souza Monteiro.";
+
+boxtitle = "";
+
+#
+# Edit a record.
+#
+function editRecord(getAll = TRUE) {
+    clrscr;
+    
+    box(1, 1, 80, 24, RED, BLACK);
+    box(5, 8, 76, 17, WHITE, CYAN);
+    
+    textcolor(RED);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($title)) / 2, 3);
+    printf("%s", $title);
+
+    textcolor(BLUE);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($copyright)) / 2, 5);
+    printf("%s", $copyright);
+
+    textcolor(BLACK);
+    textbackground(WHITE);
+    
+    gotoxy((80 - length($boxtitle)) / 2, 8);
+    printf("%s", $boxtitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+    
+    gotoxy(10,12);
+    printf("Name:");
+    gotoxy(10,13);
+    printf("Phone:");
+    
+    $record["name"] = entry(17, 12, 50, BLACK, WHITE);
+    
+    if (!getAll) {
+        return(TRUE);
+    }
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    $record["phone"] = entry(17, 13, 20, BLACK, WHITE);
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    gotoxy(10,22);
+    printf("Ok( [Y] Yes, [N] No )?");
+    
+    while (TRUE) {
+        option = getch();
+        
+        if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+            break;
+        }
+    }
+    
+    if (toupper(option) == "Y") {
+        return(TRUE);
+    } else {
+        return(FALSE);
+    }
+}
+
+#
+# Show a record.
+#
+function showRecord() {
+    clrscr;
+    
+    box(1, 1, 80, 24, RED, BLACK);
+    box(5, 8, 76, 17, WHITE, CYAN);
+    
+    textcolor(RED);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($title)) / 2, 3);
+    printf("%s", $title);
+    
+    textcolor(BLUE);
+    textbackground(BLACK);
+    
+    gotoxy((80 - length($copyright)) / 2, 5);
+    printf("%s", $copyright);
+    
+    textcolor(BLACK);
+    textbackground(WHITE);
+    
+    gotoxy((80 - length($boxtitle)) / 2, 8);
+    printf("%s", $boxtitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+    
+    gotoxy(10,12);
+    printf("Name:");
+    gotoxy(10,13);
+    printf("Phone:");
+    
+    textcolor(RED);
+    
+    gotoxy(17,12);
+    printf($record["name"]);
+    gotoxy(17,13);
+    printf($record["phone"]);
+}
+
+#
+# Insert a new record.
+#
+function insertRecord() {
+    $record["name"] = "";
+    $record["phone"] = "";
+    
+    $boxtitle = "New Record";
+    
+    if (editRecord()) {
+        fseek($fp, 0, SEEK_END);
+        
+        fputs(sprintf("%-50.50s%-20.20s\n", $record["name"], $record["phone"]), $fp);
+        
+        fflush($fp);
+    }
+}
+
+#
+# Update a record.
+#
+function updateRecord() {
+    $boxtitle = "Edit Record";
+    
+    editRecord(FALSE);
+
+    found = FALSE;
+    
+    rewind($fp);
+    
+    while (!feof($fp)) {
+        data = fread(71, $fp);
+
+        if (length(data) == 71) {
+            if (strpos(toupper(range(data, 0, 49)), toupper($record["name"])) >= 0) {
+                $record["name"] = range(data, 0, 49);
+                $record["phone"] = range(data, 50, 69);
+                found = TRUE;
+                break;
+            }
+        }
+    }
+    
+    if (found) {
+        showRecord;
+        
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,22);
+        printf("Ok( [Y] Yes, [N] No )?");
+        
+        while (TRUE) {
+            option = getch();
+            
+            if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+                break;
+            }
+        }
+        
+        if (toupper(option) == "Y") {
+            if (editRecord()) {
+                fseek($fp, -71, SEEK_CUR);
+                
+                fputs(sprintf("%-50.50s%-20.20s\n", $record["name"], $record["phone"]), $fp);
+                
+                fflush($fp);
+            }
+        } else {
+            return;
+        }
+    } else {
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,20);
+        printf("Record not found!");
+        gotoxy(10,22);
+        printf("Press any key to continue...");
+        getch;
+    }
+}
+
+#
+# Delete a record.
+#
+function deleteRecord() {
+    $boxtitle = "Delete Record";
+    
+    editRecord(FALSE);
+
+    found = FALSE;
+    
+    rewind($fp);
+    
+    while (!feof($fp)) {
+        data = fread(71, $fp);
+
+        if (length(data) == 71) {
+            if (strpos(toupper(range(data, 0, 49)), toupper($record["name"])) >= 0) {
+                $record["name"] = range(data, 0, 49);
+                $record["phone"] = range(data, 50, 69);
+                found = TRUE;
+                break;
+            }
+        }
+    }
+    
+    if (found) {
+        showRecord;
+        
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,22);
+        printf("Ok( [Y] Yes, [N] No )?");
+        
+        while (TRUE) {
+            option = getch();
+            
+            if ((toupper(option) == "Y") || (toupper(option) == "N")) {
+                break;
+            }
+        }
+        
+        if (toupper(option) == "Y") {
+            $record["name"] = "";
+            $record["phone"] = "";
+            
+            fseek($fp, -71, SEEK_CUR);
+            
+            fputs(sprintf("%-50.50s%-20.20s\n", $record["name"], $record["phone"]), $fp);
+            
+            fflush($fp);
+        } else {
+            return;
+        }
+    } else {
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,20);
+        printf("Record not found!");
+        gotoxy(10,22);
+        printf("Press any key to continue...");
+        getch;
+    }
+}
+
+#
+# Search record.
+#
+function searchRecord() {
+    $boxtitle = "Search Record";
+
+    editRecord(FALSE);
+
+    found = FALSE;
+    
+    rewind($fp);
+
+    while (!feof($fp)) {
+        data = fread(71, $fp);
+
+        if (length(data) == 71) {
+            if (strpos(toupper(range(data, 0, 49)), toupper($record["name"])) >= 0) {
+                $record["name"] = range(data, 0, 49);
+                $record["phone"] = range(data, 50, 69);
+                found = TRUE;
+                break;
+            }
+        }
+    }
+    
+    if (found) {
+        showRecord;
+    } else {
+        textcolor(WHITE);
+        textbackground(BLACK);
+        
+        gotoxy(10,20);
+        printf("Record not found!");
+    }
+    
+    textcolor(WHITE);
+    textbackground(BLACK);
+    
+    gotoxy(10,22);
+    printf("Press any key to continue...");
+    getch;
+}
+
+#
+# The main program.
+#
+
+# Open the table.
+try {
+    fp = fopen(file, "r+");
+} catch {
+    fp = fopen(file, "w+");
+}
+
+option = "";
+
+# Show the main menu.
+while (TRUE) {
+    menutitle = "General Options";
+
+    clrscr;
+
+    box(1, 1, 80, 24, RED, BLACK);
+    box(29, 9, 49, 17, WHITE, CYAN);
+
+    textcolor(RED);
+    textbackground(BLACK);
+
+    gotoxy((80 - length(title)) / 2, 3);
+    printf("%s", title);
+
+    textcolor(BLUE);
+    textbackground(BLACK);
+
+    gotoxy((80 - length(copyright)) / 2, 5);
+    printf("%s", copyright);
+
+    textcolor(BLACK);
+    textbackground(WHITE);
+
+    gotoxy((80 - length(menutitle)) / 2, 9);
+    printf("%s", menutitle);
+
+    textcolor(BLACK);
+    textbackground(CYAN);
+
+    gotoxy(33, 11);
+    printf("[1] NEW");
+    gotoxy(33, 12);
+    printf("[2] EDIT");
+    gotoxy(33, 13);
+    printf("[3] DELETE");
+    gotoxy(33, 14);
+    printf("[4] SEARCH");
+    gotoxy(33, 15);
+    printf("[5] EXIT");
+
+    textcolor(GREEN);
+    textbackground(BLACK);
+
+    gotoxy(10,22);
+    printf("Select an option.");
+    
+    option = getch();
+
+    if (option == "1") {
+        insertRecord;
+    } elseif (option == "2") {
+        updateRecord;
+    } elseif (option == "3") {
+        deleteRecord;
+    } elseif (option == "4") {
+        searchRecord;
+    } elseif (option == "5") {
+        # Close the table and exit.
+        fclose(fp);
+        
+        textcolor(WHITE);
+        textbackground(BLACK);
+
+        clrscr;
+
+        break;
+    }
+}
+
+#exit(0);

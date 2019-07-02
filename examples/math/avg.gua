@@ -1,0 +1,33 @@
+#!/usr/local/bin/guash
+
+if (argc < 3) {
+    println("Error: no population file.")
+    exit
+}
+
+fp = fopen(argv[2], "r")
+
+sx = 0
+sx2 = 0
+n = 0
+
+while (!feof(fp)) {
+    if((line = fgets(fp)) == NULL) {
+        break
+    }
+    
+    x = eval(line)
+    
+    sx = sx + x
+    sx2 = sx2 + x * x
+    n = n + 1
+}
+
+fp = fclose(fp)
+
+average = sx / n
+deviation = sqrt((sx2 - (sx * sx) / n) / (n - 1))
+
+println("Average   = " + average)
+println("Deviation = " + deviation)
+println("Events    = " + n)

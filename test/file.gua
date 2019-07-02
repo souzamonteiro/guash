@@ -1,0 +1,112 @@
+#!/usr/local/bin/guash
+
+tries = 10
+path = "."
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+if (argc == 4) {
+    path = argv[3]
+}
+
+println("Testing file functions...")
+
+test (tries; 25; 0.000001) {
+    fp = fopen(path + "/data.txt", "w")
+    
+    fputs("10.0\n", fp)
+    fputs("20.0\n", fp)
+    fputs("30.0\n", fp)
+    fputs("40.0\n", fp)
+
+    fp = fclose(fp)
+    
+    fp = fopen(path + "/data.txt", "r")
+    
+    sx = 0
+    sx2 = 0
+    n = 0
+
+    while (!feof(fp)) {
+        if((line = fgets(fp)) == NULL) { 
+            break
+        }
+
+        x = eval(line)
+        
+        sx = sx + x
+        sx2 = sx2 + x * x
+        n = n + 1
+    }
+
+    fp = fclose(fp)
+
+    deviation = sqrt((sx2 - (sx * sx) / n) / (n - 1))
+    average = sx / n
+} catch {
+    println("TEST: Fail in running script.")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing arrays of files...")
+
+test (tries) {
+    fp = fopen(path + "/data.txt", "w")
+    
+    i = 0
+    
+    for (i = 0; i < 10; i = i + 1) {
+        a[i] = fp
+    }
+    
+    b = {1, 2, fp}
+    
+    #println(a)
+    #println(b)
+    
+    fp = fclose(fp)
+} catch {
+    println("TEST: Fail in running script.")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("Testing matrices of files...")
+
+test (tries) {
+    fp = fopen(path + "/data.txt", "w")
+    
+    a = matrix(0, 10)
+    
+    i = 0
+    
+    for (i = 0; i < 10; i = i + 1) {
+        a[i] = fp
+    }
+    
+    b = [1, 2, fp]
+    
+    #println(a)
+    #println(b)
+    
+    fp = fclose(fp)
+} catch {
+    println("TEST: Fail in running script.")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+

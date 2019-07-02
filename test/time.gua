@@ -1,0 +1,25 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the time functions...")
+
+println("strptime and strftime...")
+test (tries; "2015-10-11 20:27:48") {
+    a = "2015-10-11 20:27:48"
+    b = strptime(a, "%Y-%m-%d %H:%M:%S")
+    c = strftime("%Y-%m-%d %H:%M:%S", b)
+} catch {
+    println("TEST: Fail in expression \"strftime(\"%Y-%m-%d %H:%M:%S\", a)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+

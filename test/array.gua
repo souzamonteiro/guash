@@ -1,0 +1,37 @@
+#!/usr/local/bin/guash
+
+tries = 10
+
+if (argc > 2) {
+    tries = eval(argv[2])
+}
+
+println("Testing the array functions...")
+
+println("intersection...")
+test (tries; {2, "hello"}) {
+    a = {1, 2, 3, 6, 7, 9, 4, "hello", "world"}
+    b = {"dog", 2, "hello", 5, 8, 13}
+    c = intersection(a, b)
+} catch {
+    println("TEST: Fail in expression \"c = intersection(a, b)\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)
+
+println("search...")
+test (tries; 2) {
+    search({"a", "b", "c", "d"}, "c")
+} catch {
+    println("TEST: Fail in expression \"search({"a", "b", "c", "d"}, "c")\".")
+    print("      Expected result ")
+    println(GUA_DESIRED)
+    print("      But got ")
+    println(GUA_RESULT)
+}
+println("Test completed in " + GUA_TIME + " seconds.")
+println("Tries = " + GUA_TRIES)

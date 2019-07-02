@@ -1,0 +1,42 @@
+#!/usr/local/bin/guash
+
+# Parse command line oprions...
+if (argc < 3) {
+    println("Usage: role90_run image_width [image_height]")
+    exit
+}
+
+w = eval(argv[2])
+h = w
+
+if (argc == 4) {
+    h = eval(argv[3])
+}
+
+tape[0] = "x"
+for (i = 1; i < (w / 2); i = i + 1) {
+    tape[i] = "0"
+}
+tape[w / 2] = "1"
+for (i = ((w / 2) + 1); i < w; i = i + 1) {
+    tape[i] = "0"
+}
+tape[w] = "x"
+
+tape_file = "role90_" + w + "_" + h + ".tap"
+tape_log = "role90_" + w + "_" + h + ".log"
+bitmap_file = "role90_" + w + "_" + h + ".pbm"
+
+fd = fopen(tape_file, "w")
+fputs(toString(tape), fd)
+fclose(fd)
+
+#command = "./turingmachine.gua -i role90.tur -d -o " + tape_log + " --tf " + tape_file + " -m none -n " + (w * 3 * h) + " --skip " + w * 3
+command = "./turingmachine.gua -i role90.tur -o " + tape_log + " --tf " + tape_file + " -m none -n " + (w * 3 * h) + " --skip " + w * 3
+println(command)
+exec(command)
+
+command = "./log2pbm.gua -i " + tape_log + " -o " + bitmap_file
+println(command)
+exec(command)
+

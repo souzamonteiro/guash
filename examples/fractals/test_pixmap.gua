@@ -1,0 +1,257 @@
+#!/usr/local/bin/guash
+
+#
+# Save a pixmap to a given file using the Netpbm formats.
+#
+function Pixmap_Save(filename, pixmap, format = "PBM") {
+    dim_pixmap = dim(pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    fd = fopen(filename, "w")
+
+    # Type P1 is a bitmap file(PBM).
+    if (format == "PBM") {
+        if (length(dim_pixmap) != 2) {
+            fclose(fd)
+
+            return(FALSE)
+        }
+
+        # Save the Netpbm format type and the image size...
+        fputs("P1\n" , fd)
+        fputs("" + dim_j + " " + dim_i + "\n" , fd)
+
+        for (i = 0; i < dim_i; i = i + 1) {
+            for (j = 0; j < dim_j; j = j + 1) {
+                fputs("" + pixmap[i, j], fd)
+                if (j < (dim_j - 1)) {
+                    fputs(" ", fd)
+                } else {
+                    fputs("\n", fd)
+                }
+            }
+        }
+    }
+
+    fclose(fd)
+
+    return(TRUE)
+}
+
+#
+# Draw a line in a pixmap given the pixmap matrix,
+# its coordinates and pixel color.
+#
+function Pixmap_Line(pixmap, x1, y1, x2, y2, color = 1) {
+    dim_pixmap = dim(@pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    if (length(dim_pixmap) == 2) {
+        if ((x1 < 0) || (x1 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y1 < 0) || (y1 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x2 < 0) || (x2 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y2 < 0) || (y2 > (dim_j - 1))) {
+            return(FALSE)
+        }
+
+        if (x1 < x2) {
+            # Draw a line...
+            dx = x2 - x1
+            dy = y2 - y1
+
+            a = dy * 1.0 / dx * 1.0
+            b = y1 - a * x1
+
+            # Coordinates must be integer...
+            x = eval(sprintf("%.0f", x1))
+            
+            if (y1 < y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", a * x + b))
+
+                    @pixmap[y, x] = color
+                    x = x + 1            
+                }
+            } elseif (y1 > y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", fabs(a * x + b)))
+
+                    @pixmap[y, x] = color
+                    x = x + 1            
+                }
+            } elseif (y1 == y2) {
+                # Coordinates must be integer...
+                y = eval(sprintf("%.0f", y1))
+
+                while (x <= x2) {
+                    @pixmap[y, x] = color
+                    x = x + 1            
+                }
+            }
+        } elseif (x1 > x2) {
+            # We must swap vertices coordinates...
+            x = x1
+            x1 = x2
+            x2 = x
+            y = y1
+            y1 = y2
+            y2 = y
+
+            # Draw a line...
+            dx = x2 - x1
+            dy = y2 - y1
+
+            a = dy * 1.0 / dx * 1.0
+            b = y1 - a * x1
+
+            # Coordinates must be integer...
+            x = eval(sprintf("%.0f", x1))
+            
+            if (y1 < y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", a * x + b))
+
+                    @pixmap[y, x] = color
+                    x = x + 1            
+                }
+            } elseif (y1 > y2) {
+                while (x <= x2) {
+                    # Coordinates must be integer...
+                    y = eval(sprintf("%.0f", fabs(a * x + b)))
+
+                    @pixmap[y, x] = color
+                    x = x + 1            
+                }
+            } elseif (y1 == y2) {
+                # Coordinates must be integer...
+                y = eval(sprintf("%.0f", y1))
+
+                while (x <= x2) {
+                    @pixmap[y, x] = color
+                    x = x + 1            
+                }
+            }
+        } elseif (x1 == x2) {
+            # Coordinates must be integer...
+            x = eval(sprintf("%.0f", x1))
+            y = eval(sprintf("%.0f", y1))
+
+            while (y <= y2) {
+                @pixmap[y, x] = color
+                y = y + 1            
+            }
+        }
+    }
+
+    return(TRUE)
+}
+
+#
+# Draw a triangle in a pixmap given the pixmap matrix,
+# its coordinates and pixel color.
+#
+function Pixmap_Triangle(pixmap, x1, y1, x2, y2, x3, y3, color = 1) {
+    dim_pixmap = dim(@pixmap)
+    dim_i = dim_pixmap[0]
+    dim_j = dim_pixmap[1]
+
+    if (length(dim_pixmap) == 2) {
+        if ((x1 < 0) || (x1 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y1 < 0) || (y1 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x2 < 0) || (x2 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y2 < 0) || (y2 > (dim_j - 1))) {
+            return(FALSE)
+        }
+        if ((x3 < 0) || (x3 > (dim_i - 1))) {
+            return(FALSE)
+        }
+        if ((y3 < 0) || (y3 > (dim_j - 1))) {
+            return(FALSE)
+        }
+
+        Pixmap_Line(pixmap, x1, y1, x2, y2, color)
+        Pixmap_Line(pixmap, x2, y2, x3, y3, color)
+        Pixmap_Line(pixmap, x3, y3, x1, y1, color)
+    }
+
+    return(TRUE)
+}
+
+#
+# Configuration variables.
+#
+output_file = "noname"
+image_size = "200x200"
+
+#
+# The main program.
+#
+if (argc < 3) {
+    println("Usage: test_pixmap option1 value1 [option1 value1]")
+    exit
+}
+
+i = 2
+
+while (i < argc) {
+    if ((argv[i] == "-h") || (argv[i] == "--help")) {
+        println("Usage: test_pixmap option1 value1 [option1 value1]")
+        println("-h    --help               show the options sumary")
+        println("-o                         output file")
+        println("-s                         image size(default=200x200")
+        exit(0)
+    } elseif (argv[i] == "-i") {
+        i = i + 1
+        iteractions = argv[i]
+    } elseif (argv[i] == "-o") {
+        i = i + 1
+        output_file = argv[i]
+    } elseif (argv[i] == "-s") {
+        i = i + 1
+        image_size = argv[i]
+    }
+    i = i + 1
+} 
+
+# Check if the input file name was suplied.
+if (output_file == "noname") {
+    println("Error: output file name is mandatory.")
+    exit(1)
+}
+
+# Create two blank pixmaps...
+dim_pixmap = split(trim(image_size), "x")
+
+dim_i = eval(dim_pixmap[0])
+dim_j = eval(dim_pixmap[1])
+
+pixmap = matrix(0, dim_i, dim_j)
+
+# Draw the Sierpinski triangle...
+Pixmap_Line("pixmap", 20, 20, 100, 100)
+Pixmap_Line("pixmap", 20, 100, 100, 20)
+Pixmap_Line("pixmap", 20, 60, 100, 60)
+Pixmap_Line("pixmap", 60, 20, 60, 100)
+Pixmap_Triangle("pixmap", 120, 120, 180, 120, 150, 170)
+Pixmap_Triangle("pixmap", 120, 150, 150, 100, 180, 150)
+
+# Save the fractal image...
+Pixmap_Save(output_file, pixmap)
+

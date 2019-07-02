@@ -1,0 +1,15 @@
+script_file = fsFullPath($argv[1]);
+script_path = fsPath(script_file);
+
+source(script_path + "/" + "lmtx.gua")
+
+if ($SYS_HOST == "windows") {
+    if (fsExists(script_path + "/" + "liblmtx.dll")) {
+        load(script_path + "/" + "liblmtx.dll")
+    }
+} else {
+    if (fsExists(script_path + "/" + "liblmtx.so")) {
+        load(script_path + "/" + "liblmtx.so")
+    }
+}
+

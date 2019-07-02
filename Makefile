@@ -1,0 +1,237 @@
+CC = gcc
+
+CP = cp -rf
+
+CD = cd
+
+SRC_TREE = .
+
+SRC_DIR = ${SRC_TREE}/src
+
+INC_DIR = ${SRC_TREE}/include
+
+LIB_DIR =
+
+BIN_DIR = ${SRC_TREE}/bin
+
+DOC_DIR = ${SRC_TREE}/doc
+
+TEST_DIR = ${SRC_TREE}/test
+
+IDE_DIR = ${SRC_TREE}/tools/ide
+
+PREFIX = /usr/local
+
+LANGUAGE_SPECS_DIR = /usr/share/gtksourceview-3.0/language-specs/
+
+EXE_NAME = guash
+GLUT_EXE_NAME = glutguash
+GLWM_EXE_NAME = glwmguash
+
+CFLAGS = -g -Wall -iquote "${INC_DIR}" -D _LINUX_
+GLUT_CFLAGS = -g -Wall -I /usr/X11R6/include/ -iquote "${INC_DIR}" -D _LINUX_ -D _OPENGL_ -D _GLUT_
+GLWM_CFLAGS = -g -Wall -iquote "${INC_DIR}" -D _LINUX_ -D _OPENGL_ -D _GLWM_
+
+SQLITE_CFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
+
+LDFLAGS = -export-dynamic
+GLUT_LDFLAGS = -export-dynamic
+GLWM_LDFLAGS = -export-dynamic
+
+LIBS = -l m -l dl
+GLUT_LIBS = -L /usr/X11R6/lib -l X11 -l glut -l GL -l GLU
+GLWM_LIBS = -l X11 -l GL
+
+all: $(BIN_DIR)/$(EXE_NAME)
+
+$(BIN_DIR)/$(EXE_NAME): $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/shell/guash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o
+	$(CC) $(LDFLAGS) -o $(BIN_DIR)/$(EXE_NAME) $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/shell/guash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o $(LIBS)
+
+$(BIN_DIR)/$(GLUT_EXE_NAME): $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/gl/gl.o $(SRC_DIR)/glf/bdf.o $(SRC_DIR)/glf/glf.o $(SRC_DIR)/glf/glft.o $(SRC_DIR)/glo/glm.o $(SRC_DIR)/glo/glo.o $(SRC_DIR)/glu/glu.o $(SRC_DIR)/glut/glut.o glutguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o
+	$(CC) $(GLUT_LDFLAGS) -o $(BIN_DIR)/$(GLUT_EXE_NAME) $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/gl/gl.o $(SRC_DIR)/glf/bdf.o $(SRC_DIR)/glf/glf.o $(SRC_DIR)/glf/glft.o $(SRC_DIR)/glo/glm.o $(SRC_DIR)/glo/glo.o $(SRC_DIR)/glu/glu.o $(SRC_DIR)/glut/glut.o $(SRC_DIR)/shell/glutguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o $(LIBS) $(GLUT_LIBS)
+
+$(BIN_DIR)/$(GLWM_EXE_NAME): $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/gl/gl.o $(SRC_DIR)/glf/bdf.o $(SRC_DIR)/glf/glf.o $(SRC_DIR)/glf/glft.o $(SRC_DIR)/glo/glm.o $(SRC_DIR)/glo/glo.o $(SRC_DIR)/glwm/glw.o $(SRC_DIR)/glwm/unix/glwm.o glwmguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o
+	$(CC) $(GLWM_LDFLAGS) -o $(BIN_DIR)/$(GLWM_EXE_NAME) $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/gl/gl.o $(SRC_DIR)/glf/bdf.o $(SRC_DIR)/glf/glf.o $(SRC_DIR)/glf/glft.o $(SRC_DIR)/glo/glm.o $(SRC_DIR)/glo/glo.o $(SRC_DIR)/glwm/glw.o $(SRC_DIR)/glwm/unix/glwm.o $(SRC_DIR)/shell/glwmguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/math/math.o $(SRC_DIR)/match/match.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o $(LIBS) $(GLWM_LIBS)
+
+array.o: $(SRC_DIR)/array/array.c $(INC_DIR)/array.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/array/array.o -c $(SRC_DIR)/array/array.c
+
+bdf.o: $(SRC_DIR)/glf/bdf.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glf/bdf.o -c $(SRC_DIR)/glf/bdf.c
+
+complex.o: $(SRC_DIR)/complex/complex.c $(INC_DIR)/complex.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/complex/complex.o -c $(SRC_DIR)/complex/complex.c
+	
+file.o: $(SRC_DIR)/file/unix/file.c $(INC_DIR)/file.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/file/unix/file.o -c $(SRC_DIR)/file/unix/file.c
+	
+fs.o: $(SRC_DIR)/fs/unix/fs.c $(INC_DIR)/fs.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/fs/unix/fs.o -c $(SRC_DIR)/file/unix/fs.c
+	
+gl.o: $(SRC_DIR)/gl/gl.c $(INC_DIR)/gl.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/gl/gl.o -c $(SRC_DIR)/gl/gl.c
+
+glf.o: $(SRC_DIR)/glf/glf.c $(INC_DIR)/glf.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glf/glf.o -c $(SRC_DIR)/glf/glf.c
+
+glft.o: $(SRC_DIR)/glf/glft.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glf/glft.o -c $(SRC_DIR)/glf/glft.c
+
+glm.o: $(SRC_DIR)/glo/glm.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glo/glm.o -c $(SRC_DIR)/glo/glm.c
+	
+glo.o: $(SRC_DIR)/glo/glo.c $(INC_DIR)/glo.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glo/glo.o -c $(SRC_DIR)/glo/glo.c
+	
+glu.o: $(SRC_DIR)/glu/glu.c $(INC_DIR)/glu.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glu/glu.o -c $(SRC_DIR)/glu/glu.c
+	
+glut.o: $(SRC_DIR)/glut/glut.c $(INC_DIR)/glut.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glut/glut.o -c $(SRC_DIR)/glut/glut.c
+	
+glw.o: $(SRC_DIR)/glwm/glw.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glwm/glw.o -c $(SRC_DIR)/glwm/glw.c
+	
+glwm.o: $(SRC_DIR)/glwm/unix/glwm.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/glwm/unix/glwm.o -c $(SRC_DIR)/glwm/unix/glwm.c
+
+interp.o: $(SRC_DIR)/interpreter/interp.c $(INC_DIR)/interp.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/interpreter/interp.o -c $(SRC_DIR)/interpreter/interp.c
+
+match.o: $(SRC_DIR)/match/match.c $(INC_DIR)/match.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/match/match.o -c $(SRC_DIR)/match/match.c
+
+math.o: $(SRC_DIR)/math/math.c $(INC_DIR)/math.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/math/math.o -c $(SRC_DIR)/math/math.c
+
+matrix.o: $(SRC_DIR)/matrix/matrix.c $(INC_DIR)/matrix.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/matrix/matrix.o -c $(SRC_DIR)/matrix/matrix.c
+
+numeric.o: $(SRC_DIR)/numeric/numeric.c $(INC_DIR)/numeric.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/numeric/numeric.o -c $(SRC_DIR)/numeric/numeric.c
+
+printf.o: $(SRC_DIR)/printf/printf.c $(INC_DIR)/printf.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/printf/printf.o -c $(SRC_DIR)/printf/printf.c
+
+regexp.o: $(SRC_DIR)/regexp/regexp.c $(INC_DIR)/regexp.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/regexp/regexp.o -c $(SRC_DIR)/regexp/regexp.c
+
+sqlite.o: $(SRC_DIR)/sqlite/sqlite.c $(INC_DIR)/sqlite.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/sqlite/sqlite.o -c $(SRC_DIR)/sqlite/sqlite.c
+
+$(SRC_DIR)/sqlite/sqlite3.o: $(SRC_DIR)/sqlite/sqlite3.c
+	$(CC) $(SQLITE_CFLAGS) -o $(SRC_DIR)/sqlite/sqlite3.o -c $(SRC_DIR)/sqlite/sqlite3.c
+
+string.o: $(SRC_DIR)/string/string.c $(INC_DIR)/string.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/string/string.o -c $(SRC_DIR)/string/string.c
+
+strptime.o: $(SRC_DIR)/time/strptime.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/time/string.o -c $(SRC_DIR)/time/strptime.c
+
+system.o: $(SRC_DIR)/system/unix/system.c $(INC_DIR)/system.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/system/unix/system.o -c $(SRC_DIR)/system/unix/system.c
+
+time.o: $(SRC_DIR)/time/time.c $(INC_DIR)/time.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/time/time.o -c $(SRC_DIR)/time/time.c
+
+tui.o: $(SRC_DIR)/tui/unix/tui.c $(INC_DIR)/tui.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/tui/unix/tui.o -c $(SRC_DIR)/tui/unix/tui.c
+
+utf8.o: $(SRC_DIR)/utf8/utf8.c $(INC_DIR)/utf8.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/utf8/utf8.o -c $(SRC_DIR)/utf8/utf8.c
+	
+guash.o: $(SRC_DIR)/shell/guash.c
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/shell/guash.o -c $(SRC_DIR)/shell/guash.c
+	
+glutguash.o: $(SRC_DIR)/shell/guash.c
+	$(CC) $(GLUT_CFLAGS) -o $(SRC_DIR)/shell/glutguash.o -c $(SRC_DIR)/shell/guash.c
+
+glwmguash.o: $(SRC_DIR)/shell/guash.c
+	$(CC) $(GLWM_CFLAGS) -o $(SRC_DIR)/shell/glwmguash.o -c $(SRC_DIR)/shell/guash.c
+
+beautiful: $(SRC_TREE)/tools/tab2spaces/tab2spaces
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/array/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/complex/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/file/unix/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/fs/unix/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/gl/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/glu/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/glf/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/glut/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/glo/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/glwm/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/glwm/unix/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/interpreter/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/match/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/math/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/matrix/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/numeric/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/printf/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/regexp/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/shell/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/sqlite/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/string/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/system/unix/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/time/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/tui/unix/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/utf8/*.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(INC_DIR)/*.h
+
+test: all
+	$(BIN_DIR)/$(EXE_NAME) $(TEST_DIR)/test.gua $(BIN_DIR)/$(EXE_NAME) $(TEST_DIR) > $(TEST_DIR)/test.log
+
+test_glutguash: $(BIN_DIR)/$(GLUT_EXE_NAME)
+	$(BIN_DIR)/$(GLUT_EXE_NAME) $(TEST_DIR)/test.gua $(BIN_DIR)/$(GLUT_EXE_NAME) $(TEST_DIR) > $(TEST_DIR)/test.log
+
+$(SRC_TREE)/tools/tab2spaces/tab2spaces: $(SRC_TREE)/tools/tab2spaces/tab2spaces.c
+	$(CC) -o $(SRC_TREE)/tools/tab2spaces/tab2spaces $(SRC_TREE)/tools/tab2spaces/tab2spaces.c
+	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh
+
+install: all
+	$(CP) $(BIN_DIR)/$(EXE_NAME) $(PREFIX)/bin
+
+install_glutguash: all
+	$(CP) $(BIN_DIR)/$(GLUT_EXE_NAME) $(PREFIX)/bin
+
+install_glwmguash: all
+	$(CP) $(BIN_DIR)/$(GLWM_EXE_NAME) $(PREFIX)/bin
+
+install_language_specs: $(IDE_DIR)/language-specs/gua.lang
+	$(CP) $(IDE_DIR)/language-specs/* $(LANGUAGE_SPECS_DIR)
+
+clean:
+	rm -rf $(SRC_TREE)/*~ $(SRC_TREE)*.bak
+	rm -rf $(SRC_TREE)/array/*~ $(SRC_TREE)/array/*.bak $(SRC_DIR)/array/*~ $(SRC_DIR)/array/*.bak $(SRC_DIR)/array/*.o 
+	rm -rf $(SRC_TREE)/complex/*~ $(SRC_TREE)/complex/*.bak $(SRC_DIR)/complex/*~ $(SRC_DIR)/complex/*.bak $(SRC_DIR)/complex/*.o 
+	rm -rf $(SRC_TREE)/file/unix/*~ $(SRC_TREE)/file/unix/*.bak $(SRC_DIR)/file/unix/*~ $(SRC_DIR)/file/unix/*.bak $(SRC_DIR)/file/unix/*.o
+	rm -rf $(SRC_TREE)/fs/unix/*~ $(SRC_TREE)/fs/unix/*.bak $(SRC_DIR)/fs/unix/*~ $(SRC_DIR)/fs/unix/*.bak $(SRC_DIR)/fs/unix/*.o
+	rm -rf $(SRC_TREE)/gl/*~ $(SRC_TREE)/gl/*.bak $(SRC_DIR)/gl/*~ $(SRC_DIR)/gl/*.bak $(SRC_DIR)/gl/*.o 
+	rm -rf $(SRC_TREE)/glu/*~ $(SRC_TREE)/glu/*.bak $(SRC_DIR)/glu/*~ $(SRC_DIR)/glu/*.bak $(SRC_DIR)/glu/*.o 
+	rm -rf $(SRC_TREE)/glf/*~ $(SRC_TREE)/glf/*.bak $(SRC_DIR)/glf/*~ $(SRC_DIR)/glf/*.bak $(SRC_DIR)/glf/*.o 
+	rm -rf $(SRC_TREE)/glut/*~ $(SRC_TREE)/glut/*.bak $(SRC_DIR)/glut/*~ $(SRC_DIR)/glut/*.bak $(SRC_DIR)/glut/*.o 
+	rm -rf $(SRC_TREE)/glo/*~ $(SRC_TREE)/glo/*.bak $(SRC_DIR)/glo/*~ $(SRC_DIR)/glo/*.bak $(SRC_DIR)/glo/*.o 
+	rm -rf $(SRC_TREE)/glwm/*~ $(SRC_TREE)/glwm/*.bak $(SRC_DIR)/glwm/*~ $(SRC_DIR)/glwm/*.bak $(SRC_DIR)/glwm/*.o 
+	rm -rf $(SRC_TREE)/glwm/unix/*~ $(SRC_TREE)/glwm/unix/*.bak $(SRC_DIR)/glwm/unix/*~ $(SRC_DIR)/glwm/unix/*.bak $(SRC_DIR)/glwm/unix/*.o 
+	rm -rf $(SRC_TREE)/interpreter/*~ $(SRC_TREE)/interpreter/*.bak $(SRC_DIR)/interpreter/*~ $(SRC_DIR)/interpreter/*.bak $(SRC_DIR)/interpreter/*.o 
+	rm -rf $(SRC_TREE)/match/*~ $(SRC_TREE)/match/*.bak $(SRC_DIR)/match/*~ $(SRC_DIR)/match/*.bak $(SRC_DIR)/match/*.o
+	rm -rf $(SRC_TREE)/math/*~ $(SRC_TREE)/math/*.bak $(SRC_DIR)/math/*~ $(SRC_DIR)/math/*.bak $(SRC_DIR)/math/*.o
+	rm -rf $(SRC_TREE)/matrix/*~ $(SRC_TREE)/matrix/*.bak $(SRC_DIR)/matrix/*~ $(SRC_DIR)/matrix/*.bak $(SRC_DIR)/matrix/*.o
+	rm -rf $(SRC_TREE)/numeric/*~ $(SRC_TREE)/numeric/*.bak $(SRC_DIR)/numeric/*~ $(SRC_DIR)/numeric/*.bak $(SRC_DIR)/numeric/*.o
+	rm -rf $(SRC_TREE)/printf/*~ $(SRC_TREE)/printf/*.bak $(SRC_DIR)/printf/*~ $(SRC_DIR)/printf/*.bak $(SRC_DIR)/printf/*.o
+	rm -rf $(SRC_TREE)/regexp/*~ $(SRC_TREE)/regexp/*.bak $(SRC_DIR)/regexp/*~ $(SRC_DIR)/regexp/*.bak $(SRC_DIR)/regexp/*.o
+	rm -rf $(SRC_TREE)/shell/*~ $(SRC_TREE)/shell/*.bak $(SRC_DIR)/shell/*~ $(SRC_DIR)/shell/*.bak $(SRC_DIR)/shell/*.o
+	rm -rf $(SRC_TREE)/sqlite/*~ $(SRC_TREE)/sqlite/*.bak $(SRC_DIR)/sqlite/*~ $(SRC_DIR)/sqlite/*.bak $(SRC_DIR)/sqlite/*.o
+	rm -rf $(SRC_TREE)/string/*~ $(SRC_TREE)/string/*.bak $(SRC_DIR)/string/*~ $(SRC_DIR)/string/*.bak $(SRC_DIR)/string/*.o
+	rm -rf $(SRC_TREE)/system/unix/*~ $(SRC_TREE)/system/unix/*.bak $(SRC_DIR)/system/unix/*~ $(SRC_DIR)/system/unix/*.bak $(SRC_DIR)/system/unix/*.o
+	rm -rf $(SRC_TREE)/time/*~ $(SRC_TREE)/time/*.bak $(SRC_DIR)/time/*~ $(SRC_DIR)/time/*.bak $(SRC_DIR)/time/*.o
+	rm -rf $(SRC_TREE)/tui/unix/*~ $(SRC_TREE)/tui/unix/*.bak $(SRC_DIR)/tui/unix/*~ $(SRC_DIR)/tui/unix/*.bak $(SRC_DIR)/tui/unix/*.o
+	rm -rf $(SRC_TREE)/utf8/*~ $(SRC_TREE)/utf8/*.bak $(SRC_DIR)/utf8/*~ $(SRC_DIR)/utf8/*.bak $(SRC_DIR)/utf8/*.o 
+	rm -rf $(INC_DIR)/*~ $(INC_DIR)/*.bak
+	rm -rf $(LIB_DIR)/*.so
+	rm -rf $(BIN_DIR)/$(EXE_NAME)
+	rm -rf $(BIN_DIR)/$(GLUT_EXE_NAME)
+	rm -rf $(BIN_DIR)/$(GLWM_EXE_NAME)
+	rm -rf $(DOC_DIR)/*~ $(DOC_DIR)/*.bak
+	rm -rf $(TEST_DIR)/*~ $(TEST_DIR)/*.bak $(TEST_DIR)/*.log $(TEST_DIR)/data.txt $(TEST_DIR)/test.csv $(TEST_DIR)/test.db
+	rm -rf $(IDE_DIR)/language-specs/*~
+

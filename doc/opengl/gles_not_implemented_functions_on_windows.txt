@@ -1,0 +1,6 @@
+glActiveTexture
+glClientActiveTexture
+glCompressedTexImage2D
+glCompressedTexSubImage2D
+glMultiTexCoord4f
+glSampleCoverage

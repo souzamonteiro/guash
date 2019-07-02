@@ -1,0 +1,79 @@
+glfwCreateCursor (x)
+glfwCreateStandardCursor (x)
+glfwCreateWindow (x)
+glfwDefaultWindowHints (x)
+glfwDestroyCursor (x)
+glfwDestroyWindow (x)
+glfwExtensionSupported (x)
+glfwGetClipboardString (x)
+glfwGetCurrentContext (x)
+glfwGetCursorPos (x)
+glfwGetFramebufferSize (x)
+glfwGetGammaRamp (x)
+glfwGetInputMode (x)
+glfwGetJoystickAxes (x)
+glfwGetJoystickButtons (x)
+glfwGetJoystickName (x)
+glfwGetKey (x)
+glfwGetMonitorName (x)
+glfwGetMonitorPhysicalSize (x)
+glfwGetMonitorPos (x)
+glfwGetMonitors (x)
+glfwGetMouseButton (x)
+glfwGetPrimaryMonitor (x)
+glfwGetProcAddress (x)
+glfwGetTime (x)
+glfwGetVersion (x)
+glfwGetVersionString (x)
+glfwGetVideoMode (x)
+glfwGetVideoModes
+glfwGetWindowAttrib
+glfwGetWindowFrameSize
+glfwGetWindowMonitor
+glfwGetWindowPos
+glfwGetWindowSize
+glfwGetWindowUserPointer
+glfwHideWindow
+glfwIconifyWindow
+glfwInit
+glfwJoystickPresent
+glfwMakeContextCurrent (x)
+glfwPollEvents (x)
+glfwPostEmptyEvent
+glfwRestoreWindow
+glfwSetCharCallback (x)
+glfwSetCharModsCallback (x)
+glfwSetClipboardString
+glfwSetCursor
+glfwSetCursorEnterCallback (x)
+glfwSetCursorPos
+glfwSetCursorPosCallback (x)
+glfwSetDropCallback (x)
+glfwSetErrorCallback (x)
+glfwSetFramebufferSizeCallback
+glfwSetGamma
+glfwSetGammaRamp
+glfwSetInputMode
+glfwSetKeyCallback (x)
+glfwSetMonitorCallback
+glfwSetMouseButtonCallback
+glfwSetScrollCallback
+glfwSetTime
+glfwSetWindowCloseCallback
+glfwSetWindowFocusCallback
+glfwSetWindowIconifyCallback
+glfwSetWindowPos
+glfwSetWindowPosCallback
+glfwSetWindowRefreshCallback
+glfwSetWindowShouldClose (x)
+glfwSetWindowSize
+glfwSetWindowSizeCallback
+glfwSetWindowTitle
+glfwSetWindowUserPointer
+glfwShowWindow
+glfwSwapBuffers (x)
+glfwSwapInterval (x)
+glfwTerminate (x)
+glfwWaitEvents
+glfwWindowHint
+glfwWindowShouldClose (x)
