@@ -34,6 +34,9 @@
 #include "complex.h"
 #include "file.h"
 #include "fs.h"
+#ifdef _MPI_
+    #include "mpi.h"
+#endif
 #ifdef _OPENGL_
     #include "gl.h"
 #ifndef _GLWM_
@@ -164,6 +167,12 @@ int main(int argc, char *argv[], char **env)
     if (status != GUA_OK) {
         printf("\nError: %s\n", error);
     }
+#ifdef _MPI_
+    status = Mpi_Init(nspace, argc, argv, env, error);
+    if (status != GUA_OK) {
+        printf("\nError: %s\n", error);
+    }
+#endif
     status = Numeric_Init(nspace, argc, argv, env, error);
     if (status != GUA_OK) {
         printf("\nError: %s\n", error);
@@ -284,6 +293,9 @@ int main(int argc, char *argv[], char **env)
 #endif
 #ifdef _OPENGL_
         printf("GLO library, version %s\n", GUA_GLO_VERSION);
+#endif
+#ifdef _MPI_
+        printf("MPI library, version %s\n", GUA_MPI_VERSION);
 #endif
         printf("Match library, version %s\n", MATCH_VERSION);
         printf("Math library, version %s\n", MATH_VERSION);

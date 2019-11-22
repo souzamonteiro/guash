@@ -1,0 +1,5 @@
+MPI_Comm_rank
+MPI_Comm_size
+MPI_Send
+MPI_Recv
+MPI_Finalize

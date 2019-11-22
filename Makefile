@@ -1,4 +1,6 @@
-CC = gcc
+#CC = gcc
+
+CC = mpicc
 
 CP = cp -rf
 
@@ -27,20 +29,24 @@ LANGUAGE_SPECS_DIR = /usr/share/gtksourceview-3.0/language-specs/
 EXE_NAME = guash
 GLUT_EXE_NAME = glutguash
 GLWM_EXE_NAME = glwmguash
+MPI_EXE_NAME = mpiguash
 
 CFLAGS = -g -Wall -iquote "${INC_DIR}" -D _LINUX_
 GLUT_CFLAGS = -g -Wall -I /usr/X11R6/include/ -iquote "${INC_DIR}" -D _LINUX_ -D _OPENGL_ -D _GLUT_
 GLWM_CFLAGS = -g -Wall -iquote "${INC_DIR}" -D _LINUX_ -D _OPENGL_ -D _GLWM_
+MPI_CFLAGS = -g -Wall -iquote "${INC_DIR}" -D _LINUX_ -D _MPI_
 
 SQLITE_CFLAGS = -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION
 
 LDFLAGS = -export-dynamic
 GLUT_LDFLAGS = -export-dynamic
 GLWM_LDFLAGS = -export-dynamic
+MPI_LDFLAGS = -export-dynamic
 
 LIBS = -l m -l dl
 GLUT_LIBS = -L /usr/X11R6/lib -l X11 -l glut -l GL -l GLU
 GLWM_LIBS = -l X11 -l GL
+MPI_LIBS = -l m -l dl
 
 all: $(BIN_DIR)/$(EXE_NAME)
 
@@ -52,6 +58,9 @@ $(BIN_DIR)/$(GLUT_EXE_NAME): $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex
 
 $(BIN_DIR)/$(GLWM_EXE_NAME): $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/gl/gl.o $(SRC_DIR)/glf/bdf.o $(SRC_DIR)/glf/glf.o $(SRC_DIR)/glf/glft.o $(SRC_DIR)/glo/glm.o $(SRC_DIR)/glo/glo.o $(SRC_DIR)/glwm/glw.o $(SRC_DIR)/glwm/unix/glwm.o glwmguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o
 	$(CC) $(GLWM_LDFLAGS) -o $(BIN_DIR)/$(GLWM_EXE_NAME) $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/gl/gl.o $(SRC_DIR)/glf/bdf.o $(SRC_DIR)/glf/glf.o $(SRC_DIR)/glf/glft.o $(SRC_DIR)/glo/glm.o $(SRC_DIR)/glo/glo.o $(SRC_DIR)/glwm/glw.o $(SRC_DIR)/glwm/unix/glwm.o $(SRC_DIR)/shell/glwmguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/math/math.o $(SRC_DIR)/match/match.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o $(LIBS) $(GLWM_LIBS)
+
+$(BIN_DIR)/$(MPI_EXE_NAME): $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/mpi/mpi.o mpiguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/match/match.o $(SRC_DIR)/math/math.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o
+	$(CC) $(MPI_LDFLAGS) -o $(BIN_DIR)/$(MPI_EXE_NAME) $(SRC_DIR)/array/array.o $(SRC_DIR)/complex/complex.o $(SRC_DIR)/file/unix/file.o $(SRC_DIR)/fs/unix/fs.o $(SRC_DIR)/mpi/mpi.o $(SRC_DIR)/shell/mpiguash.o $(SRC_DIR)/interpreter/interp.o $(SRC_DIR)/math/math.o $(SRC_DIR)/match/match.o $(SRC_DIR)/matrix/matrix.o $(SRC_DIR)/numeric/numeric.o $(SRC_DIR)/printf/printf.o $(SRC_DIR)/regexp/regexp.o $(SRC_DIR)/sqlite/sqlite.o $(SRC_DIR)/sqlite/sqlite3.o $(SRC_DIR)/string/string.o $(SRC_DIR)/system/unix/system.o $(SRC_DIR)/time/strptime.o $(SRC_DIR)/time/time.o $(SRC_DIR)/tui/unix/tui.o $(SRC_DIR)/utf8/utf8.o $(LIBS) $(MPI_LIBS)
 
 array.o: $(SRC_DIR)/array/array.c $(INC_DIR)/array.h
 	$(CC) $(CFLAGS) -o $(SRC_DIR)/array/array.o -c $(SRC_DIR)/array/array.c
@@ -107,6 +116,9 @@ math.o: $(SRC_DIR)/math/math.c $(INC_DIR)/math.h
 matrix.o: $(SRC_DIR)/matrix/matrix.c $(INC_DIR)/matrix.h
 	$(CC) $(CFLAGS) -o $(SRC_DIR)/matrix/matrix.o -c $(SRC_DIR)/matrix/matrix.c
 
+mpi.o: $(SRC_DIR)/mpi/mpi.c $(INC_DIR)/mpi.h
+	$(CC) $(CFLAGS) -o $(SRC_DIR)/mpi/mpi.o -c $(SRC_DIR)/mpi/mpi.c
+
 numeric.o: $(SRC_DIR)/numeric/numeric.c $(INC_DIR)/numeric.h
 	$(CC) $(CFLAGS) -o $(SRC_DIR)/numeric/numeric.o -c $(SRC_DIR)/numeric/numeric.c
 
@@ -148,6 +160,9 @@ glutguash.o: $(SRC_DIR)/shell/guash.c
 
 glwmguash.o: $(SRC_DIR)/shell/guash.c
 	$(CC) $(GLWM_CFLAGS) -o $(SRC_DIR)/shell/glwmguash.o -c $(SRC_DIR)/shell/guash.c
+
+mpiguash.o: $(SRC_DIR)/shell/guash.c
+	$(CC) $(MPI_CFLAGS) -o $(SRC_DIR)/shell/mpiguash.o -c $(SRC_DIR)/shell/guash.c
 
 beautiful: $(SRC_TREE)/tools/tab2spaces/tab2spaces
 	$(SRC_TREE)/tools/tab2spaces/tab2spaces.sh $(SRC_TREE)/tools/tab2spaces $(SRC_DIR)/array/*.c
@@ -216,6 +231,7 @@ clean:
 	rm -rf $(SRC_TREE)/match/*~ $(SRC_TREE)/match/*.bak $(SRC_DIR)/match/*~ $(SRC_DIR)/match/*.bak $(SRC_DIR)/match/*.o
 	rm -rf $(SRC_TREE)/math/*~ $(SRC_TREE)/math/*.bak $(SRC_DIR)/math/*~ $(SRC_DIR)/math/*.bak $(SRC_DIR)/math/*.o
 	rm -rf $(SRC_TREE)/matrix/*~ $(SRC_TREE)/matrix/*.bak $(SRC_DIR)/matrix/*~ $(SRC_DIR)/matrix/*.bak $(SRC_DIR)/matrix/*.o
+	rm -rf $(SRC_TREE)/mpi/*~ $(SRC_TREE)/mpi/*.bak $(SRC_DIR)/mpi/*~ $(SRC_DIR)/mpi/*.bak $(SRC_DIR)/mpi/*.o
 	rm -rf $(SRC_TREE)/numeric/*~ $(SRC_TREE)/numeric/*.bak $(SRC_DIR)/numeric/*~ $(SRC_DIR)/numeric/*.bak $(SRC_DIR)/numeric/*.o
 	rm -rf $(SRC_TREE)/printf/*~ $(SRC_TREE)/printf/*.bak $(SRC_DIR)/printf/*~ $(SRC_DIR)/printf/*.bak $(SRC_DIR)/printf/*.o
 	rm -rf $(SRC_TREE)/regexp/*~ $(SRC_TREE)/regexp/*.bak $(SRC_DIR)/regexp/*~ $(SRC_DIR)/regexp/*.bak $(SRC_DIR)/regexp/*.o
@@ -231,6 +247,7 @@ clean:
 	rm -rf $(BIN_DIR)/$(EXE_NAME)
 	rm -rf $(BIN_DIR)/$(GLUT_EXE_NAME)
 	rm -rf $(BIN_DIR)/$(GLWM_EXE_NAME)
+	rm -rf $(BIN_DIR)/$(MPI_EXE_NAME)
 	rm -rf $(DOC_DIR)/*~ $(DOC_DIR)/*.bak
 	rm -rf $(TEST_DIR)/*~ $(TEST_DIR)/*.bak $(TEST_DIR)/*.log $(TEST_DIR)/data.txt $(TEST_DIR)/test.csv $(TEST_DIR)/test.db
 	rm -rf $(IDE_DIR)/language-specs/*~

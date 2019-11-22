@@ -1,13 +1,15 @@
-guash (The GuaraScript Shell), version 2.1.4
+guash (The GuaraScript Shell), version 2.1.5
 
 Copyright (C) 2005, 2012, 2013 Roberto Luiz Souza Monteiro.
 Copyright (C) 2014, 2015 Roberto Luiz Souza Monteiro,
                          Hernane Borges de Barros Pereira,
                          Marcelo A. Moret.
+Copyright (C) 2019 Roberto Luiz Souza Monteiro,
+                   Hernane Borges de Barros Pereira.
 
-This software is distributed under the terms of the GNU GPL an LGPL licenses.
+This software is distributed under the terms of several open sources licenses.
 
-Please read the files COPYING and COPYING.LIB for further information.
+Please read the files LICENSE, COPYING or COPYING.LIB for further information.
 
 guash is an interpreter that implements the GuaraScript programming language.
 
@@ -26,7 +28,7 @@ For more information send mail to: support@guarascript.org
 You can get the last GuaraScript version at
 http://www.guarascript.org
 
-Salvador, July 2019.
+Lauro de Freitas, November 2019.
 
 Roberto Luiz Souza Monteiro
 

@@ -1,0 +1,26 @@
+#!/usr/local/bin/mpiguash
+
+rank = MPI_Comm_rank();
+size = MPI_Comm_size();
+
+println("Process #" + rank + " of " + size + " started.");
+#MPI_Abort(1);
+
+if (rank != 0) {
+    msg = "Process #" + rank + " running";
+    MPI_Send(msg, 0, 0);
+} else {
+    n = 0;
+
+    for (src = 1; src < size; src = src + 1) {
+        n = MPI_Probe(src, 0);
+        printf("Receiving %d bytes from process #%d...\n", n, src);
+
+        msg = "";
+        msg = MPI_Recv(255, src, 0);
+        
+        printf("Message \"%s\" received from process #%d.\n", msg, src);
+    }
+}
+
+MPI_Finalize();

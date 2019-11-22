@@ -88,43 +88,45 @@ function Builder_LoadFunctionsList() {
 # Creates the extension .c file header.
 #
 function Builder_CreateHeader() {
-    fo = fopen($target_c_file_name, "w")
-    
-    fputs("/**\n", fo)
-    fputs(" * File:\n", fo)
-    fputs(" *     " +  fsName($target_c_file_name) + "\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Package:\n", fo)
-    fputs(" *     " + $extension_prefix + "\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Description:\n", fo)
-    fputs(" *     This file implements a GuaraScript extension.\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Copyright:\n", fo)
-    fputs(" *     Copyright (c) " + strftime("%Y", time()) + " " + $author_name + ".\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Permission to use, copy, modify, and distribute this software for any\n", fo)
-    fputs(" * purpose with or without fee is hereby granted, provided that the above\n", fo)
-    fputs(" * copyright notice and this permission notice appear in all copies.\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n", fo)
-    fputs(" * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n", fo)
-    fputs(" * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n", fo)
-    fputs(" * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n", fo)
-    fputs(" * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n", fo)
-    fputs(" * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n", fo)
-    fputs(" * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * RCS: @(#) $Id: " + fsName($target_c_file_name) + ",v 1.0 " + strftime("%Y/%m/%d %H:%M:%S", time()) + " monteiro Exp $\n", fo)
-    fputs(" *\n", fo)
-    fputs(" */\n", fo)
-    fputs("\n", fo)
-    
-    fputs("#include <stdlib.h>\n", fo)
-    fputs("#include <string.h>\n", fo)
-    fputs("#include \"interp.h\"\n\n", fo)
-    
-    fo = fclose(fo)
+    if ($target_c_file_name != "") {
+        fo = fopen($target_c_file_name, "w")
+        
+        fputs("/**\n", fo)
+        fputs(" * File:\n", fo)
+        fputs(" *     " +  fsName($target_c_file_name) + "\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Package:\n", fo)
+        fputs(" *     " + $extension_prefix + "\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Description:\n", fo)
+        fputs(" *     This file implements a GuaraScript extension.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Copyright:\n", fo)
+        fputs(" *     Copyright (c) " + strftime("%Y", time()) + " " + $author_name + ".\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Permission to use, copy, modify, and distribute this software for any\n", fo)
+        fputs(" * purpose with or without fee is hereby granted, provided that the above\n", fo)
+        fputs(" * copyright notice and this permission notice appear in all copies.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n", fo)
+        fputs(" * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n", fo)
+        fputs(" * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n", fo)
+        fputs(" * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n", fo)
+        fputs(" * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n", fo)
+        fputs(" * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n", fo)
+        fputs(" * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * RCS: @(#) $Id: " + fsName($target_c_file_name) + ",v 1.0 " + strftime("%Y/%m/%d %H:%M:%S", time()) + " monteiro Exp $\n", fo)
+        fputs(" *\n", fo)
+        fputs(" */\n", fo)
+        fputs("\n", fo)
+        
+        fputs("#include <stdlib.h>\n", fo)
+        fputs("#include <string.h>\n", fo)
+        fputs("#include \"interp.h\"\n\n", fo)
+        
+        fo = fclose(fo)
+    }
 }
 
 #
@@ -172,7 +174,7 @@ function Builder_CreateFunctionWrapper() {
         # Add a function wrapper to each function name in the supplied list...
         n = 0
         
-        foraeach ($functions_list; script_function; c_function) {
+        foreach ($functions_list; script_function; c_function) {
             n = n + 1
             
             if (n == 1) {
@@ -227,11 +229,11 @@ function Builder_CreateInitFunction() {
         fputs("    Gua_Object object;\n", fo)
         fputs("    Gua_String errMessage;\n\n", fo)
 
-        if ($functions_list_ != "") {
+        if ($functions_list != "") {
             # Define the function wrapper to each function name in the supplied list...
             fputs("    /* Define the function wrapper to each extension function... */\n", fo)
             
-            foraeach ($functions_list; script_function; c_function) {
+            foreach ($functions_list; script_function; c_function) {
                 fputs("    Gua_LinkCFunctionToFunction(function, " + $extension_prefix + "_FunctionWrapper);\n", fo)
                 fputs("    if (Gua_SetFunction((Gua_Namespace *)nspace, \"" + trim(script_function, " \t\r\n") + "\", &function) != GUA_OK) {\n", fo)
                 fputs("        errMessage = (Gua_String) Gua_Alloc(sizeof(char) * MAX_ERROR_MSG_SIZE + 1);\n", fo)
@@ -282,42 +284,44 @@ function Builder_CreateCFile() {
 # Creates the .h file.
 #
 function Builder_CreateHFile() {
-    fo = fopen($target_h_file_name, "w")
-    
-    fputs("/**\n", fo)
-    fputs(" * File:\n", fo)
-    fputs(" *     " +  fsName($target_h_file_name) + "\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Package:\n", fo)
-    fputs(" *     " + $extension_prefix + "\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Description:\n", fo)
-    fputs(" *     This file implements a GuaraScript extension.\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Copyright:\n", fo)
-    fputs(" *     Copyright (c) " + strftime("%Y", time()) + " " + $author_name + ".\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * Permission to use, copy, modify, and distribute this software for any\n", fo)
-    fputs(" * purpose with or without fee is hereby granted, provided that the above\n", fo)
-    fputs(" * copyright notice and this permission notice appear in all copies.\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n", fo)
-    fputs(" * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n", fo)
-    fputs(" * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n", fo)
-    fputs(" * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n", fo)
-    fputs(" * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n", fo)
-    fputs(" * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n", fo)
-    fputs(" * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n", fo)
-    fputs(" *\n", fo)
-    fputs(" * RCS: @(#) $Id: " + fsName($target_h_file_name) + ",v 1.0 " + strftime("%Y/%m/%d %H:%M:%S", time()) + " monteiro Exp $\n", fo)
-    fputs(" *\n", fo)
-    fputs(" */\n", fo)
-    fputs("\n", fo)
-    
-    fputs("Gua_Status " + $extension_prefix + "_FunctionWrapper(void *nspace, Gua_Short argc, Gua_Object *argv, Gua_Object *object, Gua_String error);\n", fo)
-    fputs("Gua_Status " + $extension_prefix + "_Init(void *nspace, int argc, char *argv[], char **env, Gua_String error);\n", fo)
-    
-    fo = fclose(fo)
+    if ($target_h_file_name != "") {
+        fo = fopen($target_h_file_name, "w")
+        
+        fputs("/**\n", fo)
+        fputs(" * File:\n", fo)
+        fputs(" *     " +  fsName($target_h_file_name) + "\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Package:\n", fo)
+        fputs(" *     " + $extension_prefix + "\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Description:\n", fo)
+        fputs(" *     This file implements a GuaraScript extension.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Copyright:\n", fo)
+        fputs(" *     Copyright (c) " + strftime("%Y", time()) + " " + $author_name + ".\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * Permission to use, copy, modify, and distribute this software for any\n", fo)
+        fputs(" * purpose with or without fee is hereby granted, provided that the above\n", fo)
+        fputs(" * copyright notice and this permission notice appear in all copies.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES\n", fo)
+        fputs(" * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF\n", fo)
+        fputs(" * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR\n", fo)
+        fputs(" * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES\n", fo)
+        fputs(" * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN\n", fo)
+        fputs(" * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF\n", fo)
+        fputs(" * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.\n", fo)
+        fputs(" *\n", fo)
+        fputs(" * RCS: @(#) $Id: " + fsName($target_h_file_name) + ",v 1.0 " + strftime("%Y/%m/%d %H:%M:%S", time()) + " monteiro Exp $\n", fo)
+        fputs(" *\n", fo)
+        fputs(" */\n", fo)
+        fputs("\n", fo)
+        
+        fputs("Gua_Status " + $extension_prefix + "_FunctionWrapper(void *nspace, Gua_Short argc, Gua_Object *argv, Gua_Object *object, Gua_String error);\n", fo)
+        fputs("Gua_Status " + $extension_prefix + "_Init(void *nspace, int argc, char *argv[], char **env, Gua_String error);\n", fo)
+        
+        fo = fclose(fo)
+    }
 }
 
 #
