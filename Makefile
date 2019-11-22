@@ -1,6 +1,6 @@
-#CC = gcc
+CC = gcc
 
-CC = mpicc
+#CC = mpicc
 
 CP = cp -rf
 
@@ -210,6 +210,9 @@ install_glutguash: all
 
 install_glwmguash: all
 	$(CP) $(BIN_DIR)/$(GLWM_EXE_NAME) $(PREFIX)/bin
+
+install_mpiguash: all
+	$(CP) $(BIN_DIR)/$(MPI_EXE_NAME) $(PREFIX)/bin
 
 install_language_specs: $(IDE_DIR)/language-specs/gua.lang
 	$(CP) $(IDE_DIR)/language-specs/* $(LANGUAGE_SPECS_DIR)
