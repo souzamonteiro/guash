@@ -1,0 +1,25 @@
+{
+    "name": "guarascript",
+    "displayName": "GuaraScript",
+    "description": "GuaraScript programming language.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.40.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "gua",
+            "aliases": ["GuaraScript", "gua"],
+            "extensions": ["gua"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "gua",
+            "scopeName": "source.guarascript",
+            "path": "./syntaxes/gua.tmLanguage.json"
+        }]
+    }
+}

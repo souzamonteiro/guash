@@ -1,0 +1,111 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "GuaraScript",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#scripts"
+		},
+		{
+			"include": "#arrays"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.gua",
+				"match": "\\b(if|else|elseif|while|for|foreach|try|catch|test|break|continue|return)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.gua",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.gua",
+					"match": "\\\\."
+				}
+			]
+		},
+		"scripts": {
+			"name": "string.quoted.single.gua",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape.gua",
+					"match": "\\\\."
+				}
+			]
+		},
+		"comments": {
+			"begin": "(^\\s+)?(?<=^|\\W)(?<!-)(?=#)(?!#{)",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.whitespace.comment.leading.gua"
+				}
+			},
+			"end": "(?!\\G)",
+			"patterns": [
+				{
+					"begin": "#!",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.shebang.gua"
+						}
+					},
+					"end": "$",
+					"name": "comment.line.number-sign.shebang.gua"
+				},
+				{
+					"begin": "#",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.gua"
+						}
+					},
+					"end": "$",
+					"name": "comment.line.number-sign.gua"
+				}
+			]
+		},
+		"arrays": {
+			"begin": "\\[",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.array.begin.gua"
+				}
+			},
+			"end": "\\]",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.array.end.gua"
+				}
+			},
+			"name": "meta.structure.array.gua",
+			"patterns": [
+				{
+					"include": "#value"
+				},
+				{
+					"match": ",|;",
+					"name": "punctuation.separator.array.gua"
+				},
+				{
+					"match": "[^\\s\\]]",
+					"name": "invalid.illegal.expected-array-separator.gua"
+				}
+			]
+		}
+	},
+	"scopeName": "source.guarascript"
+}
